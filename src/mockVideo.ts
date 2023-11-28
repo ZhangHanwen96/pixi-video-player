@@ -38,13 +38,13 @@ export default [
     {
         type: 101,
         id: "6c835502-c34b-4fe8-9a81-c95c202a112b",
-        start: 2800000,
-        end: 6160000,
+        start: 3800000,
+        end: 7160000,
         inPoint: 3528000,
         duration: 3360000,
         originDuration: 15000000,
         videoClip: {
-            sourceUrl: videoUrl2,
+            sourceUrl: videoUrl3,
             thumbnailSourceUrl:
                 "https://static01.versa-ai.com/upload/c29aa6df04a3/08f1ccc6-3fd5-4c99-8382-1be6973c87b8.mp4?x-oss-process=video/snapshot,t_4720,f_jpg,w_120,m_fast",
             dimension: {

@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 src/assets/*.mp4
+src/assets/*.mp3

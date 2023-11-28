@@ -67,6 +67,7 @@ export class TimeLineContoller extends EventEmitter {
         } else if (this.completed) {
             this.animate();
         }
+        this.emit("seek", currentTime);
     }
 
     stop() {
@@ -82,11 +83,12 @@ export class TimeLineContoller extends EventEmitter {
 
             console.log("this.#rafId", this.#rafId);
 
-            this.#remaningTime = Math.max(
-                this.#totalDuration - (Date.now() - this.#startTime),
-                0
-            );
-            this.#elapsedTime = Math.max(0, Date.now() - this.#startTime);
+            // this.#remaningTime = Math.max(
+            //     this.#totalDuration - (Date.now() - this.#startTime),
+            //     0
+            // );
+
+            // this.#elapsedTime = Math.max(0, Date.now() - this.#startTime);
             console.log(this.#remaningTime, "this.#remaningTime");
             this.emit("pause");
             this.emit("common-update");

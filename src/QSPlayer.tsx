@@ -7,6 +7,7 @@ import {
     useMount,
     usePrevious,
 } from "ahooks";
+import testMp3 from "./assets/test.mp3";
 import "./App.css";
 import { Stage, Container, Sprite, withFilters, useApp } from "@pixi/react";
 import {
@@ -27,6 +28,7 @@ import { EVENT_UPDATE } from "./Timeline";
 import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
 import { useTimelineStore } from "./store";
+import SoundTrack from "./SoundTrack";
 
 const withPromise = () => {
     let $resolve: (value: unknown) => void;
@@ -182,9 +184,10 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         console.log("innerRect: ", innerRect);
     }, [wrapperRect, innerRect]);
 
-    const createVideo = useCallback(() => {
+    const createVideo = useCallback((metaData: any) => {
         const video = document.createElement("video");
         video.crossOrigin = "anonymous";
+        video.volume = 0;
         video.addEventListener("loadedmetadata", () => {
             console.log("loadedmetadata");
 
@@ -239,6 +242,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                     innerRef.current.y = rect2.y;
                 }
             });
+            video.currentTime = metaData.start / 1_000_000;
         });
         return video;
     }, []);
@@ -283,7 +287,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
         initialized2.current = true;
 
-        const videoElement = createVideo();
+        const videoElement = createVideo(videoMeta);
         return videoElement;
 
         videoElement.autoplay = false;
@@ -420,10 +424,11 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
             if (cacheHit) {
                 console.log("cache hit");
-                const videoElement = createVideo();
+                const videoElement = createVideo(videoMeta);
                 videoElement.src = videoMeta.videoClip.sourceUrl;
-                // videoElement.currentTime = videoMeta.start / 1_000_000;
                 videoElement.load();
+
+                video.currentTime = videoMeta.start / 1_000_000;
 
                 setTimeout(() => {
                     cleanUp();
@@ -442,10 +447,11 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                 // await waitForCanPlay(videoMeta.videoClip.sourceUrl);
 
                 if (currentLoadId === loadIdRef.current) {
-                    const videoElement = createVideo();
+                    const videoElement = createVideo(videoMeta);
                     videoElement.src = videoMeta.videoClip.sourceUrl;
                     // videoElement.currentTime = videoMeta.start / 1_000_000;
                     videoElement.load();
+                    video.currentTime = videoMeta.start / 1_000_000;
 
                     setTimeout(() => {
                         cleanUp();
@@ -487,31 +493,25 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         });
     });
 
-    // useEffect(() => {
-    //     let handler = () => {};
-    //     timeline?.addListener(
-    //         "start",
-    //         (handler = () => {
-    //             if (video && video.paused) {
-    //                 video.play();
-    //             }
-    //         })
-    //     );
-    //     return () => {
-    //         timeline?.removeListener("start", handler);
-    //     };
-    // }, [video]);
-
     useEffect(() => {
-        timeline?.once("start", () => {
-            if (video) {
-                console.log("start video");
-                video.src = videoMeta?.videoClip.sourceUrl || "";
-                // video.autoplay = true;
-                video.muted = false;
-                video.load();
-            }
-        });
+        let handler;
+        timeline?.once(
+            "start",
+            (handler = () => {
+                if (video && videoMeta) {
+                    console.log("start video");
+                    video.src = videoMeta.videoClip.sourceUrl;
+                    // video.autoplay = true;
+                    video.muted = false;
+                    video.load();
+
+                    video.currentTime = videoMeta.start / 1_000_000;
+                }
+            })
+        );
+        return () => {
+            timeline?.off("start", handler);
+        };
     }, [video, timeline]);
 
     useEffect(() => {
@@ -703,6 +703,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                     </Container>
 
                     <Caption />
+                    <SoundTrack url={testMp3} />
                     {/* <TestComp /> */}
                 </Stage>
             )}

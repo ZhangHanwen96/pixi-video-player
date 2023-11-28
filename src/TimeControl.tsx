@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMove } from "@mantine/hooks";
-import { EVENT_UPDATE, timeLineCtx } from "./Timeline";
+import { EVENT_UPDATE } from "./Timeline";
 import { useUpdate } from "ahooks";
+import { useTimelineStore } from "./store";
 
 const TimeControl = () => {
-    const { timeline } = useContext(timeLineCtx);
+    const { timeline } = useTimelineStore();
 
     const [value, setValue] = useState(0);
 

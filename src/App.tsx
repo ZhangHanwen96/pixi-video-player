@@ -3,7 +3,6 @@ import { useMount } from "ahooks";
 
 import "./App.css";
 import { useRef, useState } from "react";
-import { TimeLineProvider } from "./Timeline";
 
 import { QSPlayer } from "./QSPlayer";
 
@@ -16,9 +15,9 @@ export const MyComponent = () => {
     const [app, setApp] = useState<PIXI.Application>();
 
     return (
-        <TimeLineProvider app={app}>
-            <QSPlayer setApp={setApp} />
-        </TimeLineProvider>
+        // <TimeLineProvider app={app}>
+        <QSPlayer setApp={setApp} />
+        // </TimeLineProvider>
     );
 };
 

@@ -1,10 +1,21 @@
-import React, { FC } from "react";
-import mockCaption from "./mockCaption";
+import React, { FC, useContext } from "react";
+// import mockCaption from "./mockCaption";
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { useCreation } from "ahooks";
 import { clamp } from "lodash-es";
 import testsVideo from "./assets/test-video2.mp4";
+import { captionTrack } from "./mock/captionTrack";
+
+const mockCaption = captionTrack?.clips.map((clip) => {
+    return {
+        start: clip.inPoint / 1_000,
+        end: (clip.inPoint + clip.duration) / 1_000,
+        text: clip.textClip.textContent,
+    };
+});
+
+console.log(mockCaption, "mockCaption");
 
 interface TimeLineContollerOptions {
     totalDuration: number;
@@ -16,17 +27,8 @@ export interface EVENT_UPDATE {
     remaningTime: number;
     totalDuration: number;
     progress: number;
+    caption: { start: number; end: number; text: string } | null;
 }
-
-interface Context {
-    timeline?: TimeLineContoller;
-    app?: PIXI.Application;
-}
-
-export const timeLineCtx = React.createContext<{
-    timeline?: TimeLineContoller;
-    app?: PIXI.Application;
-}>(null as unknown as Context);
 
 export class TimeLineContoller extends EventEmitter {
     #totalDuration = 0;
@@ -95,8 +97,8 @@ export class TimeLineContoller extends EventEmitter {
         // step 1: update caption
         const currentCaption = mockCaption.find((caption) => {
             return (
-                this.#elapsedTime >= caption.start * 1000 &&
-                this.#elapsedTime <= caption.end * 1000
+                this.#elapsedTime >= caption.start &&
+                this.#elapsedTime <= caption.end
             );
         });
         if (this.currentCaption !== currentCaption) {
@@ -109,6 +111,7 @@ export class TimeLineContoller extends EventEmitter {
             remaningTime: this.#remaningTime,
             totalDuration: this.#totalDuration,
             progress: clamp(this.#elapsedTime / this.#totalDuration, 0, 1),
+            caption: this.currentCaption,
         });
 
         this.emit("common-update");
@@ -176,38 +179,3 @@ export class TimeLineContoller extends EventEmitter {
         }
     }
 }
-
-let $timeline: TimeLineContoller;
-
-export const TimeLineProvider: FC<{
-    app?: PIXI.Application;
-    children: React.ReactNode;
-}> = ({ children, app }) => {
-    const timeline = useCreation(() => {
-        if (!app) return undefined;
-
-        app.stop();
-        if ($timeline) return $timeline;
-        $timeline = new TimeLineContoller(
-            {
-                totalDuration: 13_176,
-                onCaptionChange: (caption) => {
-                    // console.log(caption);
-                },
-            },
-            app
-        );
-        return $timeline;
-    }, [app]);
-
-    return (
-        <timeLineCtx.Provider
-            value={{
-                timeline,
-                app,
-            }}
-        >
-            {children}
-        </timeLineCtx.Provider>
-    );
-};

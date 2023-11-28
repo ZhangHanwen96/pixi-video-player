@@ -23,10 +23,10 @@ import { calculatRectByObjectFit, calculateScale } from "./util";
 import { Caption } from "./Caption";
 import TimeControl from "./TimeControl";
 import testsVideo from "./assets/test-video2.mp4";
-import { EVENT_UPDATE, TimeLineProvider, timeLineCtx } from "./Timeline";
+import { EVENT_UPDATE } from "./Timeline";
 import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
-import { difference, isEqual, isEqualWith } from "lodash-es";
+import { useTimelineStore } from "./store";
 
 const withPromise = () => {
     let $resolve: (value: unknown) => void;
@@ -125,13 +125,11 @@ const videoUrls = Object.entries(a).map(([key, value]) => {
 
 console.log(videoUrls);
 
-const SetUp = ({ setApp }) => {
+const SetUp = () => {
     const app = useApp();
     app.stop();
     useEffect(() => {
-        setApp(app);
-        app.stop();
-        app.ticker.stop();
+        useTimelineStore.getState().setApp(app);
     }, [app]);
     return null;
 };
@@ -158,7 +156,7 @@ const seekVideo = (currentTime: number) => {
 };
 
 export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
-    const { timeline } = useContext(timeLineCtx);
+    const { timeline } = useTimelineStore();
     const [wrapperRect, setWrapperRect] = useState({
         x: 0,
         y: 0,
@@ -703,6 +701,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                             {...innerRect}
                         />
                     </Container>
+
                     <Caption />
                     {/* <TestComp /> */}
                 </Stage>

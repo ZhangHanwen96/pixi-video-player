@@ -3,35 +3,9 @@ import { Sound, sound } from "@pixi/sound";
 import { FC, useEffect, useState } from "react";
 import { useTimelineStore } from "./store";
 import EventEmitter from "eventemitter3";
+import { $on, $ons } from "./event-utils";
 
 const AUDIO_ALIAS = "AUDIO_TRACK";
-
-type Handler = (...args: any[]) => unknown | void;
-
-export const $on = (
-    event: string,
-    handler: Handler,
-    emitter?: EventEmitter
-) => {
-    emitter?.on(event, handler);
-    return () => {
-        emitter?.off(event, handler);
-    };
-};
-
-export const $ons = (
-    options: { event: string; handler: Handler }[],
-    emitter?: EventEmitter
-) => {
-    options.forEach(({ event, handler }) => {
-        emitter?.on(event, handler);
-    });
-    return () => {
-        options.forEach(({ event, handler }) => {
-            emitter?.off(event, handler);
-        });
-    };
-};
 
 const SoundTrack: FC<{ url: string }> = ({ url }) => {
     const [soundInstance, setInstance] = useState<Sound | null>(null);

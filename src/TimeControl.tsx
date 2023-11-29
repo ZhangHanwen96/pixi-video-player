@@ -4,6 +4,7 @@ import { useMove } from "@mantine/hooks";
 import { EVENT_UPDATE } from "./Timeline";
 import { useUpdate } from "ahooks";
 import { useTimelineStore } from "./store";
+import { $on } from "./event-utils";
 
 const TimeControl = () => {
     const { timeline } = useTimelineStore();
@@ -56,6 +57,21 @@ const TimeControl = () => {
         };
     }, [timeline]);
 
+    useEffect(() => {
+        return $on(
+            "resume",
+            () => {
+                const state = useTimelineStore.getState();
+                if (state.pausedByController) {
+                    useTimelineStore.setState({
+                        pausedByController: false,
+                    });
+                }
+            },
+            timeline
+        );
+    }, [timeline]);
+
     return (
         <div
             style={{
@@ -71,7 +87,14 @@ const TimeControl = () => {
                             return;
                         }
                         if (timeline.isPlaying) {
+                            console.log(
+                                "%cstop",
+                                "color: black; font-size: 30px;"
+                            );
                             timeline.stop();
+                            useTimelineStore.setState({
+                                pausedByController: true,
+                            });
                         } else {
                             if (timeline.paused) {
                                 timeline.resume();

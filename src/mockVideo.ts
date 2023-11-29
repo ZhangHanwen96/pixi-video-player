@@ -1,7 +1,7 @@
-import videoUrl from "./assets/test-video.mp4";
 import videoUrl2 from "./assets/test-video2.mp4";
 import videoUrl3 from "./assets/test-video3.mp4";
 import videoUrl4 from "./assets/test-video4.mp4";
+import videoUrl6 from "./assets/test-video6.mp4";
 
 export default [
     {
@@ -44,7 +44,7 @@ export default [
         duration: 3360000,
         originDuration: 15000000,
         videoClip: {
-            sourceUrl: videoUrl3,
+            sourceUrl: videoUrl2,
             thumbnailSourceUrl:
                 "https://static01.versa-ai.com/upload/c29aa6df04a3/08f1ccc6-3fd5-4c99-8382-1be6973c87b8.mp4?x-oss-process=video/snapshot,t_4720,f_jpg,w_120,m_fast",
             dimension: {

@@ -5,6 +5,7 @@ import * as PIXI from "pixi.js";
 import { useCreation } from "ahooks";
 import { clamp } from "lodash-es";
 import testsVideo from "./assets/test-video2.mp4";
+
 import { captionTrack } from "./mock/captionTrack";
 
 const mockCaption = captionTrack?.clips.map((clip) => {
@@ -15,7 +16,33 @@ const mockCaption = captionTrack?.clips.map((clip) => {
     };
 });
 
-console.log(mockCaption, "mockCaption");
+const FPS_60 = 60;
+const FPS_30 = 30;
+const FPS_24 = 24;
+
+/**
+ * max 60fpx min 20fps
+ */
+const FRAME_RATE = {
+    60: clamp(60 / FPS_60, 1, 3),
+    30: clamp(60 / FPS_30, 1, 3),
+    24: clamp(60 / FPS_24, 1, 3),
+};
+
+let count = 0;
+// const raf = function (callback) {
+//     const currTime = new Date().getTime();
+//     const timeToCall = Math.max(0, 16 - (currTime - lastTime));
+//     const id = window.setTimeout(function () {
+//         callback(currTime + timeToCall);
+//     }, timeToCall);
+//     lastTime = currTime + timeToCall;
+//     return id;
+// };
+
+// const cancelRaf = function (id) {
+//     clearTimeout(id);
+// };
 
 interface TimeLineContollerOptions {
     totalDuration: number;
@@ -37,6 +64,9 @@ export class TimeLineContoller extends EventEmitter {
     currentCaption?: { start: number; end: number; text: string } | null = null;
     #startTime: number = 0;
     #rafId: null | number = null;
+
+    #speed = 2;
+
     constructor(
         protected options: TimeLineContollerOptions,
         protected app: PIXI.Application
@@ -58,6 +88,8 @@ export class TimeLineContoller extends EventEmitter {
             throw new Error("Invalid time");
         }
 
+        console.log("%c seek", "color: green; font-size: 30px;");
+
         // console.log(currentTime, "currentTime");
 
         this.#startTime = Date.now() - currentTime;
@@ -70,9 +102,19 @@ export class TimeLineContoller extends EventEmitter {
         this.emit("seek", currentTime);
     }
 
+    set speed(speed: number) {
+        this.#speed = speed;
+        this.emit("speed", speed);
+    }
+
+    get speed() {
+        return this.#speed;
+    }
+
     stop() {
-        console.log("stop");
         if (this.#rafId !== null) {
+            this.emit("pause");
+
             console.log(
                 "%cstop",
                 "color: red; font-size: 20px; font-weight: bold;"
@@ -80,17 +122,6 @@ export class TimeLineContoller extends EventEmitter {
             cancelAnimationFrame(this.#rafId);
 
             this.#rafId = null;
-
-            console.log("this.#rafId", this.#rafId);
-
-            // this.#remaningTime = Math.max(
-            //     this.#totalDuration - (Date.now() - this.#startTime),
-            //     0
-            // );
-
-            // this.#elapsedTime = Math.max(0, Date.now() - this.#startTime);
-            console.log(this.#remaningTime, "this.#remaningTime");
-            this.emit("pause");
             this.emit("common-update");
         }
     }
@@ -122,12 +153,12 @@ export class TimeLineContoller extends EventEmitter {
     private animate() {
         const currentTime = Date.now();
 
-        const delta = currentTime - this.#startTime;
+        const timeDelta = (currentTime - this.#startTime) * this.#speed;
 
-        this.#elapsedTime = clamp(delta, 0, this.#totalDuration);
+        this.#elapsedTime = clamp(timeDelta, 0, this.#totalDuration);
 
         this.#remaningTime = clamp(
-            this.#totalDuration - delta,
+            this.#totalDuration - this.#elapsedTime,
             0,
             this.#totalDuration
         );
@@ -137,9 +168,18 @@ export class TimeLineContoller extends EventEmitter {
             this.emit("complete");
             this.emit("common-update");
         } else {
-            this.update();
-            this.app.ticker.update(this.#elapsedTime);
             this.#rafId = requestAnimationFrame(this.animate.bind(this));
+
+            if (count % FRAME_RATE["30"] === 0) {
+                if (count > 1_000_000) {
+                    count = 0;
+                }
+                console.log("update");
+                this.app.ticker.update(this.#elapsedTime);
+                // updat at last to ensure the rafId is the latest
+            }
+            this.update();
+            count++;
         }
     }
 
@@ -147,11 +187,12 @@ export class TimeLineContoller extends EventEmitter {
         if (this.#rafId === null) {
             console.log(
                 "%cstart",
-                "color: rgb(157, 255, 0); font-size: 12px; font-weight: bold;"
+                "color: rgb(157, 255, 0); font-size: 30px; font-weight: bold;"
             );
             this.#startTime = Date.now();
             this.animate();
             this.emit("start");
+            this.emit("common-update");
         }
     }
 
@@ -168,16 +209,15 @@ export class TimeLineContoller extends EventEmitter {
     }
 
     resume() {
-        console.log("resume", this.#rafId, this.#remaningTime);
         if (this.paused) {
             console.log(
                 "%cresume",
-                "color: red; font-size: 20px; font-weight: bold;"
+                "color: red; font-size: 30px; font-weight: bold;"
             );
-            console.log("resume");
-            this.#startTime = Date.now() - this.#elapsedTime;
+            this.#startTime = Date.now() - this.#elapsedTime / this.#speed;
             this.animate();
             this.emit("resume");
+            this.emit("common-update");
         }
     }
 }

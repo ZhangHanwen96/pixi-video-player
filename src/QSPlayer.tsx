@@ -7,6 +7,7 @@ import {
     useMount,
     usePrevious,
 } from "ahooks";
+import { Spin } from "antd";
 import testMp3 from "./assets/test.mp3";
 import "./App.css";
 import { Stage, Container, Sprite, withFilters, useApp } from "@pixi/react";
@@ -29,20 +30,11 @@ import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
 import { useTimelineStore } from "./store";
 import SoundTrack from "./SoundTrack";
+import { difference } from "lodash-es";
+import { withPromise } from "./utils/withPromise";
+import { $on } from "./event-utils";
 
-const withPromise = () => {
-    let $resolve: (value: unknown) => void;
-    let $reject: (value: unknown) => void;
-    const promise = new Promise((resolve, reject) => {
-        $resolve = resolve;
-        $reject = reject;
-    });
-    return {
-        promise,
-        resolve: $resolve,
-        reject: $reject,
-    };
-};
+let lastRequestPauseTime = 0;
 
 const playEmptyVideo = () => {
     const { promise, resolve } = withPromise();
@@ -102,16 +94,77 @@ const playEmptyVideo = () => {
     return promise;
 };
 
-const waitForCanPlay = (videoUrl: string) => {
+class CacheManager {
+    #cache: Map<string, { metadata?: Record<string, any>; clipId: string[] }> =
+        new Map();
+
+    constructor() {}
+
+    get(url: string) {
+        return this.#cache.get(url);
+    }
+
+    setMetadata(url: string, metadata: Record<string, any>) {
+        const found = this.#cache.get(url);
+        if (found) {
+            found.metadata = metadata;
+        } else {
+            this.#cache.set(url, {
+                metadata,
+                clipId: [],
+            });
+        }
+    }
+
+    setCachedClipId(url: string, clipId: string) {
+        const found = this.#cache.get(url);
+        if (found) {
+            found.clipId.push(clipId);
+        } else {
+            this.#cache.set(url, {
+                metadata: undefined,
+                clipId: [clipId],
+            });
+        }
+    }
+
+    checkByClipId(url: string, clipId: string) {
+        const found = this.#cache.get(url);
+        if (!found) return false;
+        return found.clipId.includes(clipId);
+    }
+
+    getMetadata(url: string) {
+        const found = this.#cache.get(url);
+        if (!found) return undefined;
+        return found.metadata;
+    }
+}
+
+const cacheManager = new CacheManager();
+
+const waitForMetadataLoad = (videoUrl: string) => {
     const { promise, resolve, reject } = withPromise();
     const video = document.createElement("video");
+    video.addEventListener("loadedmetadata", function loadedHandler() {
+        cacheManager.setMetadata(videoUrl, {
+            width: video.videoWidth,
+            height: video.videoHeight,
+        });
+        resolve(video);
+        video.removeEventListener("loadedmetadata", loadedHandler);
+    });
+    video.addEventListener("error", function errorHandler(e) {
+        reject(e.error);
+        video.removeEventListener("error", errorHandler);
+    });
+    video.autoplay = false;
+    video.muted = true;
     video.crossOrigin = "anonymous";
     video.src = videoUrl;
-    video.addEventListener("canplay", () => {
-        resolve(video);
-    });
+
     video.load();
-    video.onerror = reject;
+
     return promise;
 };
 
@@ -129,9 +182,11 @@ console.log(videoUrls);
 
 const SetUp = () => {
     const app = useApp();
-    app.stop();
+
     useEffect(() => {
         useTimelineStore.getState().setApp(app);
+        app.stop();
+        app.ticker.stop();
     }, [app]);
     return null;
 };
@@ -166,6 +221,8 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         width: 0,
     });
 
+    const loadIdRef = useRef(0);
+
     const timeLineRef = useRef(timeline);
     timeLineRef.current = timeline;
 
@@ -184,67 +241,139 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         console.log("innerRect: ", innerRect);
     }, [wrapperRect, innerRect]);
 
-    const createVideo = useCallback((metaData: any) => {
+    const createVideoSync = useCallback((metaData: any, metadata = true) => {
         const video = document.createElement("video");
         video.crossOrigin = "anonymous";
         video.volume = 0;
-        video.addEventListener("loadedmetadata", () => {
-            console.log("loadedmetadata");
-
+        if (!metadata) return video;
+        video.addEventListener("loadedmetadata", function handler() {
+            cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
+                width: video.videoWidth,
+                height: video.videoHeight,
+            });
+            console.log("%cloadedmetadata", "color: green;");
             const vHeight = video.videoHeight;
             const vWidth = video.videoWidth;
             console.log("video rect: ", vHeight, vWidth);
-            flushSync(() => {
-                const { x, y, height, width } = calculatRectByObjectFit(
-                    {
-                        containerRect: {
-                            height: 600,
-                            width: 800,
-                        },
-                        sourceRect: {
-                            width: vWidth,
-                            height: vHeight,
-                        },
-                    },
-                    "cover"
-                );
-                setWrapperRect({ x, y, height, width });
-
-                const rect2 = calculatRectByObjectFit(
-                    {
-                        containerRect: {
-                            height: 600,
-                            width: 800,
-                        },
-                        sourceRect: {
-                            width: vWidth,
-                            height: vHeight,
-                        },
-                    },
-                    "contain"
-                );
-
-                setInnerRect({
-                    x: rect2.x,
-                    y: rect2.y,
-                    width: rect2.width,
-                    height: rect2.height,
-                });
-
-                if (wrapperRef.current && innerRef.current) {
-                    wrapperRef.current.width = width;
-                    wrapperRef.current.height = height;
-                    wrapperRef.current.x = x;
-                    wrapperRef.current.y = y;
-                    innerRef.current.width = rect2.width;
-                    innerRef.current.height = rect2.height;
-                    innerRef.current.x = rect2.x;
-                    innerRef.current.y = rect2.y;
-                }
-            });
+            syncRect(vWidth, vHeight);
             video.currentTime = metaData.start / 1_000_000;
+            video.removeEventListener("loadedmetadata", handler);
         });
         return video;
+    }, []);
+
+    const syncRect = useMemoizedFn((vWidth: number, vHeight: number) => {
+        flushSync(() => {
+            const { x, y, height, width } = calculatRectByObjectFit(
+                {
+                    containerRect: {
+                        height: 600,
+                        width: 800,
+                    },
+                    sourceRect: {
+                        width: vWidth,
+                        height: vHeight,
+                    },
+                },
+                "cover"
+            );
+            setWrapperRect({ x, y, height, width });
+
+            const rect2 = calculatRectByObjectFit(
+                {
+                    containerRect: {
+                        height: 600,
+                        width: 800,
+                    },
+                    sourceRect: {
+                        width: vWidth,
+                        height: vHeight,
+                    },
+                },
+                "contain"
+            );
+
+            setInnerRect({
+                x: rect2.x,
+                y: rect2.y,
+                width: rect2.width,
+                height: rect2.height,
+            });
+
+            if (wrapperRef.current && innerRef.current) {
+                wrapperRef.current.width = width;
+                wrapperRef.current.height = height;
+                wrapperRef.current.x = x;
+                wrapperRef.current.y = y;
+                innerRef.current.width = rect2.width;
+                innerRef.current.height = rect2.height;
+                innerRef.current.x = rect2.x;
+                innerRef.current.y = rect2.y;
+            }
+        });
+    });
+
+    const createVideoAndWaitForPlay = useCallback((metaData: any) => {
+        const { promise, reject, resolve } = withPromise();
+        const video = document.createElement("video");
+        video.crossOrigin = "anonymous";
+        video.volume = 0;
+        video.autoplay = false;
+
+        video.addEventListener("loadedmetadata", function handler() {
+            video.removeEventListener("loadedmetadata", handler);
+
+            cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
+                width: video.videoWidth,
+                height: video.videoHeight,
+            });
+
+            console.log("%cloadedmetadata", "color: green;");
+
+            const vHeight = video.videoHeight;
+            const vWidth = video.videoWidth;
+
+            syncRect(vWidth, vHeight);
+
+            const onCanPlay = () => {
+                console.log("Video is playable at this time. onCanPlay");
+
+                cacheManager.setCachedClipId(
+                    metaData.videoClip.sourceUrl,
+                    metaData.id
+                );
+                resolve(video);
+                console.log("resolve");
+                video.removeEventListener("canplay", onCanPlay);
+            };
+
+            const onSeeked = () => {
+                if (video.readyState >= 4) {
+                    console.log("Video is playable at this time. onSeeked");
+                    resolve(video);
+                } else {
+                    console.log("Video is not yet playable, waiting for data.");
+                    video.addEventListener("canplay", onCanPlay);
+                }
+
+                video.removeEventListener("seeked", onSeeked);
+            };
+
+            video.addEventListener("seeked", onSeeked);
+
+            video.currentTime = metaData.start / 1_000_000;
+        });
+        video.addEventListener("error", function handler(e) {
+            reject(e.error);
+            console.error(e.error);
+            video.removeEventListener("error", handler);
+        });
+
+        video.src = metaData.videoClip.sourceUrl;
+
+        video.load();
+
+        return promise;
     }, []);
 
     const initialized = useRef(false);
@@ -262,22 +391,6 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
     const videoMetaRef = useRef(videoMeta);
 
-    useMount(() => {
-        // playEmptyVideo();
-    });
-
-    // const video = useCreation(() => {
-    //     const videoElement = createVideo();
-    //     if (!videoMeta) return videoElement;
-
-    //     videoElement.src = videoMeta.videoClip.sourceUrl;
-    //     videoElement.autoplay = false;
-    //     videoElement.muted = true;
-    //     videoElement.currentTime = videoMeta.start / 1_000_000;
-
-    //     return videoElement;
-    // }, []);
-
     const [video, setVideo] = useState<HTMLVideoElement>(() => {
         if (!videoMeta) {
             initialized2.current = true;
@@ -287,7 +400,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
         initialized2.current = true;
 
-        const videoElement = createVideo(videoMeta);
+        const videoElement = createVideoSync(videoMeta);
         return videoElement;
 
         videoElement.autoplay = false;
@@ -314,107 +427,62 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
     //     if (diff.length) {
     //         PIXI.Assets.unload(diff);
     //     }
-
     //     PIXI.Assets.backgroundLoad(allUrls);
     // }, [allUrls]);
 
+    const timerRef = useRef<any>(null);
+
     const loadUtils = useRef({
         beforeLoad: (url: string) => {
-            setLoadingState(() => ({
-                loading: true,
-                url,
-            }));
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
 
-            // timeLineRef.current?.stop();
+            lastRequestPauseTime = Date.now();
+
+            timeLineRef.current?.stop();
+
+            // TODO: refactor loading logic
+            timerRef.current = setTimeout(() => {
+                setLoadingState(() => ({
+                    loading: true,
+                    url,
+                }));
+                timerRef.current = null;
+            }, 200);
         },
         doneLoading: (url: string) => {
-            setLoadingState((pre) => ({
-                ...pre,
-                loading: false,
-            }));
-            // timeLineRef.current?.resume();
+            if (!useTimelineStore.getState().pausedByController) {
+                timeLineRef.current?.resume();
+            }
+
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+                timerRef.current = null;
+            } else {
+                setLoadingState((pre) => ({
+                    ...pre,
+                    loading: false,
+                }));
+            }
         },
     });
-
-    // const setVideoWithDiff = useMemoizedFn(
-    //     (videoMeta: typeof videoMetaRef.current) => {
-    //         if (videoMeta?.id === videoMetaRef.current?.id) return;
-    //         // if(isEqualWith(videoMeta, videoMetaRef.current, (a, b) => {
-    //         //     return a?.inPoint === b?.inPoint && a?.duration === b?.duration && a?.videoClip.sourceUrl === b?.videoClip.sourceUrl;
-    //         // }))
-    //         videoMetaRef.current = videoMeta;
-    //         // setVideoMeta(meta);
-    //         // console.log("setVideoWithDiff, id: ", meta.id);
-
-    //         if (!videoMeta) return;
-    //         const currentLoadId = ++currentLoadIdRef.current;
-
-    //         const lastVideo = video;
-
-    //         const load = async () => {
-    //             const cacheHit = PIXI.Assets.cache.get(
-    //                 videoMeta.videoClip.sourceUrl
-    //             );
-    //             if (cacheHit) {
-    //                 const videoElement = createVideo();
-    //                 videoElement.src = videoMeta.videoClip.sourceUrl;
-    //                 videoElement.autoplay = false;
-    //                 videoElement.muted = true;
-    //                 // videoElement.currentTime = videoMeta.start / 1_000_000;
-    //                 setTimeout(() => {
-    //                     if (lastVideo) {
-    //                         lastVideo.src = "";
-    //                         lastVideo.load();
-    //                     }
-    //                 });
-    //                 flushSync(() => {
-    //                     setVideo(videoElement);
-    //                 });
-    //             }
-
-    //             loadUtils.beforeLoad(videoMeta.videoClip.sourceUrl);
-
-    //             await PIXI.Assets.load(videoMeta.videoClip.sourceUrl);
-
-    //             if (currentLoadId === currentLoadIdRef.current) {
-    //                 loadUtils.beforeLoad(videoMeta.videoClip.sourceUrl);
-    //                 const videoElement = createVideo();
-    //                 videoElement.src = videoMeta.videoClip.sourceUrl;
-    //                 videoElement.autoplay = false;
-    //                 videoElement.muted = true;
-    //                 // videoElement.currentTime = videoMeta.start / 1_000_000;
-    //                 setTimeout(() => {
-    //                     if (lastVideo) {
-    //                         lastVideo.src = "";
-    //                         lastVideo.load();
-    //                     }
-    //                 });
-    //                 flushSync(() => {
-    //                     setVideo(videoElement);
-    //                 });
-    //             }
-    //         };
-
-    //         load();
-    //     }
-    // );
-
-    const loadIdRef = useRef(0);
 
     const setVideoWithDiff = useMemoizedFn((videoMeta) => {
         if (videoMeta?.id === videoMetaRef.current?.id) return;
         videoMetaRef.current = videoMeta;
 
-        console.log("setVideoWithDiff, id: ", videoMeta.id);
+        console.log("%csetVideoWithDiff, id: ", "color: blue;");
+        console.log(videoMeta.id);
 
         const currentLoadId = ++loadIdRef.current;
 
         const prevVideo = video;
 
         const cleanUp = () => {
-            prevVideo.pause();
-            prevVideo.src = "";
-            prevVideo.load();
+            // prevVideo.pause();
+            // prevVideo.src = "";
+            // prevVideo.load();
         };
 
         const load = async () => {
@@ -424,15 +492,13 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
             if (cacheHit) {
                 console.log("cache hit");
-                const videoElement = createVideo(videoMeta);
+                const videoElement = createVideoSync(videoMeta);
                 videoElement.src = videoMeta.videoClip.sourceUrl;
                 videoElement.load();
 
-                video.currentTime = videoMeta.start / 1_000_000;
-
                 setTimeout(() => {
                     cleanUp();
-                    prevVideo.remove();
+                    // prevVideo.remove();
                 });
 
                 flushSync(() => {
@@ -441,30 +507,79 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
                 loadUtils.current.doneLoading(videoMeta.videoClip.sourceUrl);
             } else {
-                console.log("cache missing");
+                console.log(
+                    "%ccache missing",
+                    "color: green; font-size: 30px;"
+                );
                 loadUtils.current.beforeLoad(videoMeta.videoClip.sourceUrl);
                 // await PIXI.Assets.load(videoMeta.videoClip.sourceUrl);
-                // await waitForCanPlay(videoMeta.videoClip.sourceUrl);
+                if (!cacheManager.getMetadata(videoMeta.videoClip.sourceUrl)) {
+                    await waitForMetadataLoad(videoMeta.videoClip.sourceUrl);
+                }
+
+                const delay = (ms: number) => {
+                    return new Promise((resolve) => {
+                        setTimeout(resolve, ms);
+                    });
+                };
+                // await delay();
 
                 if (currentLoadId === loadIdRef.current) {
-                    const videoElement = createVideo(videoMeta);
-                    videoElement.src = videoMeta.videoClip.sourceUrl;
-                    // videoElement.currentTime = videoMeta.start / 1_000_000;
-                    videoElement.load();
-                    video.currentTime = videoMeta.start / 1_000_000;
+                    console.log("same id");
+
+                    let metadataHit = false;
+                    if (
+                        cacheManager.getMetadata(videoMeta.videoClip.sourceUrl)
+                    ) {
+                        metadataHit = true;
+                        const { width, height } = cacheManager.getMetadata(
+                            videoMeta.videoClip.sourceUrl
+                        );
+                        syncRect(width, height);
+                    }
+
+                    let videoElement: HTMLVideoElement;
+                    if (
+                        cacheManager.checkByClipId(
+                            videoMeta.videoClip.sourceUrl,
+                            videoMeta.id
+                        )
+                    ) {
+                        videoElement = createVideoSync(videoMeta, !metadataHit);
+                        videoElement.src = videoMeta.videoClip.sourceUrl;
+                        videoElement.load();
+                    } else {
+                        videoElement = (await createVideoAndWaitForPlay(
+                            videoMeta
+                        )) as HTMLVideoElement;
+                    }
+
+                    const elapsedDuration = Date.now() - lastRequestPauseTime;
+                    if (elapsedDuration < 16 * 16 && elapsedDuration > 16 * 4) {
+                        await delay(16 * 16 - elapsedDuration);
+                    }
+
+                    console.log("videoElement", videoElement);
+
+                    // videoElement.src = videoMeta.videoClip.sourceUrl;
+                    // // videoElement.currentTime = videoMeta.start / 1_000_000;
+                    // videoElement.load();
 
                     setTimeout(() => {
                         cleanUp();
-                        prevVideo.remove();
+                        // prevVideo.remove();
                     });
 
                     flushSync(() => {
                         setVideo(videoElement);
+                        loadUtils.current.doneLoading(
+                            videoMeta.videoClip.sourceUrl
+                        );
                     });
 
-                    loadUtils.current.doneLoading(
-                        videoMeta.videoClip.sourceUrl
-                    );
+                    // loadUtils.current.doneLoading(
+                    //     videoMeta.videoClip.sourceUrl
+                    // );
                 }
             }
         };
@@ -479,7 +594,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
         videoMetaRef.current = videoMeta;
 
-        const videoElement = createVideo();
+        const videoElement = createVideoSync();
         videoElement.src = videoMeta.videoClip.sourceUrl;
         // videoElement.currentTime = videoMeta.start / 1_000_000;
         videoElement.load();
@@ -525,7 +640,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
             })
         );
         return () => {
-            timeline?.off("start", handler);
+            timeline?.off("complete", handler);
         };
     }, [video, timeline]);
 
@@ -559,84 +674,6 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         };
     }, [video, timeline]);
 
-    // useEffect(() => {
-    //     if (!videoMeta) return;
-    //     const currentLoadId = ++currentLoadIdRef.current;
-
-    //     const lastVideo = video;
-
-    //     const load = async () => {
-    //         const cacheHit = PIXI.Assets.cache.get(
-    //             videoMeta.videoClip.sourceUrl
-    //         );
-    //         if (cacheHit) {
-    //             const videoElement = createVideo();
-    //             videoElement.src = videoMeta.videoClip.sourceUrl;
-    //             videoElement.autoplay = false;
-    //             videoElement.muted = true;
-    //             videoElement.currentTime = videoMeta.start / 1_000_000;
-    //             setTimeout(() => {
-    //                 lastVideo?.remove();
-    //             });
-    //             flushSync(() => {
-    //                 setVideo(videoElement);
-    //             });
-    //         }
-
-    //         loadUtils.beforeLoad(videoMeta.videoClip.sourceUrl);
-
-    //         await PIXI.Assets.load(videoMeta.videoClip.sourceUrl);
-
-    //         loadUtils.beforeLoad(videoMeta.videoClip.sourceUrl);
-
-    //         if (currentLoadId === currentLoadIdRef.current) {
-    //             const videoElement = createVideo();
-    //             videoElement.src = videoMeta.videoClip.sourceUrl;
-    //             videoElement.autoplay = false;
-    //             videoElement.muted = true;
-    //             videoElement.currentTime = videoMeta.start / 1_000_000;
-    //             setTimeout(() => {
-    //                 lastVideo?.remove();
-    //             });
-    //             flushSync(() => {
-    //                 setVideo(videoElement);
-    //             });
-    //         }
-    //     };
-
-    //     load();
-    // }, [videoMeta?.id]);
-
-    // const video = useMemo(() => {
-    //     if (!videoMeta) return null;
-
-    //     const lastVideo = lastVideoRef.current;
-    //     if (lastVideo) {
-    //         lastVideo.src = "";
-    //         lastVideo.load();
-    //         lastVideo.remove();
-    //     }
-
-    //     const videoElement = createVideo();
-    //     lastVideoRef.current = videoElement;
-    //     videoElement.src = videoMeta.videoClip.sourceUrl;
-    //     videoElement.autoplay = false;
-    //     videoElement.muted = true;
-    //     videoElement.currentTime = videoMeta.start / 1_000_000;
-    //     setTimeout(() => {
-    //         lastVideo?.remove();
-    //     }, 30);
-    //     // videoElement.currentTime = videoMeta.inPoint / 1_000_000;
-    //     return videoElement;
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, [videoMeta?.id]);
-
-    // useLayoutEffect(() => {
-    //     if (video && video?.muted) {
-    //         video.muted = false;
-    //     }
-    // });
-
     useEffect(() => {
         if (!timeline) return;
         let handler = () => {};
@@ -652,7 +689,18 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         };
     }, [timeline]);
 
-    console.log("id", videoMetaRef.current?.id);
+    useEffect(() => {
+        video.playbackRate = timeline?.speed || 1;
+        return $on(
+            "speed",
+            (speed: number) => {
+                if (video) {
+                    video.playbackRate = speed;
+                }
+            },
+            timeline
+        );
+    }, [timeline, video]);
 
     return (
         <div
@@ -663,8 +711,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         >
             {!!video && (
                 <Stage width={800} height={600}>
-                    <SetUp setApp={setApp} />
-                    {/* <Container ref={ref} anchor={0.5}> */}
+                    <SetUp />
                     <Filters
                         anchor={0.5}
                         blur={{
@@ -672,13 +719,9 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                             quality: 10,
                             resolution: devicePixelRatio || 1,
                         }}
-                        key={
-                            videoMetaRef.current?.id
-                                ? videoMetaRef.current?.id + "1"
-                                : undefined
-                        }
                     >
                         <Sprite
+                            key={video.src}
                             ref={wrapperRef}
                             video={video}
                             {...wrapperRect}
@@ -695,6 +738,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                         }
                     >
                         <Sprite
+                            key={video.src}
                             // anchor={0}
                             ref={innerRef}
                             video={video}
@@ -710,13 +754,11 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
             {loadingState.loading && (
                 <div
                     style={{
-                        position: "absolute",
-                        inset: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        zIndex: 100,
+                        background: "rgb(223 223 223 / 24%)",
                     }}
+                    className="absolute inset-0 flex items-center justify-center"
                 >
-                    loading...
+                    <Spin spinning={true} size="large"></Spin>
                 </div>
             )}
             <TimeControl />

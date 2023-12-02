@@ -85,3 +85,20 @@ export const calculatRectByObjectFit = (
         }
     }
 };
+
+export const delay = (ms: number) => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+};
+
+export const easeIn = (
+    from: number,
+    to: number,
+    duration: number,
+    elapsed: number
+) => {
+    const t = elapsed / duration;
+    console.log(t);
+    return from + (to - from) * t * t;
+};

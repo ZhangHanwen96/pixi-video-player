@@ -5,14 +5,23 @@ export type VideoPreload = "auto" | "metadata" | "none";
 const createPreloadLink = (url: string) => {
     const link = document.createElement("link");
     link.rel = "preload";
-    link.as = "video";
-    link.crossOrigin = "anonymous";
+    link.as = "fetch";
+    // link.crossOrigin = "anonymous";
     link.href = url;
 
     return link;
 };
 
+/**
+ *
+ * @param url
+ * @returns HTMLLinkElement
+ */
 const preloadWithLink = (url: string) => {
+    const preloadLink = document.querySelector(
+        `link[href="${url}"][rel="preload"][as="fetch"]`
+    );
+    if (preloadLink) return preloadLink;
     const link = createPreloadLink(url);
     document.head.appendChild(link);
     return link;
@@ -20,7 +29,7 @@ const preloadWithLink = (url: string) => {
 
 const removePreloadLink = (url: string) => {
     const preloadLink = document.querySelector(
-        `link[href="${url}"][rel="preload"][as="video"]`
+        `link[href="${url}"][rel="preload"][as="fetch"]`
     );
     if (preloadLink) {
         preloadLink.remove();

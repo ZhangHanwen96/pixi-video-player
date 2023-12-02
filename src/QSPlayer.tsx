@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as PIXI from "pixi.js";
-import {
-    useCreation,
-    useDeepCompareEffect,
-    useMemoizedFn,
-    useMount,
-    usePrevious,
-} from "ahooks";
-import { Spin } from "antd";
+import { useCreation, useMemoizedFn } from "ahooks";
+import posterUrl from "./assets/poster.jpeg";
+import { Spin, Timeline } from "antd";
 import testMp3 from "./assets/test.mp3";
 import "./App.css";
-import { Stage, Container, Sprite, withFilters, useApp } from "@pixi/react";
+import {
+    Stage,
+    Container,
+    Sprite,
+    withFilters,
+    Text,
+    useApp,
+} from "@pixi/react";
 import {
     useContext,
     useEffect,
@@ -22,77 +24,17 @@ import {
     useLayoutEffect,
 } from "react";
 import { calculatRectByObjectFit, calculateScale } from "./util";
-import { Caption } from "./Caption";
-import TimeControl from "./TimeControl";
-import testsVideo from "./assets/test-video2.mp4";
+import { Caption } from "./CaptionTrack";
+import TimeControlV2 from "@/components/Controller";
 import { EVENT_UPDATE } from "./Timeline";
 import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
 import { useTimelineStore } from "./store";
 import SoundTrack from "./SoundTrack";
-import { difference } from "lodash-es";
+
 import { withPromise } from "./utils/withPromise";
-import { $on } from "./event-utils";
-
-let lastRequestPauseTime = 0;
-
-const playEmptyVideo = () => {
-    const { promise, resolve } = withPromise();
-    const video = document.createElement("video");
-    video.src = testsVideo;
-    video.load();
-    video.hidden = true;
-    video.muted = true;
-    video.style.position = "fixed";
-    video.style.top = "-1000px";
-    video.style.left = "-1000px";
-    video.style.zIndex = "-1000px";
-    document.body.appendChild(video);
-    video.autoplay = false;
-    video.muted = true;
-
-    const button = document.createElement("button");
-    button.innerText = "play";
-    button.style.position = "fixed";
-    button.style.top = "-1000px";
-    button.style.left = "-1000px";
-    button.style.zIndex = "-1000px";
-    document.body.appendChild(button);
-    button.onclick = () => {
-        console.log(11111);
-        video.volume = 0;
-        video.muted = true;
-        video.play();
-        setTimeout(() => {
-            video.pause();
-            video.src = "";
-            video.load();
-            resolve(true);
-        }, 1000);
-    };
-
-    let handler = () => {};
-    video.addEventListener(
-        "timeupdate",
-        // @ts-ignore
-        (handler = (e) => {
-            console.log(video.currentTime);
-            if (video.currentTime > 1) {
-                video.pause();
-                video.src = "";
-                video.load();
-                resolve(true);
-                video.removeEventListener("timeupdate", handler);
-            }
-        })
-    );
-
-    video.addEventListener("canplay", () => {
-        button.click();
-    });
-
-    return promise;
-};
+import { $on, $ons } from "./event-utils";
+import VideoPoster from "./VideoPoster";
 
 class CacheManager {
     #cache: Map<string, { metadata?: Record<string, any>; clipId: string[] }> =
@@ -212,7 +154,7 @@ const seekVideo = (currentTime: number) => {
     return found;
 };
 
-export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
+export const QSPlayer: FC<any> = () => {
     const { timeline } = useTimelineStore();
     const [wrapperRect, setWrapperRect] = useState({
         x: 0,
@@ -228,6 +170,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
 
     const wrapperRef = useRef<PIXI.Sprite>(null);
     const innerRef = useRef<PIXI.Sprite>(null);
+    const contanerRef = useRef<PIXI.Container>(null);
 
     const [innerRect, setInnerRect] = useState({
         x: 0,
@@ -236,38 +179,12 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         width: 0,
     });
 
-    useDeepCompareEffect(() => {
-        console.log("wrapperRect: ", wrapperRect);
-        console.log("innerRect: ", innerRect);
-    }, [wrapperRect, innerRect]);
-
-    const createVideoSync = useCallback((metaData: any, metadata = true) => {
-        const video = document.createElement("video");
-        video.crossOrigin = "anonymous";
-        video.volume = 0;
-        if (!metadata) return video;
-        video.addEventListener("loadedmetadata", function handler() {
-            cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
-                width: video.videoWidth,
-                height: video.videoHeight,
-            });
-            console.log("%cloadedmetadata", "color: green;");
-            const vHeight = video.videoHeight;
-            const vWidth = video.videoWidth;
-            console.log("video rect: ", vHeight, vWidth);
-            syncRect(vWidth, vHeight);
-            video.currentTime = metaData.start / 1_000_000;
-            video.removeEventListener("loadedmetadata", handler);
-        });
-        return video;
-    }, []);
-
     const syncRect = useMemoizedFn((vWidth: number, vHeight: number) => {
         flushSync(() => {
             const { x, y, height, width } = calculatRectByObjectFit(
                 {
                     containerRect: {
-                        height: 600,
+                        height: 450,
                         width: 800,
                     },
                     sourceRect: {
@@ -282,7 +199,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
             const rect2 = calculatRectByObjectFit(
                 {
                     containerRect: {
-                        height: 600,
+                        height: 450,
                         width: 800,
                     },
                     sourceRect: {
@@ -300,18 +217,44 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                 height: rect2.height,
             });
 
-            if (wrapperRef.current && innerRef.current) {
-                wrapperRef.current.width = width;
-                wrapperRef.current.height = height;
-                wrapperRef.current.x = x;
-                wrapperRef.current.y = y;
-                innerRef.current.width = rect2.width;
-                innerRef.current.height = rect2.height;
-                innerRef.current.x = rect2.x;
-                innerRef.current.y = rect2.y;
-            }
+            // if (wrapperRef.current && innerRef.current) {
+            //     wrapperRef.current.width = width;
+            //     wrapperRef.current.height = height;
+            //     wrapperRef.current.x = x;
+            //     wrapperRef.current.y = y;
+            //     innerRef.current.width = rect2.width;
+            //     innerRef.current.height = rect2.height;
+            //     innerRef.current.x = rect2.x;
+            //     innerRef.current.y = rect2.y;
+            // }
         });
     });
+
+    const createVideoSync = useCallback((metaData: any, metadata = true) => {
+        const video = document.createElement("video");
+        video.crossOrigin = "anonymous";
+        video.volume = 0;
+        if (!metadata) return video;
+
+        video.addEventListener("loadedmetadata", function handler() {
+            cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
+                width: video.videoWidth,
+                height: video.videoHeight,
+            });
+
+            console.log("%cloadedmetadata", "color: green;");
+
+            const vHeight = video.videoHeight;
+            const vWidth = video.videoWidth;
+
+            syncRect(vWidth, vHeight);
+
+            video.currentTime = metaData.start / 1_000_000;
+
+            video.removeEventListener("loadedmetadata", handler);
+        });
+        return video;
+    }, []);
 
     const createVideoAndWaitForPlay = useCallback((metaData: any) => {
         const { promise, reject, resolve } = withPromise();
@@ -389,6 +332,11 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         return videoFound;
     }, []);
 
+    const [{ alpha, scale }, setTransform] = useState({
+        alpha: 0,
+        scale: 0,
+    });
+
     const videoMetaRef = useRef(videoMeta);
 
     const [video, setVideo] = useState<HTMLVideoElement>(() => {
@@ -438,9 +386,9 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                 clearTimeout(timerRef.current);
             }
 
-            lastRequestPauseTime = Date.now();
+            // lastRequestPauseTime = Date.now();
 
-            timeLineRef.current?.stop();
+            // timeLineRef.current?.stop();
 
             // TODO: refactor loading logic
             timerRef.current = setTimeout(() => {
@@ -448,8 +396,9 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                     loading: true,
                     url,
                 }));
+                timeLineRef.current?.stop();
                 timerRef.current = null;
-            }, 200);
+            }, 3_33);
         },
         doneLoading: (url: string) => {
             if (!useTimelineStore.getState().pausedByController) {
@@ -473,7 +422,6 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         videoMetaRef.current = videoMeta;
 
         console.log("%csetVideoWithDiff, id: ", "color: blue;");
-        console.log(videoMeta.id);
 
         const currentLoadId = ++loadIdRef.current;
 
@@ -516,18 +464,14 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                 if (!cacheManager.getMetadata(videoMeta.videoClip.sourceUrl)) {
                     await waitForMetadataLoad(videoMeta.videoClip.sourceUrl);
                 }
-
-                const delay = (ms: number) => {
-                    return new Promise((resolve) => {
-                        setTimeout(resolve, ms);
-                    });
-                };
                 // await delay();
 
                 if (currentLoadId === loadIdRef.current) {
                     console.log("same id");
 
                     let metadataHit = false;
+                    const width = 0;
+                    const height = 0;
                     if (
                         cacheManager.getMetadata(videoMeta.videoClip.sourceUrl)
                     ) {
@@ -535,7 +479,9 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                         const { width, height } = cacheManager.getMetadata(
                             videoMeta.videoClip.sourceUrl
                         );
-                        syncRect(width, height);
+                        // width = width;
+                        // height = height;
+                        // syncRect(width, height);
                     }
 
                     let videoElement: HTMLVideoElement;
@@ -547,17 +493,18 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                     ) {
                         videoElement = createVideoSync(videoMeta, !metadataHit);
                         videoElement.src = videoMeta.videoClip.sourceUrl;
-                        videoElement.load();
+                        // videoElement.load();
                     } else {
                         videoElement = (await createVideoAndWaitForPlay(
                             videoMeta
                         )) as HTMLVideoElement;
                     }
 
-                    const elapsedDuration = Date.now() - lastRequestPauseTime;
-                    if (elapsedDuration < 16 * 16 && elapsedDuration > 16 * 4) {
-                        await delay(16 * 16 - elapsedDuration);
-                    }
+                    // TODO: smoth loading
+                    // const elapsedDuration = Date.now() - lastRequestPauseTime;
+                    // if (elapsedDuration < 16 * 16 && elapsedDuration > 16 * 4) {
+                    //     await delay(16 * 16 - elapsedDuration);
+                    // }
 
                     console.log("videoElement", videoElement);
 
@@ -608,89 +555,124 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
         });
     });
 
-    useEffect(() => {
-        let handler;
-        timeline?.once(
-            "start",
-            (handler = () => {
-                if (video && videoMeta) {
-                    console.log("start video");
-                    video.src = videoMeta.videoClip.sourceUrl;
-                    // video.autoplay = true;
-                    video.muted = false;
-                    video.load();
+    // useDeepCompareEffect(() => {
+    //     const diff = difference(allUrlsRef.current, allUrls);
 
-                    video.currentTime = videoMeta.start / 1_000_000;
-                }
-            })
-        );
-        return () => {
-            timeline?.off("start", handler);
-        };
-    }, [video, timeline]);
+    //     allUrlsRef.current = allUrls;
+
+    //     if (diff.length) {
+    //         for (const url of diff) {
+    //             preloadUtils.removePreloadLink(url);
+    //         }
+    //     }
+
+    //     for (const url of allUrls) {
+    //         preloadUtils.preloadWithLink(url);
+    //     }
+    // }, [allUrls]);
 
     useEffect(() => {
-        let handler = () => {};
-        timeline?.addListener(
-            "complete",
-            (handler = () => {
-                if (video && !video.paused) {
-                    video.pause();
-                }
-            })
+        $ons(
+            [
+                {
+                    event: "common-update",
+                    handler: () => {
+                        if (useTimelineStore.getState().showPoster) {
+                            useTimelineStore.getState().togglePoster();
+                        }
+                    },
+                },
+            ],
+            timeline
         );
-        return () => {
-            timeline?.off("complete", handler);
-        };
-    }, [video, timeline]);
-
-    useEffect(() => {
-        let handler = () => {};
-        timeline?.on(
-            "pause",
-            (handler = () => {
-                if (video && !video.paused) {
-                    video.pause();
-                }
-            })
-        );
-        return () => {
-            timeline?.off("pause", handler);
-        };
-    }, [video, timeline]);
-
-    useEffect(() => {
-        let handler = () => {};
-        timeline?.on(
-            "resume",
-            (handler = () => {
-                if (video && video.paused) {
-                    video.play();
-                }
-            })
-        );
-        return () => {
-            timeline?.off("resume", handler);
-        };
-    }, [video, timeline]);
-
-    useEffect(() => {
-        if (!timeline) return;
-        let handler = () => {};
-        timeline.addListener(
-            "update",
-            (handler = (event: EVENT_UPDATE) => {
-                const video = seekVideo(event.elapsedTime);
-                if (video) setVideoWithDiff(video);
-            })
-        );
-        return () => {
-            timeline.removeListener("update", handler);
-        };
     }, [timeline]);
 
     useEffect(() => {
+        return $on(
+            "start",
+            () => {
+                if (useTimelineStore.getState().showPoster) {
+                    useTimelineStore.getState().togglePoster();
+                }
+                if (video && videoMeta) {
+                    video.src = videoMeta.videoClip.sourceUrl;
+                    video.muted = false;
+                    video.load();
+                    video.currentTime = videoMeta.start / 1_000_000;
+                }
+            },
+            timeline
+        );
+    }, [video, timeline]);
+
+    useEffect(() => {
+        return $ons(
+            [
+                {
+                    event: "complete",
+                    handler: () => {
+                        if (video && !video.paused) {
+                            video.pause();
+                        }
+                    },
+                },
+                {
+                    event: "pause",
+                    handler: () => {
+                        if (video && !video.paused) {
+                            video.pause();
+                        }
+                    },
+                },
+                {
+                    event: "resume",
+                    handler: () => {
+                        if (video && video.paused) {
+                            video.play();
+                        }
+                    },
+                },
+            ],
+            timeline
+        );
+    }, [video, timeline]);
+
+    useEffect(() => {
+        return $on(
+            "update",
+            (event: EVENT_UPDATE) => {
+                const videoMeta = seekVideo(event.elapsedTime);
+
+                // const duration = videoMeta.duration / 1_000;
+                // const scaleX = easeIn(
+                //     0.6,
+                //     1,
+                //     duration,
+                //     clamp(
+                //         event.elapsedTime - videoMeta.inPoint / 1_000,
+                //         0,
+                //         duration
+                //     )
+                // );
+
+                // setTransform({
+                //     alpha: scaleX,
+                //     scale: scaleX,
+                // });
+
+                if (videoMeta) {
+                    setVideoWithDiff(videoMeta);
+                }
+            },
+            timeline
+        );
+    }, [timeline]);
+
+    useEffect(() => {
+        if (!video) return;
+
         video.playbackRate = timeline?.speed || 1;
+
         return $on(
             "speed",
             (speed: number) => {
@@ -710,7 +692,7 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
             }}
         >
             {!!video && (
-                <Stage width={800} height={600}>
+                <Stage width={800} height={450}>
                     <SetUp />
                     <Filters
                         anchor={0.5}
@@ -719,36 +701,33 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                             quality: 10,
                             resolution: devicePixelRatio || 1,
                         }}
+                        key={video.src + "wrapper"}
                     >
                         <Sprite
-                            key={video.src}
+                            key={video.src + "inner"}
                             ref={wrapperRef}
                             video={video}
                             {...wrapperRect}
                             alpha={0.7}
                         />
                     </Filters>
+
                     {/* </Container> */}
                     <Container
+                        ref={contanerRef}
                         anchor={0.5}
-                        key={
-                            videoMetaRef.current?.id
-                                ? videoMetaRef.current?.id + "2"
-                                : undefined
-                        }
+                        key={video.src + "wrapper2"}
                     >
                         <Sprite
-                            key={video.src}
-                            // anchor={0}
+                            key={video.src + "inner2"}
+                            {...innerRect}
                             ref={innerRef}
                             video={video}
-                            {...innerRect}
                         />
                     </Container>
-
                     <Caption />
+
                     <SoundTrack url={testMp3} />
-                    {/* <TestComp /> */}
                 </Stage>
             )}
             {loadingState.loading && (
@@ -761,7 +740,8 @@ export const QSPlayer: FC<{ setApp: any }> = ({ setApp }) => {
                     <Spin spinning={true} size="large"></Spin>
                 </div>
             )}
-            <TimeControl />
+            <VideoPoster url={posterUrl} />
+            <TimeControlV2 />
         </div>
     );
 };

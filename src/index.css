@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .display-time::before {
+        content: attr(data-time);
+        @apply text-sm;
+    }
+}
+
+@font-face {
+    font-family: Tezign Font;
+    src: url("./fonts//tezign-font.ttf") format("truetype");
+}
+
 :root {
     font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
     line-height: 1.5;

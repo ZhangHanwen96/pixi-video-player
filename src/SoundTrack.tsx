@@ -1,8 +1,7 @@
-import * as PIXI from "pixi.js";
+/* eslint-disable react-refresh/only-export-components */
 import { Sound, sound } from "@pixi/sound";
-import { FC, useEffect, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import { useTimelineStore } from "./store";
-import EventEmitter from "eventemitter3";
 import { $on, $ons } from "./event-utils";
 
 const AUDIO_ALIAS = "AUDIO_TRACK";
@@ -34,7 +33,7 @@ const SoundTrack: FC<{ url: string }> = ({ url }) => {
             (currentTime: number) => {
                 const durationInMS = soundInstance.duration * 1_000;
                 const offsetMS = currentTime % durationInMS;
-                console.log(parseFloat((offsetMS / 1_000).toFixed(2)), 1111111);
+
                 soundInstance.stop();
                 soundInstance.play({
                     start: parseFloat((offsetMS / 1_000).toFixed(2)),
@@ -44,6 +43,19 @@ const SoundTrack: FC<{ url: string }> = ({ url }) => {
             timeline
         );
     }, [soundInstance, timeline]);
+
+    useEffect(() => {
+        if (!soundInstance) return;
+        soundInstance.speed = timeline?.speed || 1;
+
+        return $on(
+            "speed",
+            (speed: number) => {
+                soundInstance.speed = speed;
+            },
+            timeline
+        );
+    }, [timeline, soundInstance]);
 
     useEffect(() => {
         if (!soundInstance) return;
@@ -58,6 +70,7 @@ const SoundTrack: FC<{ url: string }> = ({ url }) => {
 
     useEffect(() => {
         if (!soundInstance) return;
+
         return $ons(
             [
                 {
@@ -72,19 +85,13 @@ const SoundTrack: FC<{ url: string }> = ({ url }) => {
                         soundInstance.play();
                     },
                 },
+                {
+                    event: "complete",
+                    handler: () => {
+                        soundInstance.pause();
+                    },
+                },
             ],
-            timeline
-        );
-    }, [soundInstance, timeline]);
-
-    useEffect(() => {
-        if (!soundInstance) return;
-
-        return $on(
-            "complete",
-            () => {
-                soundInstance.pause();
-            },
             timeline
         );
     }, [soundInstance, timeline]);
@@ -92,4 +99,4 @@ const SoundTrack: FC<{ url: string }> = ({ url }) => {
     return null;
 };
 
-export default SoundTrack;
+export default memo(SoundTrack);

@@ -12,11 +12,13 @@ interface State {
     timeline?: TimeLineContoller;
     app?: PIXI.Application;
     pausedByController: boolean;
+    showPoster: boolean;
 }
 
 interface Actions {
     setApp: (app: PIXI.Application) => void;
     setTimeline: (timeline: TimeLineContoller) => void;
+    togglePoster: (show?: boolean) => void;
 }
 
 let $timeline: TimeLineContoller | undefined;
@@ -27,10 +29,10 @@ export const timelineStore = create(
             timeline: undefined,
             app: undefined,
             pausedByController: false,
+            showPoster: true,
             setApp(app) {
                 const createTimeline = () => {
                     if (!app) return undefined;
-
                     app.stop();
                     $timeline = new TimeLineContoller(
                         {
@@ -49,19 +51,15 @@ export const timelineStore = create(
             setTimeline(timeline) {
                 set(() => ({ timeline }));
             },
+            togglePoster(show) {
+                if (typeof show === "boolean") {
+                    set(() => ({ showPoster: show }));
+                } else {
+                    set((state) => ({ showPoster: !state.showPoster }));
+                }
+            },
         };
     })
-);
-
-timelineStore.subscribe(
-    (s) => s.pausedByController,
-    (current, prev) => {
-        console.warn(current, "   " + 1111111);
-    },
-    {
-        equalityFn: shallow,
-        fireImmediately: true,
-    }
 );
 
 export const useTimelineStore = createSelectors(timelineStore);

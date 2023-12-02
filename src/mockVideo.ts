@@ -44,7 +44,7 @@ export default [
         duration: 3360000,
         originDuration: 15000000,
         videoClip: {
-            sourceUrl: videoUrl2,
+            sourceUrl: videoUrl4,
             thumbnailSourceUrl:
                 "https://static01.versa-ai.com/upload/c29aa6df04a3/08f1ccc6-3fd5-4c99-8382-1be6973c87b8.mp4?x-oss-process=video/snapshot,t_4720,f_jpg,w_120,m_fast",
             dimension: {

@@ -25,7 +25,7 @@ import {
 } from "react";
 import { calculatRectByObjectFit, calculateScale } from "./util";
 import { Caption } from "./CaptionTrack";
-import TimeControlV2 from "@/components/Controller";
+import TimeControlV2 from "@/components/Controller/index-2";
 import { EVENT_UPDATE } from "./Timeline";
 import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
@@ -161,6 +161,7 @@ export const QSPlayer: FC<any> = () => {
         y: 0,
         height: 0,
         width: 0,
+        scale: 1,
     });
 
     const loadIdRef = useRef(0);
@@ -177,11 +178,12 @@ export const QSPlayer: FC<any> = () => {
         y: 0,
         height: 0,
         width: 0,
+        scale: 1,
     });
 
     const syncRect = useMemoizedFn((vWidth: number, vHeight: number) => {
         flushSync(() => {
-            const { x, y, height, width } = calculatRectByObjectFit(
+            const wrapperRect = calculatRectByObjectFit(
                 {
                     containerRect: {
                         height: 450,
@@ -194,7 +196,7 @@ export const QSPlayer: FC<any> = () => {
                 },
                 "cover"
             );
-            setWrapperRect({ x, y, height, width });
+            setWrapperRect(wrapperRect);
 
             const rect2 = calculatRectByObjectFit(
                 {
@@ -210,23 +212,8 @@ export const QSPlayer: FC<any> = () => {
                 "contain"
             );
 
-            setInnerRect({
-                x: rect2.x,
-                y: rect2.y,
-                width: rect2.width,
-                height: rect2.height,
-            });
-
-            // if (wrapperRef.current && innerRef.current) {
-            //     wrapperRef.current.width = width;
-            //     wrapperRef.current.height = height;
-            //     wrapperRef.current.x = x;
-            //     wrapperRef.current.y = y;
-            //     innerRef.current.width = rect2.width;
-            //     innerRef.current.height = rect2.height;
-            //     innerRef.current.x = rect2.x;
-            //     innerRef.current.y = rect2.y;
-            // }
+            console.log(rect2, "rect2", vWidth, vHeight);
+            setInnerRect(rect2);
         });
     });
 
@@ -532,44 +519,7 @@ export const QSPlayer: FC<any> = () => {
         };
 
         load();
-
-        return;
-
-        prevVideo.pause();
-        prevVideo.src = "";
-        prevVideo.load();
-
-        videoMetaRef.current = videoMeta;
-
-        const videoElement = createVideoSync();
-        videoElement.src = videoMeta.videoClip.sourceUrl;
-        // videoElement.currentTime = videoMeta.start / 1_000_000;
-        videoElement.load();
-
-        flushSync(() => {
-            setVideo(videoElement);
-        });
-
-        setTimeout(() => {
-            prevVideo.remove();
-        });
     });
-
-    // useDeepCompareEffect(() => {
-    //     const diff = difference(allUrlsRef.current, allUrls);
-
-    //     allUrlsRef.current = allUrls;
-
-    //     if (diff.length) {
-    //         for (const url of diff) {
-    //             preloadUtils.removePreloadLink(url);
-    //         }
-    //     }
-
-    //     for (const url of allUrls) {
-    //         preloadUtils.preloadWithLink(url);
-    //     }
-    // }, [allUrls]);
 
     useEffect(() => {
         $ons(
@@ -702,27 +652,35 @@ export const QSPlayer: FC<any> = () => {
                             resolution: devicePixelRatio || 1,
                         }}
                         key={video.src + "wrapper"}
+                        scale={wrapperRect.scale}
+                        x={wrapperRect.x}
+                        y={wrapperRect.y}
                     >
                         <Sprite
                             key={video.src + "inner"}
                             ref={wrapperRef}
                             video={video}
-                            {...wrapperRect}
                             alpha={0.7}
+                            height={video.videoHeight}
+                            width={video.videoWidth}
                         />
                     </Filters>
 
-                    {/* </Container> */}
                     <Container
                         ref={contanerRef}
                         anchor={0.5}
                         key={video.src + "wrapper2"}
+                        scale={innerRect.scale}
+                        x={innerRect.x}
+                        y={innerRect.y}
                     >
                         <Sprite
                             key={video.src + "inner2"}
-                            {...innerRect}
+                            // {...innerRect}
                             ref={innerRef}
                             video={video}
+                            height={video.videoHeight}
+                            width={video.videoWidth}
                         />
                     </Container>
                     <Caption />

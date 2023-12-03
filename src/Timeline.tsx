@@ -49,11 +49,11 @@ export class TimeLineContoller extends EventEmitter {
     #elapsedTime = 0;
     currentCaption?: { start: number; end: number; text: string } | null = null;
     // #startTime: number = 0;
-    #rafId: null | number = null;
-
     #speed = 1;
-
     #FPS = 60;
+    #audioVolume = 1;
+
+    #rafId: null | number = null;
 
     constructor(
         protected options: TimeLineContollerOptions,
@@ -75,6 +75,14 @@ export class TimeLineContoller extends EventEmitter {
         return this.currentCaption;
     }
 
+    set audioVolume(volume: number) {
+        this.#audioVolume = volume;
+        this.emit("audio-volume", volume);
+    }
+    get audioVolume() {
+        return this.#audioVolume;
+    }
+
     /**
      *
      * @param currentTime in milli seconds
@@ -84,7 +92,7 @@ export class TimeLineContoller extends EventEmitter {
             throw new Error("Invalid time");
         }
 
-        console.log(`%cSeek ${currentTime}`, "color: green; font-size: 32px;");
+        console.log(`%cSeek ${currentTime}`, "color: green; font-size: 28px;");
 
         this.#elapsedTime = currentTime;
         this.#remaningTime = clamp(
@@ -97,28 +105,18 @@ export class TimeLineContoller extends EventEmitter {
 
         // console.log(this.paused, this.isPlaying, this.completed);
 
-        // if (this.paused || !this.isPlaying) {
-        //     this.animate();
-        //     // this.app.ticker.update(this.#elapsedTime);
-        // } else if (this.completed) {
-        //     this.animate();
-        //     // this.app.ticker.update(this.#elapsedTime);
-        // }
-
         if (this.paused || !this.isPlaying) {
-            // useTimelineStore.setState({
-            //     pausedByController: true,
-            // });
-            this.animate();
-            // this.animateByFrame(8);
-
-            // this.app.ticker.update(this.#elapsedTime);
+            if (this.paused) {
+                this.resume();
+            } else {
+                this.start();
+            }
+            // this.animate();
         } else if (this.completed) {
             this.animate();
-            // this.app.ticker.update(this.#elapsedTime);
         }
 
-        // this.animateByFrame(6);
+        // TODO: useful??? maybe remove laster
         this.emit("seek", currentTime);
     }
 

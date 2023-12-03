@@ -13,7 +13,7 @@ const TimeControl = () => {
 
     const { ref: sliderRef } = useMove(({ x }) => {
         setValue(x);
-        const timeToSeek = 13176 * x;
+        const timeToSeek = (timeline?.timeMetadata.totalDuration || 0) * x;
         console.log(`%cseekTime ${timeToSeek}`, "color: #00b300");
         timeline?.seek(timeToSeek);
     });

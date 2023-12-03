@@ -2,7 +2,7 @@
 export function withPromise<T = unknown>() {
     let $resolve: (value: T) => void;
     let $reject: (value: unknown) => void;
-    const promise = new Promise((resolve, reject) => {
+    const promise = new Promise<T>((resolve, reject) => {
         $resolve = resolve;
         $reject = reject;
     });

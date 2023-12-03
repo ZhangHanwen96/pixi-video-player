@@ -43,7 +43,7 @@ const createVideo = (preload: VideoPreload = "auto") => {
     video.muted = true;
     video.autoplay = false;
     video.preload = preload;
-    video.style.display = "none";
+    // video.style.display = "none";
     return video;
 };
 
@@ -53,9 +53,12 @@ const hardCancelVideoLoad = (video: HTMLVideoElement) => {
     video.load();
 };
 
-const waitForLoadedMetadata = (url: string) => {
+const waitForLoadedMetadata = (
+    url: string,
+    preload: VideoPreload = "auto"
+): Promise<HTMLVideoElement> => {
     const { promise, reject, resolve } = withPromise<HTMLVideoElement>();
-    const video = createVideo("auto");
+    const video = createVideo(preload);
 
     video.addEventListener("loadedmetadata", function handler() {
         resolve(video);
@@ -68,6 +71,28 @@ const waitForLoadedMetadata = (url: string) => {
     });
 
     video.src = url;
+
+    return promise;
+};
+
+export const waitForLoadedMetadata2 = (
+    video: HTMLVideoElement,
+    url: string
+): Promise<HTMLVideoElement> => {
+    const { promise, reject, resolve } = withPromise<HTMLVideoElement>();
+
+    video.addEventListener("loadedmetadata", function handler() {
+        resolve(video);
+        video.removeEventListener("loadedmetadata", handler);
+    });
+
+    video.addEventListener("error", function handler() {
+        reject(video);
+        video.removeEventListener("error", handler);
+    });
+
+    video.src = url;
+    video.load();
 
     return promise;
 };

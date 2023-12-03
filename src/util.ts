@@ -1,24 +1,24 @@
 export function calculateScale(
     containerWidth: number,
     containerHeight: number,
-    imageWidth: number,
+    sourceRect: number,
     imageHeight: number
 ) {
     // Calculate the scale
     const scale = Math.min(
-        containerWidth / imageWidth,
+        containerWidth / sourceRect,
         containerHeight / imageHeight
     );
 
     // Calculate the x and y coordinates
-    const x = (containerWidth - imageWidth * scale) / 2;
+    const x = (containerWidth - sourceRect * scale) / 2;
     const y = (containerHeight - imageHeight * scale) / 2;
 
     return {
         x,
         y,
         scale,
-        width: imageWidth * scale,
+        width: sourceRect * scale,
         height: imageHeight * scale,
     };
 }
@@ -99,6 +99,5 @@ export const easeIn = (
     elapsed: number
 ) => {
     const t = elapsed / duration;
-    console.log(t);
     return from + (to - from) * t * t;
 };

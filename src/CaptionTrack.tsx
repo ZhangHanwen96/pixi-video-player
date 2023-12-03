@@ -8,7 +8,7 @@ import { EVENT_UPDATE } from "./Timeline";
 import { useTimelineStore } from "./store";
 import { $on } from "./event-utils";
 
-export const Caption = () => {
+export const Caption = ({ stageRect }) => {
     const { timeline } = useTimelineStore();
 
     const [text, setText] = useState("");
@@ -37,15 +37,15 @@ export const Caption = () => {
                 x: 0.5,
                 y: 0,
             }}
-            x={400}
-            y={450 * 0.8 - 16}
+            x={stageRect.width / 2}
+            y={stageRect.height * 0.8 - 16}
             ref={textRef}
             text={text}
             style={
                 new PIXI.TextStyle({
                     align: "center",
                     fontFamily: "Helvetica, sans-serif",
-                    fontSize: 32,
+                    fontSize: 14,
                     // fontWeight: "400",
                     fill: "#ffffff", // gradient
                     // stroke: "#01d27e",
@@ -57,8 +57,8 @@ export const Caption = () => {
                     dropShadowAngle: Math.PI / 6,
                     dropShadowDistance: 6,
                     wordWrap: true,
-                    wordWrapWidth: 800,
-                    lineHeight: 34,
+                    wordWrapWidth: stageRect.width,
+                    lineHeight: 20,
                 })
             }
         ></Text>

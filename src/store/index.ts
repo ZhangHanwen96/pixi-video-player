@@ -16,7 +16,7 @@ interface State {
 }
 
 interface Actions {
-    setApp: (app: PIXI.Application) => void;
+    setApp: (app: PIXI.Application, duration: number) => void;
     setTimeline: (timeline: TimeLineContoller) => void;
     togglePoster: (show?: boolean) => void;
 }
@@ -30,13 +30,13 @@ export const timelineStore = create(
             app: undefined,
             pausedByController: false,
             showPoster: true,
-            setApp(app) {
+            setApp(app, duration) {
                 const createTimeline = () => {
                     if (!app) return undefined;
                     app.stop();
                     $timeline = new TimeLineContoller(
                         {
-                            totalDuration: 13_176,
+                            totalDuration: duration,
                             onCaptionChange: (caption) => {
                                 // console.log(caption);
                             },

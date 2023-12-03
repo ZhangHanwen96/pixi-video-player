@@ -38,6 +38,10 @@ export interface AudioTrack extends Track {
     clips: (Clip & { audioClip: AudioClip })[];
 }
 
+export interface CaptionTrack extends Track {
+    clips: (Clip & { textClip: TextClip })[];
+}
+
 interface Clip {
     /**
      * @description clip类型
@@ -76,6 +80,7 @@ interface Clip {
 
     audioClip?: AudioClip;
     videoClip?: VideoClip;
+    textClip?: TextClip;
 }
 
 interface AudioClip {
@@ -111,4 +116,9 @@ interface PositionParam {
     centerZ: number;
     scaleX: number;
     scaleY: number;
+}
+
+interface TextClip {
+    textContent: string;
+    posParam: PositionParam;
 }

@@ -43,6 +43,7 @@ export const timelineStore = create(
                         },
                         app
                     );
+
                     return $timeline;
                 };
                 const timeline = createTimeline();

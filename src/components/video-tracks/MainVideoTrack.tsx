@@ -6,6 +6,7 @@ import {
     useCreation,
     useDeepCompareEffect,
     useMemoizedFn,
+    useMount,
     useUpdateEffect,
 } from "ahooks";
 import { DisplayObject } from "pixi.js";
@@ -26,6 +27,7 @@ import { useTezignPlayerStore } from "@/store/teizng-player";
 import { clamp, difference, uniqBy, uniqWith } from "lodash-es";
 import preloadUtils, { waitForLoadedMetadata2 } from "@/preload";
 import { easeIn } from "@/util";
+import { mergeRefs } from "@mantine/hooks";
 
 interface Props {
     containerRef?: React.Ref<PIXI.Container<DisplayObject>>;
@@ -44,33 +46,43 @@ const Filters = withFilters(Container, {
 
 const videoCache = new Map<string, HTMLVideoElement>();
 
+const MAX_PRELOAD = 3;
+
 const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
     const { containerRef, spriteRef, mainTrack, stageRect } = props;
+    const getCacheId = (url: string, clipId: string) => {
+        return url + "-" + clipId;
+    };
     const compId = useId();
 
     // const allUrls = mainTrack.clips.map((c) => c.videoClip.sourceUrl);
     const clipIds = mainTrack.clips.map((c) => c.id);
 
     useDeepCompareEffect(() => {
-        const partialClip = uniqWith(mainTrack.clips, (a, b) => {
-            return a.videoClip.sourceUrl === b.videoClip.sourceUrl;
-        });
+        // const partialClip = uniqWith(mainTrack.clips, (a, b) => {
+        //     return a.videoClip.sourceUrl === b.videoClip.sourceUrl;
+        // });
+
+        const preloadClips = mainTrack.clips.slice(0, MAX_PRELOAD);
 
         console.log("%cpreload partialClip", "color: green; font-size: 28px;");
-        console.log(partialClip);
+        console.log(preloadClips);
+        console.log("total clips", mainTrack.clips.length);
 
-        for (const clip of partialClip) {
+        for (const clip of preloadClips) {
             const { videoClip } = clip;
             const load = async () => {
-                if (videoCache.has(videoClip.sourceUrl)) {
-                    const video = videoCache.get(videoClip.sourceUrl)!;
+                if (videoCache.has(getCacheId(videoClip.sourceUrl, clip.id))) {
+                    const video = videoCache.get(
+                        getCacheId(videoClip.sourceUrl, clip.id)
+                    )!;
                     // prepare for future
                     video.currentTime = clip.start / 1_000_000;
                     return;
                 }
 
                 const video = preloadUtils.createVideo("none");
-                videoCache.set(videoClip.sourceUrl, video);
+                videoCache.set(getCacheId(videoClip.sourceUrl, clip.id), video);
                 await waitForLoadedMetadata2(video, videoClip.sourceUrl);
                 console.log("%cloadedmetadata", "color: green;");
                 video.currentTime = clip.start / 1_000_000;
@@ -105,42 +117,63 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
     const videoMetaRef = useRef<VideoMeta | null>(videoMeta);
 
     const createVideoSync = useCallback(
-        (metaData: VideoMeta, isDiffSet = false) => {
-            if (videoCache.has(metaData.videoClip.sourceUrl)) {
+        (metaData: VideoMeta, fromDiffSet = false) => {
+            const preloadNext = () => {
+                const clipIndex = mainTrack.clips.findIndex(
+                    (c) => c.id === metaData.id
+                );
+                let nextClipIndex = clipIndex + 1;
+                let cacheCount = 2;
+                let nextClip = mainTrack.clips[nextClipIndex];
+                // cache max next 2 video
+                while (nextClip && cacheCount > 0) {
+                    if (
+                        videoCache.has(
+                            getCacheId(
+                                nextClip.videoClip.sourceUrl,
+                                nextClip.id
+                            )
+                        )
+                    ) {
+                        nextClipIndex++;
+                        nextClip = mainTrack.clips[nextClipIndex];
+                        continue;
+                    }
+                    console.log(
+                        "%cpreload nextClip",
+                        "color: green; font-size: 28px;"
+                    );
+                    const video = preloadUtils.createVideo("metadata");
+                    videoCache.set(
+                        getCacheId(nextClip.videoClip.sourceUrl, nextClip.id),
+                        video
+                    );
+                    waitForLoadedMetadata2(
+                        video,
+                        nextClip.videoClip.sourceUrl
+                    ).then(() => {
+                        console.log("%cloadedmetadata", "color: green;");
+                        video.currentTime = nextClip.start / 1_000_000;
+                    });
+                    nextClipIndex++;
+                    cacheCount--;
+                    nextClip = mainTrack.clips[nextClipIndex];
+                }
+            };
+
+            if (
+                videoCache.has(
+                    getCacheId(metaData.videoClip.sourceUrl, metaData.id)
+                )
+            ) {
+                console.log("%ccache hit", "color: green; font-size: 28px;");
+                console.log(metaData.id);
                 const cachedVideo = videoCache.get(
-                    metaData.videoClip.sourceUrl
+                    getCacheId(metaData.videoClip.sourceUrl, metaData.id)
                 )!;
                 cachedVideo.currentTime = metaData.start / 1_000_000;
-                if (isDiffSet) {
-                    const clipIndex = mainTrack.clips.findIndex(
-                        (c) => c.id === metaData.id
-                    );
-                    let nextClipIndex = clipIndex + 1;
-                    let cacheCount = 2;
-                    let nextClip = mainTrack.clips[nextClipIndex];
-                    // cache max next 2 video
-                    while (nextClip && cacheCount > 0) {
-                        if (
-                            nextClip.videoClip.sourceUrl ===
-                            metaData.videoClip.sourceUrl
-                        ) {
-                            nextClipIndex++;
-                            nextClip = mainTrack.clips[nextClipIndex];
-                            continue;
-                        }
-                        const cachedVideo = videoCache.get(
-                            nextClip.videoClip.sourceUrl
-                        )!;
-
-                        if (cachedVideo) {
-                            console.log("preprocess next video: ", nextClip.id);
-                            cachedVideo.currentTime =
-                                nextClip.start / 1_000_000;
-                        }
-                        nextClipIndex++;
-                        cacheCount--;
-                        nextClip = mainTrack.clips[nextClipIndex];
-                    }
+                if (fromDiffSet) {
+                    preloadNext();
                 }
 
                 return {
@@ -158,6 +191,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
                 //     width: video.videoWidth,
                 //     height: video.videoHeight,
                 // });
+                preloadNext();
 
                 console.log("%cloadedmetadata", "color: green;");
 
@@ -171,6 +205,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
                 video.removeEventListener("loadedmetadata", handler);
             });
+
             return {
                 video: video,
             };
@@ -233,6 +268,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
                 flushSync(() => {
                     setVideo(video);
+                    video.play();
                 });
                 syncRectMeta(videoMeta);
 
@@ -369,9 +405,23 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
         ? `${clipId}-${compId}-sprite`
         : `${compId}-sprite}`;
 
+    const innerContainerRef = useRef<PIXI.Container>(null);
+    const innerSpriteRef = useRef<PIXI.Sprite>(null);
+
+    const cContainerRef = mergeRefs(containerRef, innerContainerRef);
+    const cSpriteRef = mergeRefs(spriteRef, innerSpriteRef);
+
+    // useMount(() => {
+    //     if (!innerSpriteRef.current) return;
+    //     innerSpriteRef.current.texture.update();
+    //     setTimeout(() => {
+    //         innerSpriteRef.current.texture.update();
+    //     }, 100);
+    // });
+
     return (
         <Filters
-            ref={containerRef}
+            ref={cContainerRef}
             // anchor={0.5}
             // HACK: I maybe only have a title bit idea why this works 🥹
             key={containerKey}
@@ -390,7 +440,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
         >
             <Sprite
                 key={spriteKey}
-                ref={spriteRef}
+                ref={cSpriteRef}
                 video={video}
                 height={rectMeta.height || video.videoHeight}
                 width={rectMeta.width || video.videoWidth}

@@ -11,9 +11,13 @@ import { VMMLTemplateV4 } from "./interface/vmml";
 
 function App() {
     return (
-        <>
-            <TezignPlayer vmml={vmml2.template as VMMLTemplateV4} />;
-        </>
+        <TezignPlayer
+            containerRect={{
+                height: 450,
+                width: 800,
+            }}
+            vmml={vmml.template as VMMLTemplateV4}
+        />
     );
     return <QSPlayer />;
 }

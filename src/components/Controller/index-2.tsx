@@ -99,7 +99,14 @@ const TimeControl = () => {
 
     useEffect(() => {
         let handler = () => {};
+
         if (timeline) {
+            durationDisplayRef.current!.setAttribute(
+                "data-time",
+                `${format(
+                    timeline.timeMetadata.elapsedTime / 1_000
+                )} / ${format(timeline.timeMetadata.totalDuration / 1_000)}`
+            );
             timeline.on(
                 "common-update",
                 // @ts-ignore
@@ -186,6 +193,8 @@ const TimeControl = () => {
         }
     };
 
+    console.log(status);
+
     const showIcon = ["resume", "start"].includes(status);
 
     return (
@@ -206,7 +215,7 @@ const TimeControl = () => {
                     onClick={(e) => {
                         e.stopPropagation();
                     }}
-                    className="absolute bottom-0 inset-x-0 bg-slate-800/70 backdrop-filter px-4 py-2 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
+                    className="absolute bottom-0 inset-x-0 bg-black/30 backdrop-filter px-2 py-1 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
                 >
                     <div className="flex w-full flex-row items-center">
                         <span
@@ -217,7 +226,7 @@ const TimeControl = () => {
                         </span>
                         <div
                             ref={sliderContainerRef}
-                            className="flex-auto group/slider ml-8 rounded-sm bg-gray-700 cursor-pointer relative h-[4px] group hover:h-[6px] hover:bg-gray-400 origin-center transition-all duration-300 ease-in-out"
+                            className="flex-auto group/slider mx-8 rounded-sm bg-gray-700 cursor-pointer relative h-[4px] group hover:h-[6px] hover:bg-gray-400 origin-center transition-all duration-300 ease-in-out"
                         >
                             <div
                                 style={{
@@ -254,7 +263,7 @@ const TimeControl = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="flex gap-1 items-center">
+                        <div className="flex gap-2 items-center">
                             <div
                                 ref={durationDisplayRef}
                                 data-time-fallback="00:00 / 00:00"
@@ -343,9 +352,10 @@ const TimeControl = () => {
                                 </span>
                             </Dropdown>
 
-                            <Dropdown
+                            {/* <Dropdown
                                 menu={{
                                     items: [
+                                        // must be divided by 60
                                         {
                                             label: "60",
                                             key: "60",
@@ -355,8 +365,8 @@ const TimeControl = () => {
                                             key: "30",
                                         },
                                         {
-                                            label: "24",
-                                            key: "24",
+                                            label: "20",
+                                            key: "20",
                                         },
                                     ],
                                     onClick: (item) => {
@@ -369,7 +379,7 @@ const TimeControl = () => {
                                 <span className="text-2xl text-slate-200 cursor-pointer ant-icon">
                                     <MdiSpeedometerSlow />
                                 </span>
-                            </Dropdown>
+                            </Dropdown> */}
                             <span
                                 onClick={() => {
                                     if (window.document.fullscreenElement) {

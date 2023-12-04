@@ -2,13 +2,7 @@ import { $on, $ons } from "@/event-utils";
 import { VideoTrack, VMMLTemplateV4 } from "@/interface/vmml";
 import { useTimelineStore } from "@/store";
 import { Container, Sprite, withFilters } from "@pixi/react";
-import {
-    useCreation,
-    useDeepCompareEffect,
-    useMemoizedFn,
-    useMount,
-    useUpdateEffect,
-} from "ahooks";
+import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
 import { DisplayObject } from "pixi.js";
 import * as PIXI from "pixi.js";
 import React, {
@@ -24,9 +18,12 @@ import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
 import { EVENT_UPDATE } from "@/Timeline";
 import { useTezignPlayerStore } from "@/store/teizng-player";
-import { clamp, difference, uniqBy, uniqWith } from "lodash-es";
-import preloadUtils, { waitForLoadedMetadata2 } from "@/preload";
-import { easeIn } from "@/util";
+import { clamp, difference, isNumber, uniqBy, uniqWith } from "lodash-es";
+import preloadUtils, {
+    waitForCanPlay2,
+    waitForLoadedMetadata2,
+} from "@/preload";
+
 import { mergeRefs } from "@mantine/hooks";
 
 interface Props {
@@ -48,15 +45,39 @@ const videoCache = new Map<string, HTMLVideoElement>();
 
 const MAX_PRELOAD = 3;
 
+const { startPreloading, finishPreloading } = useTezignPlayerStore.getState();
+
 const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
     const { containerRef, spriteRef, mainTrack, stageRect } = props;
     const getCacheId = (url: string, clipId: string) => {
         return url + "-" + clipId;
     };
     const compId = useId();
-
-    // const allUrls = mainTrack.clips.map((c) => c.videoClip.sourceUrl);
     const clipIds = mainTrack.clips.map((c) => c.id);
+    const timeline = useTimelineStore.use.timeline?.();
+    const requestLoadId = useRef(0);
+
+    const [rectMeta, setRectMeta] = useState({
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0,
+        scale: {
+            x: 1,
+            y: 1,
+        },
+    });
+
+    // const videoMeta = useCreation(() => {
+    //     const videoFound = seekVideo(0, mainTrack);
+
+    //     if (!videoFound) {
+    //         throw new Error("video not found");
+    //     }
+    //     return videoFound;
+    // }, []);
+    const [videoMeta, setVideoMeta] = useState<VideoMeta>();
+    const videoMetaRef = useRef<VideoMeta | null>();
 
     useDeepCompareEffect(() => {
         // const partialClip = uniqWith(mainTrack.clips, (a, b) => {
@@ -91,31 +112,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
         }
     }, [...clipIds]);
 
-    const timeline = useTimelineStore.use.timeline?.();
-    const requestLoadId = useRef(0);
-
-    const [rectMeta, setRectMeta] = useState({
-        x: 0,
-        y: 0,
-        height: 0,
-        width: 0,
-        scale: {
-            x: 1,
-            y: 1,
-        },
-    });
-
-    const videoMeta = useCreation(() => {
-        const videoFound = seekVideo(0, mainTrack);
-
-        if (!videoFound) {
-            throw new Error("video not found");
-        }
-        return videoFound;
-    }, []);
-
-    const videoMetaRef = useRef<VideoMeta | null>(videoMeta);
-
     const createVideoSync = useCallback(
         (metaData: VideoMeta, fromDiffSet = false) => {
             const preloadNext = () => {
@@ -148,12 +144,14 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
                         getCacheId(nextClip.videoClip.sourceUrl, nextClip.id),
                         video
                     );
+                    const _nextClip = nextClip;
                     waitForLoadedMetadata2(
                         video,
-                        nextClip.videoClip.sourceUrl
+                        _nextClip.videoClip.sourceUrl
                     ).then(() => {
                         console.log("%cloadedmetadata", "color: green;");
-                        video.currentTime = nextClip.start / 1_000_000;
+                        console.log(_nextClip);
+                        video.currentTime = _nextClip.start / 1_000_000;
                     });
                     nextClipIndex++;
                     cacheCount--;
@@ -257,6 +255,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
             // prevVideo.load();
         };
 
+        // TODO: loading stauts
         const load = async () => {
             if (currentLoadId === requestLoadId.current) {
                 const { video, fromCache } = createVideoSync(videoMeta, true);
@@ -266,11 +265,20 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
                     video.load();
                 }
 
+                // !canPlay
+                if (video.readyState < 4) {
+                    startPreloading();
+                    await waitForCanPlay2(video);
+                    finishPreloading();
+                }
+
+                // TODO: check can play
+                syncRectMeta(videoMeta);
                 flushSync(() => {
+                    setVideoMeta(videoMeta);
                     setVideo(video);
                     video.play();
                 });
-                syncRectMeta(videoMeta);
 
                 setTimeout(() => {
                     cleanUp();
@@ -283,32 +291,29 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
     const [transform, setTransform] = useState(1);
 
-    const { video: __video, fromCache } = useCreation(() => {
-        return createVideoSync(videoMeta);
-    }, []);
+    // const { video: __video, fromCache } = useCreation(() => {
+    //     return createVideoSync(videoMeta);
+    // }, []);
 
-    const [video, setVideo] = useState<HTMLVideoElement>(__video);
+    const [video, setVideo] = useState<HTMLVideoElement>();
 
-    useEffect(() => {
-        return $on(
-            "start",
-            () => {
-                if (useTimelineStore.getState().showPoster) {
-                    useTimelineStore.getState().togglePoster();
-                }
-                if (video && videoMeta) {
-                    syncRectMeta(videoMeta);
-                    if (!fromCache) {
-                        // video.muted = true;
-                        video.src = videoMeta.videoClip.sourceUrl;
-                        video.load();
-                        video.currentTime = videoMeta.start / 1_000_000;
-                    }
-                }
-            },
-            timeline
-        );
-    }, [video, timeline]);
+    // useEffect(() => {
+    //     return $on(
+    //         "start",
+    //         () => {
+    //             if (video && videoMeta) {
+    //                 syncRectMeta(videoMeta);
+    //                 if (!fromCache) {
+    //                     // video.muted = true;
+    //                     video.src = videoMeta.videoClip.sourceUrl;
+    //                     video.load();
+    //                     video.currentTime = videoMeta.start / 1_000_000;
+    //                 }
+    //             }
+    //         },
+    //         timeline
+    //     );
+    // }, [video, timeline]);
 
     useEffect(() => {
         return $ons(
@@ -346,6 +351,9 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
         return $on(
             "update",
             (event: EVENT_UPDATE) => {
+                if (useTimelineStore.getState().showPoster) {
+                    useTimelineStore.getState().togglePoster();
+                }
                 const videoMeta = seekVideo(event.elapsedTime, mainTrack);
 
                 if (videoMeta) {
@@ -390,7 +398,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
     const filterParams = useMemo(() => {
         let blur = 0;
-        if (videoMeta.videoClip.filterParam) {
+        if (videoMeta?.videoClip.filterParam) {
             blur = 20;
         }
         return {
@@ -398,7 +406,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
             quality: 10,
             resolution: devicePixelRatio || 1,
         };
-    }, [videoMeta.videoClip.filterParam]);
+    }, [videoMeta?.videoClip.filterParam]);
 
     const containerKey = clipId ? `${clipId}-${compId}` : compId;
     const spriteKey = clipId
@@ -420,32 +428,42 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
     // });
 
     return (
-        <Filters
-            ref={cContainerRef}
-            // anchor={0.5}
-            // HACK: I maybe only have a title bit idea why this works 🥹
-            key={containerKey}
-            x={rectMeta.x + (rectMeta.width * rectMeta.scale.x) / 2}
-            y={rectMeta.y + (rectMeta.height * rectMeta.scale.y) / 2}
-            scale={{
-                x: rectMeta.scale.x,
-                y: rectMeta.scale.y,
-            }}
-            blur={filterParams}
-            // alpha={transform}
-            pivot={{
-                x: rectMeta.width / 2,
-                y: rectMeta.height / 2,
-            }}
-        >
-            <Sprite
-                key={spriteKey}
-                ref={cSpriteRef}
-                video={video}
-                height={rectMeta.height || video.videoHeight}
-                width={rectMeta.width || video.videoWidth}
-            />
-        </Filters>
+        video && (
+            <Filters
+                ref={cContainerRef}
+                // anchor={0.5}
+                // HACK: I maybe only have a title bit idea why this works 🥹
+                key={containerKey}
+                x={rectMeta.x + (rectMeta.width * rectMeta.scale.x) / 2}
+                y={rectMeta.y + (rectMeta.height * rectMeta.scale.y) / 2}
+                scale={{
+                    x: rectMeta.scale.x,
+                    y: rectMeta.scale.y,
+                }}
+                blur={filterParams}
+                // alpha={transform}
+                pivot={{
+                    x: rectMeta.width / 2,
+                    y: rectMeta.height / 2,
+                }}
+            >
+                <Sprite
+                    key={spriteKey}
+                    ref={cSpriteRef}
+                    video={video}
+                    height={
+                        isNumber(rectMeta.height)
+                            ? rectMeta.height
+                            : video?.videoHeight || 0
+                    }
+                    width={
+                        isNumber(rectMeta.width)
+                            ? rectMeta.width
+                            : video?.videoWidth || 0
+                    }
+                />
+            </Filters>
+        )
     );
 });
 export default MainVideoTrack;

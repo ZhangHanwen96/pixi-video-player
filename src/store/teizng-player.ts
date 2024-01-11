@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { createSelectors } from "./createSelectors";
 import { VMMLTemplateV4 } from "@/interface/vmml";
+import { useTimelineStore } from ".";
 
 interface State {
     vmml?: VMMLTemplateV4;
@@ -17,6 +18,9 @@ interface Actions {
         height: number;
     };
     setRect: (width: number, height: number) => void;
+    loading: boolean;
+    finishPreloading: () => void;
+    startPreloading: () => void;
 }
 
 export const tezignPlayerStore = create(
@@ -26,6 +30,7 @@ export const tezignPlayerStore = create(
             setVmml(vmml) {
                 set(() => ({ vmml }));
             },
+            loading: false,
             containerRect: {
                 width: 800,
                 height: 450,
@@ -74,6 +79,18 @@ export const tezignPlayerStore = create(
                     // @ts-ignore
                     document.msExitFullscreen();
                 }
+            },
+            startPreloading: () => {
+                // set(() => ({
+                //     loading: true,
+                // }));
+                // useTimelineStore.getState().timeline?.stop();
+            },
+            finishPreloading: () => {
+                // set(() => ({
+                //     loading: false,
+                // }));
+                // useTimelineStore.getState().timeline?.resume();
             },
         };
     })

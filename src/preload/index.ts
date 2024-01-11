@@ -142,6 +142,16 @@ const waitForCanPlay = (url: string, currentTime: number = 0) => {
     return promise;
 };
 
+export const waitForCanPlay2 = (video: HTMLVideoElement) => {
+    const { promise, reject, resolve } = withPromise<HTMLVideoElement>();
+    video.addEventListener("canplay", function handler() {
+        resolve(video);
+        video.removeEventListener("canplay", handler);
+    });
+
+    return promise;
+};
+
 const preloadUtils = {
     preloadWithLink,
     removePreloadLink,

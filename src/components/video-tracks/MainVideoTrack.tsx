@@ -80,10 +80,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
     const videoMetaRef = useRef<VideoMeta | null>();
 
     useDeepCompareEffect(() => {
-        // const partialClip = uniqWith(mainTrack.clips, (a, b) => {
-        //     return a.videoClip.sourceUrl === b.videoClip.sourceUrl;
-        // });
-
         const preloadClips = mainTrack.clips.slice(0, MAX_PRELOAD);
 
         console.log("%cpreload partialClip", "color: green; font-size: 28px;");
@@ -104,8 +100,11 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
                 const video = preloadUtils.createVideo("none");
                 videoCache.set(getCacheId(videoClip.sourceUrl, clip.id), video);
+                // !wait before setting currentTime
                 await waitForLoadedMetadata2(video, videoClip.sourceUrl);
+
                 console.log("%cloadedmetadata", "color: green;");
+
                 video.currentTime = clip.start / 1_000_000;
             };
             load();
@@ -121,7 +120,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
                 let nextClipIndex = clipIndex + 1;
                 let cacheCount = 2;
                 let nextClip = mainTrack.clips[nextClipIndex];
-                // cache max next 2 video
+                // cache next 2 video
                 while (nextClip && cacheCount > 0) {
                     if (
                         videoCache.has(
@@ -145,6 +144,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
                         video
                     );
                     const _nextClip = nextClip;
+                    // do not await
                     waitForLoadedMetadata2(
                         video,
                         _nextClip.videoClip.sourceUrl

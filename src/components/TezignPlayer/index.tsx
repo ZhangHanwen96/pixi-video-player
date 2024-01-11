@@ -1,7 +1,7 @@
 import { AudioTrack, VMMLTemplateV4, VideoTrack } from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/MainVideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useMemo, useRef, useState } from "react";
 import { useTimelineStore } from "@/store";
 // import CaptionTrack from "@/CaptionTrack";
 import SoundTrack from "../audio-track";
@@ -12,6 +12,7 @@ import { useEventListener, useMount } from "ahooks";
 import CaptionTrack from "../caption-track";
 import VideoPoster from "@/VideoPoster";
 import { extractFrame } from "@/utils/extractVideoFrame";
+import { Spin } from "antd";
 
 const SetUp: FC<{
     duration: number;
@@ -31,7 +32,7 @@ interface TezignPlayerProps {
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
     vmml,
-    containerRect,
+    containerRect: containerRectFromProps,
 }) => {
     const {
         containerRect: { height, width },
@@ -39,18 +40,20 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
     } = useTezignPlayerStore();
 
     useEffect(() => {
-        setRect(containerRect.width, containerRect.height);
+        if (document.fullscreenElement) return;
+        setRect(containerRectFromProps.width, containerRectFromProps.height);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [containerRect.height, containerRect.width]);
+    }, [containerRectFromProps.height, containerRectFromProps.width]);
 
     const transformedRect = useMemo(() => {
-        return calculatRectByObjectFit(
+        const rect = calculatRectByObjectFit(
             {
                 containerRect: { width, height },
                 sourceRect: vmml.dimension,
             },
             "contain"
         );
+        return rect;
     }, [vmml.dimension, height, width]);
 
     // TODO: main and sub got reversed
@@ -69,7 +72,12 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
         "fullscreenchange",
         (e) => {
             if (!document.fullscreenElement) {
-                useTezignPlayerStore.getState().setRect(800, 450);
+                useTezignPlayerStore
+                    .getState()
+                    .setRect(
+                        containerRectFromProps.width,
+                        containerRectFromProps.height
+                    );
             } else {
                 useTezignPlayerStore
                     .getState()
@@ -94,6 +102,8 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 
         load();
     });
+
+    const loading = useTezignPlayerStore.use.loading();
 
     return (
         <div
@@ -140,6 +150,16 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 
                 {poster && <VideoPoster url={poster} />}
                 <TimeControlV2 />
+                {loading && (
+                    <div
+                        style={{
+                            background: "rgb(223 223 223 / 24%)",
+                        }}
+                        className="absolute inset-0 flex items-center justify-center"
+                    >
+                        <Spin spinning={true} size="large"></Spin>
+                    </div>
+                )}
             </div>
         </div>
     );

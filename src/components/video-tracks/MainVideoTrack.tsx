@@ -412,29 +412,26 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	useEffect(() => {
 		return $ons(
 			[
-				// {
-				// 	event: "seek",
-				// 	handler(event: EVENT_SEEK) {
-				// 		console.log(event, "seek");
-				// 		const videoMeta = seekVideo(
-				// 			event.elapsedTime,
-				// 			mainTrack,
-				// 		);
-				// 		if (videoMeta) {
-				// 			const isDiff = diffSetVideoMeta(
-				// 				videoMeta,
-				// 				event.elapsedTime / 1_000,
-				// 			);
-				// 			console.log(isDiff, "isdiff");
-				// 			// same video, just change currentTime
-				// 			if (!isDiff) {
-				// 				changeVideoCurrentTime(
-				// 					event.elapsedTime / 1_000,
-				// 				);
-				// 			}
-				// 		}
-				// 	},
-				// },
+				{
+					event: "seek",
+					handler(event: EVENT_SEEK) {
+						const videoMeta = seekVideo(
+							event.elapsedTime,
+							mainTrack,
+						);
+						if (videoMeta) {
+							const isDiff =
+								videoMeta.id !== videoMetaRef.current?.id;
+							if (!isDiff) {
+								const start =
+									event.elapsedTime * 1_000 -
+									videoMeta.inPoint +
+									videoMeta.start;
+								changeVideoCurrentTime(start / 1_000_000);
+							}
+						}
+					},
+				},
 				{
 					event: "update",
 					handler: (event: EVENT_UPDATE) => {
@@ -447,19 +444,17 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 						);
 
 						if (videoMeta) {
+							const realStart =
+								event.elapsedTime * 1_000 -
+								videoMeta.inPoint +
+								videoMeta.start;
 							const isDiffApplied = diffSetVideoMeta(
 								videoMeta,
-								event.elapsedTime / 1_000,
+								realStart / 1_000_000,
 							);
-
-							// FIXME:
-							// if (!isDiffApplied) {
-							// 	changeVideoCurrentTime(
-							// 		event.elapsedTime / 1_000,
-							// 	);
-							// }
-
-							if (videoMeta.videoClip?.transitionParam) {
+							if (isDiffApplied) {
+								setTransform(defaultTransform);
+							} else if (videoMeta.videoClip?.transitionParam) {
 								const tp = videoMeta.videoClip.transitionParam;
 
 								const newTransform = getDefaultTransform();
@@ -545,9 +540,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 									default:
 								}
 								setTransform(newTransform);
-							}
-							if (isDiffApplied) {
-								setTransform(defaultTransform);
 							}
 						}
 					},

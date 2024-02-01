@@ -36,7 +36,7 @@ function App() {
 						height: size?.height || 450,
 						width: size?.width || 800,
 					}}
-					vmml={vmml3.template as VMMLTemplateV4}
+					vmml={vmml2.template as VMMLTemplateV4}
 				/>
 			</div>
 		</div>

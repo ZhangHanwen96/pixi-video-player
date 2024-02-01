@@ -105,6 +105,10 @@ export class TimeLineContoller extends EventEmitter {
 			0,
 			this.#totalDuration,
 		);
+		// TODO: useful??? maybe remove laster
+		this.emit("seek", {
+			elapsedTime: this.#elapsedTime,
+		});
 
 		lastStartTime = Date.now();
 		// if (type === "control" && !this.isPlaying) {
@@ -135,11 +139,6 @@ export class TimeLineContoller extends EventEmitter {
 		} else if (this.completed) {
 			this.animate();
 		}
-
-		// TODO: useful??? maybe remove laster
-		this.emit("seek", {
-			elapsedTime: this.#elapsedTime,
-		});
 	}
 
 	stop() {

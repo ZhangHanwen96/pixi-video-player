@@ -3,8 +3,12 @@ import { Sound, sound } from "@pixi/sound";
 import { $on, $ons } from "@/event-utils";
 import { useTimelineStore } from "@/store";
 import { AudioTrack } from "@/interface/vmml";
-import { FC, memo, useEffect, useState } from "react";
+import { FC, memo, useEffect, useRef, useState } from "react";
 import { EVENT_SEEK } from "@/Timeline";
+import { seekAudio } from "./utils";
+import { applyAudioTransition } from "@/animation/audio";
+import { AudioTransitionCode } from "@/interface/animation";
+import { useMemoizedFn } from "ahooks";
 
 const AUDIO_ALIAS = "AUDIO_TRACK";
 
@@ -12,108 +16,324 @@ interface SoundTrackProps {
 	audioTrack: AudioTrack;
 }
 
+const isValidAudioClip = (clip?: AudioTrack["clips"][number]) =>
+	!!clip?.audioClip.sourceUrl;
+
+const mergeUtil = {
+	speed(speed: number) {
+		return speed * useTimelineStore.getState().timeline?.speed || 1;
+	},
+	volume(volume: number) {
+		return volume * useTimelineStore.getState().timeline?.audioVolume || 1;
+	},
+};
+
+const findOrCreateSound = (alias: string, url: string) => {
+	let instance: Sound;
+	if (!sound.exists(alias)) {
+		instance = sound.add(alias, {
+			url,
+			preload: true,
+			autoPlay: false,
+			singleInstance: true,
+		});
+	} else {
+		instance = sound.find(alias);
+	}
+	return instance;
+};
+
 const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	const [soundInstance, setInstance] = useState<Sound | null>(null);
 	const timeline = useTimelineStore.use.timeline?.();
-	const url = audioTrack?.clips[0]?.audioClip?.sourceUrl;
+	const currentIdRef = useRef<AudioTrack["clips"][number]>();
+	const deps = audioTrack ? audioTrack.clips.map((c) => c.id) : [];
+	const [tVolume, setTVolume] = useState(1);
+
+	// when audio track changes
+	useEffect(() => {
+		if (!audioTrack.clips.length) return;
+
+		// const urls = [
+		// 	...new Set(audioTrack.clips.map((c) => c.audioClip.sourceUrl)),
+		// ];
+		const first2 = audioTrack.clips.slice(0, 2);
+
+		// preload first 2 audio
+		for (const clip of first2) {
+			const alias = `${AUDIO_ALIAS}_${clip.id}`;
+			findOrCreateSound(alias, clip.audioClip.sourceUrl);
+		}
+	}, [...deps]);
 
 	useEffect(() => {
-		if (!url) return;
-		const currentAlias = AUDIO_ALIAS + url;
-		const audio = sound.add(currentAlias, url);
-		audio.autoPlay = false;
-		audio.preload = true;
-		audio.loop = true;
-
-		setInstance(audio);
-
-		return () => {
-			audio.destroy();
-			sound.remove(currentAlias);
-		};
-	}, [url]);
-
-	useEffect(() => {
-		if (!soundInstance) return;
 		return $on(
 			"seek",
 			(event: EVENT_SEEK) => {
-				const durationInMS = soundInstance.duration * 1_000;
-				const offsetMS = event.elapsedTime % durationInMS;
-				console.log(
-					"currentTime",
-					parseFloat((offsetMS / 1_000).toFixed(2)),
+				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
+
+				if (!isValidAudioClip(audioMeta)) {
+					soundInstance?.pause();
+					setInstance(null);
+					currentIdRef.current = undefined;
+					return;
+				}
+
+				if (audioMeta.id !== currentIdRef.current?.id) {
+					return;
+				}
+
+				const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+				const instance = findOrCreateSound(
+					alias,
+					audioMeta.audioClip.sourceUrl,
 				);
 
-				if (soundInstance.isPlaying) {
-					soundInstance.pause();
+				const realStart =
+					event.elapsedTime * 1_000 -
+					audioMeta.inPoint +
+					audioMeta.start;
+
+				if (instance.isPlaying) {
+					instance.pause();
 				}
-				soundInstance.play({
-					start: parseFloat((offsetMS / 1_000).toFixed(2)),
+				instance.play({
+					start: parseFloat((realStart / 1_000_000).toFixed(2)),
 					loop: true,
+					speed: mergeUtil.speed(
+						audioMeta.audioClip.constantSpeed || 1,
+					),
+					volume: mergeUtil.volume(audioMeta.audioClip.volume || 1),
+					singleInstance: true,
 				});
 			},
 			timeline,
 		);
-	}, [soundInstance, timeline]);
+	}, [soundInstance, timeline, audioTrack]);
+
+	const setVolume = useMemoizedFn((v: number) => {
+		if (!soundInstance) return;
+		soundInstance.volume = v;
+	});
 
 	useEffect(() => {
-		if (!soundInstance) return;
-		soundInstance.speed = timeline?.speed || 1;
-
 		return $on(
-			"speed",
-			(speed: number) => {
-				soundInstance.speed = speed;
+			"update",
+			(event: EVENT_SEEK) => {
+				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
+				if (!isValidAudioClip(audioMeta)) {
+					soundInstance?.pause();
+					setInstance(null);
+					currentIdRef.current = undefined;
+					return;
+				}
+				if (audioMeta.id === currentIdRef.current?.id) {
+					// transition
+					let transitionCode: AudioTransitionCode | undefined;
+					let transitionDuration = 0;
+					if (audioMeta.audioClip.volumeFadeIn) {
+						const duration = audioMeta.audioClip.volumeFadeIn;
+
+						const isInPhase =
+							event.elapsedTime * 1000 <
+							audioMeta.inPoint + duration;
+
+						if (isInPhase) {
+							transitionDuration = duration / 1000;
+							transitionCode = "fade_in";
+						}
+					}
+					if (audioMeta.audioClip.volumeFadeOut) {
+						const duration = audioMeta.audioClip.volumeFadeOut;
+
+						const outPoint = audioMeta.inPoint + audioMeta.duration;
+						const isOutPhase =
+							event.elapsedTime * 1000 > outPoint - duration;
+
+						if (isOutPhase) {
+							transitionDuration = duration / 1000;
+							transitionCode = "fade_out";
+						}
+					}
+					if (!transitionCode || !transitionDuration) return;
+					const nextVolume = applyAudioTransition({
+						elapsedTime: event.elapsedTime,
+						clip: audioMeta,
+						transitionCode,
+						duration: transitionDuration,
+					});
+
+					setVolume(nextVolume);
+					return;
+				}
+				currentIdRef.current = audioMeta;
+
+				const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+				const instance = findOrCreateSound(
+					alias,
+					audioMeta.audioClip.sourceUrl,
+				);
+
+				soundInstance?.pause();
+				setInstance(instance);
+
+				const realStart =
+					event.elapsedTime * 1_000 -
+					audioMeta.inPoint +
+					audioMeta.start;
+				if (instance.isPlaying) {
+					instance.pause();
+				}
+				instance.play({
+					start: parseFloat((realStart / 1_000_000).toFixed(2)),
+					loop: true,
+					speed: mergeUtil.speed(
+						audioMeta.audioClip.constantSpeed || 1,
+					),
+					volume: mergeUtil.volume(audioMeta.audioClip.volume || 1),
+					singleInstance: true,
+				});
+
+				// load next
+				const nextTwoAudioMeta = audioTrack.clips.findIndex(
+					(c) => c.id === audioMeta.id,
+				);
+				const nextTwoAudio = audioTrack.clips.slice(
+					nextTwoAudioMeta + 1,
+					nextTwoAudioMeta + 3,
+				);
+				// .map((c) => c.audioClip.sourceUrl)
+				// .filter(Boolean);
+
+				for (const clip of nextTwoAudio) {
+					const alias = `${AUDIO_ALIAS}_${clip.id}`;
+					findOrCreateSound(alias, clip.audioClip.sourceUrl);
+				}
 			},
 			timeline,
 		);
-	}, [timeline, soundInstance]);
+	}, [soundInstance, timeline, audioTrack]);
 
 	useEffect(() => {
-		if (!soundInstance) return;
+		return $on(
+			"speed",
+			() => {
+				if (!soundInstance) return;
+				soundInstance.speed = mergeUtil.speed(
+					currentIdRef.current?.audioClip.constantSpeed || 1,
+				);
+			},
+			timeline,
+		);
+	}, [timeline, soundInstance, audioTrack]);
+
+	useEffect(() => {
 		return $on(
 			"pause",
 			() => {
-				soundInstance.pause();
+				soundInstance?.stop();
 			},
 			timeline,
 		);
 	}, [soundInstance, timeline]);
 
 	useEffect(() => {
-		if (!soundInstance) return;
-
 		return $ons(
 			[
 				{
 					event: "start",
 					handler: () => {
-						soundInstance.play();
+						const audioMeta = seekAudio(0, audioTrack);
+						if (isValidAudioClip(audioMeta)) {
+							// switch audio
+							if (currentIdRef.current?.id !== audioMeta.id) {
+								currentIdRef.current = audioMeta;
+								const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+								const instance = findOrCreateSound(
+									alias,
+									audioMeta.audioClip.sourceUrl,
+								);
+
+								setInstance(instance);
+
+								if (instance.isPlaying) {
+									instance.pause();
+								}
+								instance.play({
+									singleInstance: true,
+									start: parseFloat(
+										(audioMeta.start / 1_000_000).toFixed(
+											2,
+										),
+									),
+									loop: true,
+									speed: mergeUtil.speed(
+										audioMeta?.audioClip.constantSpeed || 1,
+									),
+									volume: mergeUtil.volume(
+										audioMeta.audioClip.volume || 1,
+									),
+								});
+								// }
+								// else {
+								// 	// TODO:
+								// 	PIXI.Assets.load(alias).then((s: Sound) => {
+								// 		console.log(
+								// 			"start playing - 2",
+								// 			audioMeta,
+								// 		);
+								// 		instance.play({
+								// 			start: parseFloat(
+								// 				(
+								// 					audioMeta.start / 1_000_000
+								// 				).toFixed(2),
+								// 			),
+								// 			singleInstance: true,
+								// 			loop: true,
+								// 			speed: mergeUtil.speed(
+								// 				audioMeta?.audioClip
+								// 					.constantSpeed || 1,
+								// 			),
+								// 			volume: mergeUtil.volume(
+								// 				audioMeta.audioClip.volume || 1,
+								// 			),
+								// 		});
+								// 	});
+								// }
+							}
+						} else {
+							currentIdRef.current = undefined;
+							setInstance(null);
+						}
 					},
 				},
 				{
 					event: "resume",
 					handler: () => {
-						soundInstance.play();
+						soundInstance?.resume();
 					},
 				},
 				{
 					event: "complete",
 					handler: () => {
-						soundInstance.pause();
+						currentIdRef.current = undefined;
+						soundInstance?.pause();
+						setInstance(null);
 					},
 				},
 				{
 					event: "audio-volume",
-					handler: (volume: number) => {
-						soundInstance.volume = volume;
+					handler: () => {
+						if (!soundInstance) return;
+						soundInstance.volume = mergeUtil.volume(
+							currentIdRef.current?.audioClip.volume || 1,
+						);
 					},
 				},
 			],
 			timeline,
 		);
-	}, [soundInstance, timeline]);
+	}, [soundInstance, timeline, audioTrack]);
 
 	return null;
 };

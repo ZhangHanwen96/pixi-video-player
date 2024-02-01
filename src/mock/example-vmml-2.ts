@@ -1,6 +1,7 @@
 import v1 from "./v3-1.mp4";
 import v2 from "./v3-2.mp4";
 import audio from "./audio3.wav";
+import { AudioTrack } from "@/interface/vmml";
 const vmml = {
 	version: 0.4,
 	template: {
@@ -440,14 +441,28 @@ const vmml = {
 						id: "W9mu45My13I1R1to3Jvr2",
 						start: 0,
 						inPoint: 0,
-						end: 18552000,
-						duration: 18552000,
+						end: 10552000,
+						duration: 10552000,
+						originDuration: 186000000,
+						audioClip: {
+							sourceUrl: audio,
+							volumeFadeOut: 2_000_000,
+							volumeFadeIn: 1_000_000,
+						},
+					},
+					{
+						type: 300,
+						id: "W9mu45My13I1R1to3Jvr24444",
+						start: 5552000,
+						inPoint: 10552000,
+						end: 14104000,
+						duration: 8552000,
 						originDuration: 186000000,
 						audioClip: {
 							sourceUrl: audio,
 						},
 					},
-				],
+				] as AudioTrack["clips"],
 			},
 		],
 	},

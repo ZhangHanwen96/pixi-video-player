@@ -10,3 +10,5 @@ export type TransitionParam = {
 	transitionCode: TransitionCode;
 	duration: number;
 };
+
+export type AudioTransitionCode = "fade_in" | "fade_out";

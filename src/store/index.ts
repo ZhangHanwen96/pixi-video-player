@@ -9,58 +9,58 @@ import { TimeLineContoller } from "../Timeline";
 import { shallow } from "zustand/shallow";
 
 interface State {
-    timeline?: TimeLineContoller;
-    app?: PIXI.Application;
-    pausedByController: boolean;
-    showPoster: boolean;
+	timeline?: TimeLineContoller;
+	app?: PIXI.Application;
+	pausedByController: boolean;
+	showPoster: boolean;
 }
 
 interface Actions {
-    setApp: (app: PIXI.Application, duration: number) => void;
-    setTimeline: (timeline: TimeLineContoller) => void;
-    togglePoster: (show?: boolean) => void;
+	setApp: (app: PIXI.Application, duration: number) => void;
+	setTimeline: (timeline: TimeLineContoller) => void;
+	togglePoster: (show?: boolean) => void;
 }
 
 let $timeline: TimeLineContoller | undefined;
 
 export const timelineStore = create(
-    subscribeWithSelector<State & Actions>((set, get) => {
-        return {
-            timeline: undefined,
-            app: undefined,
-            pausedByController: false,
-            showPoster: true,
-            setApp(app, duration) {
-                const createTimeline = () => {
-                    if (!app) return undefined;
-                    app.stop();
-                    $timeline = new TimeLineContoller(
-                        {
-                            totalDuration: duration,
-                            onCaptionChange: (caption) => {
-                                // console.log(caption);
-                            },
-                        },
-                        app
-                    );
+	subscribeWithSelector<State & Actions>((set, get) => {
+		return {
+			timeline: undefined,
+			app: undefined,
+			pausedByController: false,
+			showPoster: true,
+			setApp(app, duration) {
+				const createTimeline = () => {
+					if (!app) return undefined;
+					app.stop();
+					$timeline = new TimeLineContoller(
+						{
+							totalDuration: duration,
+							onCaptionChange: (caption) => {
+								// console.log(caption);
+							},
+						},
+						app,
+					);
 
-                    return $timeline;
-                };
-                const timeline = createTimeline();
-                set(() => ({ app, timeline }));
-            },
-            setTimeline(timeline) {
-                set(() => ({ timeline }));
-            },
-            togglePoster(show) {
-                if (typeof show === "boolean") {
-                    set(() => ({ showPoster: show }));
-                } else {
-                    set((state) => ({ showPoster: !state.showPoster }));
-                }
-            },
-        };
-    })
+					return $timeline;
+				};
+				const timeline = createTimeline();
+				set(() => ({ app, timeline }));
+			},
+			setTimeline(timeline) {
+				set(() => ({ timeline }));
+			},
+			togglePoster(show) {
+				if (typeof show === "boolean") {
+					set(() => ({ showPoster: show }));
+				} else {
+					set((state) => ({ showPoster: !state.showPoster }));
+				}
+			},
+		};
+	}),
 );
 
 export const useTimelineStore = createSelectors(timelineStore);

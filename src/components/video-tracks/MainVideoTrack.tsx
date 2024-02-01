@@ -6,39 +6,71 @@ import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
 import { DisplayObject } from "pixi.js";
 import * as PIXI from "pixi.js";
 import React, {
-    forwardRef,
-    useCallback,
-    useEffect,
-    useId,
-    useMemo,
-    useRef,
-    useState,
+	forwardRef,
+	useCallback,
+	useEffect,
+	useId,
+	useMemo,
+	useRef,
+	useState,
 } from "react";
 import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
-import { EVENT_UPDATE } from "@/Timeline";
+import { EVENT_UPDATE, EVENT_SEEK } from "@/Timeline";
 import { useTezignPlayerStore } from "@/store/teizng-player";
-import { clamp, difference, isNumber, uniqBy, uniqWith } from "lodash-es";
+import {
+	clamp,
+	cloneDeep,
+	difference,
+	isInteger,
+	isNumber,
+	uniqBy,
+	uniqWith,
+} from "lodash-es";
 import preloadUtils, {
-    waitForCanPlay2,
-    waitForLoadedMetadata2,
+	waitForCanPlay2,
+	waitForLoadedMetadata2,
 } from "@/preload";
 
 import { mergeRefs } from "@mantine/hooks";
+import { easeIn } from "@/util";
+import { easings, interpolate } from "@/easing";
+import { applyTransition } from "@/animation";
 
 interface Props {
-    containerRef?: React.Ref<PIXI.Container<DisplayObject>>;
-    spriteRef?: React.Ref<PIXI.Sprite>;
-    mainTrack: VideoTrack;
-    vmml: VMMLTemplateV4;
-    stageRect: any;
+	containerRef?: React.Ref<PIXI.Container<DisplayObject>>;
+	spriteRef?: React.Ref<PIXI.Sprite>;
+	mainTrack: VideoTrack;
+	vmml: VMMLTemplateV4;
+	stageRect: any;
 }
+
+const getDefaultTransform = () => {
+	return {
+		scale: {
+			x: 1,
+			y: 1,
+			z: 1,
+		},
+		alpha: 1,
+		translate: {
+			x: 0,
+			y: 0,
+			z: 0,
+		},
+		degree: 0,
+	};
+};
+
+const defaultTransform = getDefaultTransform();
+
+type Trasnform = typeof defaultTransform;
 
 type VideoMeta = VideoTrack["clips"][number];
 
 const Filters = withFilters(Container, {
-    blur: PIXI.BlurFilter,
-    // adjust: AdjustmentFilter,
+	blur: PIXI.BlurFilter,
+	// adjust: AdjustmentFilter,
 });
 
 const videoCache = new Map<string, HTMLVideoElement>();
@@ -48,422 +80,578 @@ const MAX_PRELOAD = 3;
 const { startPreloading, finishPreloading } = useTezignPlayerStore.getState();
 
 const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
-    const { containerRef, spriteRef, mainTrack, stageRect } = props;
-    const getCacheId = (url: string, clipId: string) => {
-        return url + "-" + clipId;
-    };
-    const compId = useId();
-    const clipIds = mainTrack.clips.map((c) => c.id);
-    const timeline = useTimelineStore.use.timeline?.();
-    const requestLoadId = useRef(0);
+	const { containerRef, spriteRef, mainTrack, stageRect } = props;
+	const getCacheId = (url: string, clipId: string) => {
+		return `${url}-${clipId}`;
+	};
+	const compId = useId();
+	const clipIds = mainTrack.clips.map((c) => c.id);
+	const timeline = useTimelineStore.use.timeline?.();
+	const requestLoadId = useRef(0);
 
-    const [rectMeta, setRectMeta] = useState({
-        x: 0,
-        y: 0,
-        height: 0,
-        width: 0,
-        scale: {
-            x: 1,
-            y: 1,
-        },
-    });
+	const [rectMeta, setRectMeta] = useState({
+		x: 0,
+		y: 0,
+		height: 0,
+		width: 0,
+		scale: {
+			x: 1,
+			y: 1,
+		},
+	});
 
-    // const videoMeta = useCreation(() => {
-    //     const videoFound = seekVideo(0, mainTrack);
+	const rectMetaRef = useRef(rectMeta);
+	rectMetaRef.current = rectMeta;
 
-    //     if (!videoFound) {
-    //         throw new Error("video not found");
-    //     }
-    //     return videoFound;
-    // }, []);
-    const [videoMeta, setVideoMeta] = useState<VideoMeta>();
-    const videoMetaRef = useRef<VideoMeta | null>();
+	// const videoMeta = useCreation(() => {
+	//     const videoFound = seekVideo(0, mainTrack);
 
-    useDeepCompareEffect(() => {
-        const preloadClips = mainTrack.clips.slice(0, MAX_PRELOAD);
+	//     if (!videoFound) {
+	//         throw new Error("video not found");
+	//     }
+	//     return videoFound;
+	// }, []);
+	const [videoMeta, setVideoMeta] = useState<VideoMeta>();
+	const videoMetaRef = useRef<VideoMeta | null>();
 
-        console.log("%cpreload partialClip", "color: green; font-size: 28px;");
-        console.log(preloadClips);
-        console.log("total clips", mainTrack.clips.length);
+	useDeepCompareEffect(() => {
+		const preloadClips = mainTrack.clips.slice(0, MAX_PRELOAD);
 
-        for (const clip of preloadClips) {
-            const { videoClip } = clip;
-            const load = async () => {
-                if (videoCache.has(getCacheId(videoClip.sourceUrl, clip.id))) {
-                    const video = videoCache.get(
-                        getCacheId(videoClip.sourceUrl, clip.id)
-                    )!;
-                    // prepare for future
-                    video.currentTime = clip.start / 1_000_000;
-                    return;
-                }
+		console.log("%cpreload partialClip", "color: green; font-size: 28px;");
+		console.log(preloadClips);
+		console.log("total clips", mainTrack.clips.length);
 
-                const video = preloadUtils.createVideo("none");
-                videoCache.set(getCacheId(videoClip.sourceUrl, clip.id), video);
-                // !wait before setting currentTime
-                await waitForLoadedMetadata2(video, videoClip.sourceUrl);
+		for (const clip of preloadClips) {
+			const { videoClip } = clip;
+			const load = async () => {
+				if (videoCache.has(getCacheId(videoClip.sourceUrl, clip.id))) {
+					const video = videoCache.get(
+						getCacheId(videoClip.sourceUrl, clip.id),
+					)!;
+					// prepare for future
+					video.currentTime = clip.start / 1_000_000;
+					return;
+				}
 
-                console.log("%cloadedmetadata", "color: green;");
+				const video = preloadUtils.createVideo("none");
+				videoCache.set(getCacheId(videoClip.sourceUrl, clip.id), video);
+				// !wait before setting currentTime
+				await waitForLoadedMetadata2(video, videoClip.sourceUrl);
 
-                video.currentTime = clip.start / 1_000_000;
-            };
-            load();
-        }
-    }, [...clipIds]);
+				console.log("%cloadedmetadata", "color: green;");
 
-    const createVideoSync = useCallback(
-        (metaData: VideoMeta, fromDiffSet = false) => {
-            const preloadNext = () => {
-                const clipIndex = mainTrack.clips.findIndex(
-                    (c) => c.id === metaData.id
-                );
-                let nextClipIndex = clipIndex + 1;
-                let cacheCount = 2;
-                let nextClip = mainTrack.clips[nextClipIndex];
-                // cache next 2 video
-                while (nextClip && cacheCount > 0) {
-                    if (
-                        videoCache.has(
-                            getCacheId(
-                                nextClip.videoClip.sourceUrl,
-                                nextClip.id
-                            )
-                        )
-                    ) {
-                        nextClipIndex++;
-                        nextClip = mainTrack.clips[nextClipIndex];
-                        continue;
-                    }
-                    console.log(
-                        "%cpreload nextClip",
-                        "color: green; font-size: 28px;"
-                    );
-                    const video = preloadUtils.createVideo("metadata");
-                    videoCache.set(
-                        getCacheId(nextClip.videoClip.sourceUrl, nextClip.id),
-                        video
-                    );
-                    const _nextClip = nextClip;
-                    // do not await
-                    waitForLoadedMetadata2(
-                        video,
-                        _nextClip.videoClip.sourceUrl
-                    ).then(() => {
-                        console.log("%cloadedmetadata", "color: green;");
-                        console.log(_nextClip);
-                        video.currentTime = _nextClip.start / 1_000_000;
-                    });
-                    nextClipIndex++;
-                    cacheCount--;
-                    nextClip = mainTrack.clips[nextClipIndex];
-                }
-            };
+				video.currentTime = clip.start / 1_000_000;
+			};
+			load();
+		}
+	}, [...clipIds]);
 
-            if (
-                videoCache.has(
-                    getCacheId(metaData.videoClip.sourceUrl, metaData.id)
-                )
-            ) {
-                console.log("%ccache hit", "color: green; font-size: 28px;");
-                console.log(metaData.id);
-                const cachedVideo = videoCache.get(
-                    getCacheId(metaData.videoClip.sourceUrl, metaData.id)
-                )!;
-                cachedVideo.currentTime = metaData.start / 1_000_000;
-                if (fromDiffSet) {
-                    preloadNext();
-                }
+	const createVideoSync = useCallback(
+		(
+			metaData: VideoMeta,
+			{
+				fromDiffSet,
+				currentTime,
+			}: {
+				fromDiffSet?: boolean;
+				currentTime?: number;
+			} = {
+				fromDiffSet: false,
+			},
+		) => {
+			const preloadNext = () => {
+				const clipIndex = mainTrack.clips.findIndex(
+					(c) => c.id === metaData.id,
+				);
+				let nextClipIndex = clipIndex + 1;
+				let cacheCount = 2;
+				let nextClip = mainTrack.clips[nextClipIndex];
+				// cache next 2 video
+				while (nextClip && cacheCount > 0) {
+					if (
+						videoCache.has(
+							getCacheId(
+								nextClip.videoClip.sourceUrl,
+								nextClip.id,
+							),
+						)
+					) {
+						nextClipIndex++;
+						nextClip = mainTrack.clips[nextClipIndex];
+						continue;
+					}
+					console.log(
+						"%cpreload nextClip",
+						"color: green; font-size: 28px;",
+					);
+					const video = preloadUtils.createVideo("metadata");
+					videoCache.set(
+						getCacheId(nextClip.videoClip.sourceUrl, nextClip.id),
+						video,
+					);
+					const _nextClip = nextClip;
+					// do not await
+					waitForLoadedMetadata2(
+						video,
+						_nextClip.videoClip.sourceUrl,
+					).then(() => {
+						console.log("%cloadedmetadata", "color: green;");
+						console.log(_nextClip);
+						video.currentTime = isInteger(currentTime)
+							? (currentTime as number)
+							: _nextClip.start / 1_000_000;
+					});
+					nextClipIndex++;
+					cacheCount--;
+					nextClip = mainTrack.clips[nextClipIndex];
+				}
+			};
 
-                return {
-                    fromCache: true,
-                    video: cachedVideo,
-                };
-            }
+			if (
+				videoCache.has(
+					getCacheId(metaData.videoClip.sourceUrl, metaData.id),
+				)
+			) {
+				console.log("%ccache hit", "color: green; font-size: 28px;");
+				console.log(metaData.id);
+				const cachedVideo = videoCache.get(
+					getCacheId(metaData.videoClip.sourceUrl, metaData.id),
+				)!;
+				cachedVideo.currentTime = metaData.start / 1_000_000;
+				if (fromDiffSet) {
+					preloadNext();
+				}
 
-            const video = document.createElement("video");
-            video.crossOrigin = "anonymous";
-            video.volume = 0;
+				return {
+					fromCache: true,
+					video: cachedVideo,
+				};
+			}
 
-            video.addEventListener("loadedmetadata", function handler() {
-                // cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
-                //     width: video.videoWidth,
-                //     height: video.videoHeight,
-                // });
-                preloadNext();
+			const video = document.createElement("video");
+			video.crossOrigin = "anonymous";
+			video.volume = 0;
 
-                console.log("%cloadedmetadata", "color: green;");
+			video.addEventListener("loadedmetadata", function handler() {
+				// cacheManager.setMetadata(metaData.videoClip.sourceUrl, {
+				//     width: video.videoWidth,
+				//     height: video.videoHeight,
+				// });
+				preloadNext();
 
-                const vHeight = video.videoHeight;
-                const vWidth = video.videoWidth;
+				console.log("%cloadedmetadata", "color: green;");
 
-                // TODO: sync rect
-                // syncRect(vWidth, vHeight);
+				const vHeight = video.videoHeight;
+				const vWidth = video.videoWidth;
 
-                video.currentTime = metaData.start / 1_000_000;
+				// TODO: sync rect
+				// syncRect(vWidth, vHeight);
 
-                video.removeEventListener("loadedmetadata", handler);
-            });
+				video.currentTime = metaData.start / 1_000_000;
 
-            return {
-                video: video,
-            };
-        },
-        []
-    );
+				video.removeEventListener("loadedmetadata", handler);
+			});
 
-    const syncRectMeta = useMemoizedFn((videoMeta: VideoMeta) => {
-        const videoClip = videoMeta.videoClip;
-        const { dimension } = videoClip;
-        const scaleX = videoClip.posParam.scaleX ?? 1;
-        const scaleY = videoClip.posParam.scaleY ?? 1;
-        flushSync(() => {
-            setRectMeta({
-                height: dimension.height,
-                width: dimension.width,
-                scale: {
-                    x: scaleX * stageRect.scale,
-                    y: scaleY * stageRect.scale,
-                },
-                x:
-                    (stageRect.width -
-                        dimension.width * scaleX * stageRect.scale) /
-                    2,
-                y:
-                    (stageRect.height -
-                        dimension.height * scaleY * stageRect.scale) /
-                    2,
-            });
-        });
-    });
+			return {
+				video: video,
+			};
+		},
+		[],
+	);
 
-    useUpdateEffect(() => {
-        if (!videoMetaRef.current) return;
-        syncRectMeta(videoMetaRef.current);
-    }, [stageRect]);
+	const syncRectMeta = useMemoizedFn((videoMeta: VideoMeta) => {
+		const videoClip = videoMeta.videoClip;
+		const { dimension } = videoClip;
+		const scaleX = videoClip.posParam.scaleX ?? 1;
+		const scaleY = videoClip.posParam.scaleY ?? 1;
+		flushSync(() => {
+			setRectMeta({
+				height: dimension.height,
+				width: dimension.width,
+				scale: {
+					x: scaleX * stageRect.scale,
+					y: scaleY * stageRect.scale,
+				},
+				x:
+					(stageRect.width -
+						dimension.width * scaleX * stageRect.scale) /
+					2,
+				y:
+					(stageRect.height -
+						dimension.height * scaleY * stageRect.scale) /
+					2,
+			});
+		});
+	});
 
-    const diffSetVideoMeta = useMemoizedFn((videoMeta: VideoMeta) => {
-        if (videoMeta?.id === videoMetaRef.current?.id) return;
-        videoMetaRef.current = videoMeta;
+	useUpdateEffect(() => {
+		if (!videoMetaRef.current) return;
+		syncRectMeta(videoMetaRef.current);
+	}, [stageRect]);
 
-        console.log("%csetVideoWithDiff", "color: blue;");
+	const diffSetVideoMeta = useMemoizedFn(
+		(videoMeta: VideoMeta, currentTime?: number) => {
+			if (videoMeta?.id === videoMetaRef.current?.id) return false;
+			videoMetaRef.current = videoMeta;
 
-        const currentLoadId = ++requestLoadId.current;
+			console.log("%csetVideoWithDiff", "color: blue;");
 
-        const cleanUp = () => {
-            // prevVideo.pause();
-            // prevVideo.src = "";
-            // prevVideo.load();
-        };
+			const currentLoadId = ++requestLoadId.current;
 
-        // TODO: loading stauts
-        const load = async () => {
-            if (currentLoadId === requestLoadId.current) {
-                const { video, fromCache } = createVideoSync(videoMeta, true);
+			const cleanUp = () => {
+				// prevVideo.pause();
+				// prevVideo.src = "";
+				// prevVideo.load();
+			};
 
-                if (!fromCache) {
-                    video.src = videoMeta.videoClip.sourceUrl;
-                    video.load();
-                }
+			// TODO: loading stauts
+			const load = async () => {
+				if (currentLoadId === requestLoadId.current) {
+					const { video, fromCache } = createVideoSync(videoMeta, {
+						fromDiffSet: true,
+						currentTime,
+					});
 
-                // !canPlay
-                if (video.readyState < 4) {
-                    startPreloading();
-                    await waitForCanPlay2(video);
-                    finishPreloading();
-                }
+					if (!fromCache) {
+						video.src = videoMeta.videoClip.sourceUrl;
+						video.load();
+					}
 
-                // TODO: check can play
-                syncRectMeta(videoMeta);
-                flushSync(() => {
-                    setVideoMeta(videoMeta);
-                    setVideo(video);
-                    video.play();
-                });
+					// !canPlay
+					if (video.readyState < 4) {
+						startPreloading();
+						await waitForCanPlay2(video);
+						finishPreloading();
+					}
 
-                setTimeout(() => {
-                    cleanUp();
-                });
-            }
-        };
+					// TODO: check can play
+					syncRectMeta(videoMeta);
+					flushSync(() => {
+						setVideoMeta(videoMeta);
+						setVideo(video);
+						video.play();
+					});
 
-        load();
-    });
+					setTimeout(() => {
+						cleanUp();
+					});
+				}
+			};
 
-    const [transform, setTransform] = useState(1);
+			load();
 
-    // const { video: __video, fromCache } = useCreation(() => {
-    //     return createVideoSync(videoMeta);
-    // }, []);
+			return true;
+		},
+	);
 
-    const [video, setVideo] = useState<HTMLVideoElement>();
+	const [transform, setTransform] = useState<Trasnform>(defaultTransform);
+	const transformRef = useRef<Trasnform>(transform);
+	transformRef.current = transform;
 
-    // useEffect(() => {
-    //     return $on(
-    //         "start",
-    //         () => {
-    //             if (video && videoMeta) {
-    //                 syncRectMeta(videoMeta);
-    //                 if (!fromCache) {
-    //                     // video.muted = true;
-    //                     video.src = videoMeta.videoClip.sourceUrl;
-    //                     video.load();
-    //                     video.currentTime = videoMeta.start / 1_000_000;
-    //                 }
-    //             }
-    //         },
-    //         timeline
-    //     );
-    // }, [video, timeline]);
+	// const { video: __video, fromCache } = useCreation(() => {
+	//     return createVideoSync(videoMeta);
+	// }, []);
 
-    useEffect(() => {
-        return $ons(
-            [
-                {
-                    event: "complete",
-                    handler: () => {
-                        if (video && !video.paused) {
-                            video.pause();
-                        }
-                    },
-                },
-                {
-                    event: "pause",
-                    handler: () => {
-                        if (video && !video.paused) {
-                            video.pause();
-                        }
-                    },
-                },
-                {
-                    event: "resume",
-                    handler: () => {
-                        if (video && video.paused) {
-                            video.play();
-                        }
-                    },
-                },
-            ],
-            timeline
-        );
-    }, [video, timeline]);
+	const [video, setVideo] = useState<HTMLVideoElement>();
 
-    useEffect(() => {
-        return $on(
-            "update",
-            (event: EVENT_UPDATE) => {
-                if (useTimelineStore.getState().showPoster) {
-                    useTimelineStore.getState().togglePoster();
-                }
-                const videoMeta = seekVideo(event.elapsedTime, mainTrack);
+	// useEffect(() => {
+	//     return $on(
+	//         "start",
+	//         () => {
+	//             if (video && videoMeta) {
+	//                 syncRectMeta(videoMeta);
+	//                 if (!fromCache) {
+	//                     // video.muted = true;
+	//                     video.src = videoMeta.videoClip.sourceUrl;
+	//                     video.load();
+	//                     video.currentTime = videoMeta.start / 1_000_000;
+	//                 }
+	//             }
+	//         },
+	//         timeline
+	//     );
+	// }, [video, timeline]);
 
-                if (videoMeta) {
-                    diffSetVideoMeta(videoMeta);
+	useEffect(() => {
+		return $ons(
+			[
+				{
+					event: "complete",
+					handler: () => {
+						if (video && !video.paused) {
+							video.pause();
+						}
+					},
+				},
+				{
+					event: "pause",
+					handler: () => {
+						if (video && !video.paused) {
+							video.pause();
+						}
+					},
+				},
+				{
+					event: "resume",
+					handler: () => {
+						if (video?.paused) {
+							video.play();
+						}
+					},
+				},
+			],
+			timeline,
+		);
+	}, [video, timeline]);
 
-                    // const duration = 2_000;
-                    // const value = easeIn(
-                    //     0.8,
-                    //     1,
-                    //     duration,
-                    //     clamp(
-                    //         event.elapsedTime - videoMeta.inPoint / 1_000,
-                    //         0,
-                    //         duration
-                    //     )
-                    // );
+	const changeVideoCurrentTime = useMemoizedFn((currentTime: number) => {
+		if (!video) return;
+		video.currentTime = currentTime;
+	});
 
-                    // setTransform(value);
-                }
-            },
-            timeline
-        );
-    }, [timeline, mainTrack]);
+	useEffect(() => {
+		return $ons(
+			[
+				// {
+				// 	event: "seek",
+				// 	handler(event: EVENT_SEEK) {
+				// 		console.log(event, "seek");
+				// 		const videoMeta = seekVideo(
+				// 			event.elapsedTime,
+				// 			mainTrack,
+				// 		);
+				// 		if (videoMeta) {
+				// 			const isDiff = diffSetVideoMeta(
+				// 				videoMeta,
+				// 				event.elapsedTime / 1_000,
+				// 			);
+				// 			console.log(isDiff, "isdiff");
+				// 			// same video, just change currentTime
+				// 			if (!isDiff) {
+				// 				changeVideoCurrentTime(
+				// 					event.elapsedTime / 1_000,
+				// 				);
+				// 			}
+				// 		}
+				// 	},
+				// },
+				{
+					event: "update",
+					handler: (event: EVENT_UPDATE) => {
+						if (useTimelineStore.getState().showPoster) {
+							useTimelineStore.getState().togglePoster();
+						}
+						const videoMeta = seekVideo(
+							event.elapsedTime,
+							mainTrack,
+						);
 
-    useEffect(() => {
-        if (!video) return;
+						if (videoMeta) {
+							const isDiffApplied = diffSetVideoMeta(
+								videoMeta,
+								event.elapsedTime / 1_000,
+							);
 
-        video.playbackRate = timeline?.speed || 1;
+							// FIXME:
+							// if (!isDiffApplied) {
+							// 	changeVideoCurrentTime(
+							// 		event.elapsedTime / 1_000,
+							// 	);
+							// }
 
-        return $on(
-            "speed",
-            (speed: number) => {
-                if (video) {
-                    video.playbackRate = speed;
-                }
-            },
-            timeline
-        );
-    }, [timeline, video]);
+							if (videoMeta.videoClip?.transitionParam) {
+								const tp = videoMeta.videoClip.transitionParam;
 
-    const clipId = videoMetaRef.current?.id;
+								const newTransform = getDefaultTransform();
 
-    const filterParams = useMemo(() => {
-        let blur = 0;
-        if (videoMeta?.videoClip.filterParam) {
-            blur = 20;
-        }
-        return {
-            blur,
-            quality: 10,
-            resolution: devicePixelRatio || 1,
-        };
-    }, [videoMeta?.videoClip.filterParam]);
+								switch (tp.transitionCode) {
+									case "crossfadein": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMax: 1,
+											outputMin: 0,
+											transitionParam: tp,
+										});
+										newTransform.alpha = value;
+										break;
+									}
+									case "crossfadeout": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMin: 1,
+											outputMax: 0,
+											transitionParam: tp,
+										});
+										newTransform.alpha = value;
+										break;
+									}
+									case "slide_in": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMin:
+												-rectMetaRef.current.width *
+												rectMetaRef.current.scale.x,
+											outputMax: 0,
+											transitionParam: tp,
+										});
 
-    const containerKey = clipId ? `${clipId}-${compId}` : compId;
-    const spriteKey = clipId
-        ? `${clipId}-${compId}-sprite`
-        : `${compId}-sprite}`;
+										newTransform.translate.x = value;
+										break;
+									}
+									case "scale_in": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMin: 0.4,
+											outputMax: 1,
+											transitionParam: tp,
+										});
 
-    const innerContainerRef = useRef<PIXI.Container>(null);
-    const innerSpriteRef = useRef<PIXI.Sprite>(null);
+										newTransform.scale.x = value;
+										newTransform.scale.y = value;
 
-    const cContainerRef = mergeRefs(containerRef, innerContainerRef);
-    const cSpriteRef = mergeRefs(spriteRef, innerSpriteRef);
+										break;
+									}
+									case "scale_out": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMin: 1,
+											outputMax: 0.3,
+											transitionParam: tp,
+											easing: easings.easeOutBounce,
+										});
 
-    // useMount(() => {
-    //     if (!innerSpriteRef.current) return;
-    //     innerSpriteRef.current.texture.update();
-    //     setTimeout(() => {
-    //         innerSpriteRef.current.texture.update();
-    //     }, 100);
-    // });
+										newTransform.scale.x = value;
+										newTransform.scale.y = value;
+										break;
+									}
+									case "slide_out": {
+										const value = applyTransition({
+											clip: videoMeta,
+											elapsedTime: event.elapsedTime,
+											outputMin: 0,
+											outputMax:
+												rectMetaRef.current.width *
+												rectMetaRef.current.scale.x,
+											transitionParam: tp,
+										});
+										newTransform.translate.x = value;
+										break;
+									}
+									default:
+								}
+								setTransform(newTransform);
+							}
+							if (isDiffApplied) {
+								setTransform(defaultTransform);
+							}
+						}
+					},
+				},
+			],
+			timeline,
+		);
+	}, [timeline, mainTrack]);
 
-    return (
-        video && (
-            <Filters
-                ref={cContainerRef}
-                // anchor={0.5}
-                // HACK: I maybe only have a title bit idea why this works 🥹
-                key={containerKey}
-                x={rectMeta.x + (rectMeta.width * rectMeta.scale.x) / 2}
-                y={rectMeta.y + (rectMeta.height * rectMeta.scale.y) / 2}
-                scale={{
-                    x: rectMeta.scale.x,
-                    y: rectMeta.scale.y,
-                }}
-                blur={filterParams}
-                // alpha={transform}
-                pivot={{
-                    x: rectMeta.width / 2,
-                    y: rectMeta.height / 2,
-                }}
-            >
-                <Sprite
-                    key={spriteKey}
-                    ref={cSpriteRef}
-                    video={video}
-                    height={
-                        isNumber(rectMeta.height)
-                            ? rectMeta.height
-                            : video?.videoHeight || 0
-                    }
-                    width={
-                        isNumber(rectMeta.width)
-                            ? rectMeta.width
-                            : video?.videoWidth || 0
-                    }
-                />
-            </Filters>
-        )
-    );
+	useEffect(() => {
+		if (!video) return;
+
+		video.playbackRate = timeline?.speed || 1;
+
+		return $on(
+			"speed",
+			(speed: number) => {
+				if (video) {
+					video.playbackRate = speed;
+				}
+			},
+			timeline,
+		);
+	}, [timeline, video]);
+
+	const clipId = videoMetaRef.current?.id;
+
+	const filterParams = useMemo(() => {
+		let blur = 0;
+		if (videoMeta?.videoClip.filterParam) {
+			blur = 20;
+		}
+		return {
+			blur,
+			quality: 10,
+			resolution: devicePixelRatio || 1,
+		};
+	}, [videoMeta?.videoClip.filterParam]);
+
+	const containerKey = clipId ? `${clipId}-${compId}` : compId;
+	const spriteKey = clipId
+		? `${clipId}-${compId}-sprite`
+		: `${compId}-sprite}`;
+
+	const innerContainerRef = useRef<PIXI.Container>(null);
+	const innerSpriteRef = useRef<PIXI.Sprite>(null);
+
+	const cContainerRef = mergeRefs(containerRef, innerContainerRef);
+	const cSpriteRef = mergeRefs(spriteRef, innerSpriteRef);
+
+	// useMount(() => {
+	//     if (!innerSpriteRef.current) return;
+	//     innerSpriteRef.current.texture.update();
+	//     setTimeout(() => {
+	//         innerSpriteRef.current.texture.update();
+	//     }, 100);
+	// });
+
+	return (
+		video && (
+			<Filters
+				ref={cContainerRef}
+				// anchor={0.5}
+				// HACK: I maybe only have a title bit idea why this works 🥹
+				key={containerKey}
+				x={
+					rectMeta.x +
+					(rectMeta.width * rectMeta.scale.x) / 2 +
+					transform.translate.x
+				}
+				y={
+					rectMeta.y +
+					(rectMeta.height * rectMeta.scale.y) / 2 +
+					transform.translate.y
+				}
+				angle={transform.degree}
+				scale={{
+					x: rectMeta.scale.x * transform.scale.x,
+					y: rectMeta.scale.y * transform.scale.y,
+				}}
+				blur={filterParams}
+				alpha={transform.alpha}
+				pivot={{
+					x: rectMeta.width / 2,
+					y: rectMeta.height / 2,
+				}}
+			>
+				<Sprite
+					key={spriteKey}
+					ref={cSpriteRef}
+					video={video}
+					height={
+						isNumber(rectMeta.height)
+							? rectMeta.height
+							: video?.videoHeight || 0
+					}
+					width={
+						isNumber(rectMeta.width)
+							? rectMeta.width
+							: video?.videoWidth || 0
+					}
+				/>
+			</Filters>
+		)
+	);
 });
 export default MainVideoTrack;

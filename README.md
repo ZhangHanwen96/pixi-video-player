@@ -1,3 +1,10 @@
+# TODO:
+## MainTrack
+[ ] image / video mime type logic
+[ ] video start logic
+[ ] crop
+
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.

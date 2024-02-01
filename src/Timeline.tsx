@@ -56,8 +56,6 @@ export class TimeLineContoller extends EventEmitter {
 	#FPS = 60;
 	#audioVolume = 1;
 
-	#animationCallbacks: (() => void)[] = [];
-
 	#rafId: null | number = null;
 
 	constructor(
@@ -237,11 +235,17 @@ export class TimeLineContoller extends EventEmitter {
 				"color: rgb(157, 255, 0); font-size: 30px; font-weight: bold;",
 			);
 
+			this.#elapsedTime = 0;
+			this.#remaningTime = this.#totalDuration;
 			lastStartTime = Date.now();
 			this.animate();
 			this.emit("start");
 			this.emit("common-update");
 		}
+	}
+
+	restart() {
+		this.start();
 	}
 
 	get isPlaying() {

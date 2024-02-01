@@ -109,6 +109,7 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 					...customStyles,
 				})
 			}
+			resolution={window.devicePixelRatio || 1}
 		/>
 	);
 };

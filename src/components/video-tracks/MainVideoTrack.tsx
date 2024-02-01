@@ -1,7 +1,7 @@
 import { $on, $ons } from "@/event-utils";
 import { VideoTrack, VMMLTemplateV4 } from "@/interface/vmml";
 import { useTimelineStore } from "@/store";
-import { Container, Sprite, withFilters } from "@pixi/react";
+import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
 import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
 import { DisplayObject } from "pixi.js";
 import * as PIXI from "pixi.js";
@@ -33,9 +33,13 @@ import preloadUtils, {
 } from "@/preload";
 
 import { mergeRefs } from "@mantine/hooks";
-import { easeIn } from "@/util";
-import { easings, interpolate } from "@/easing";
+import { easings } from "@/easing";
 import { applyTransition } from "@/animation";
+
+const graphics = new PIXI.Graphics();
+graphics.beginFill(0xffffff);
+graphics.drawRect(0, 0, 300, 400);
+graphics.endFill();
 
 interface Props {
 	containerRef?: React.Ref<PIXI.Container<DisplayObject>>;
@@ -294,7 +298,10 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			if (videoMeta?.id === videoMetaRef.current?.id) return false;
 			videoMetaRef.current = videoMeta;
 
-			console.log("%csetVideoWithDiff", "color: blue;");
+			const imageMimeType =
+				videoMeta.videoClip.mimeType.startsWith("image");
+
+			console.log("%cSetVideoWithDiff", "color: blue;");
 
 			const currentLoadId = ++requestLoadId.current;
 
@@ -305,7 +312,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			};
 
 			// TODO: loading stauts
-			const load = async () => {
+			const loadVideo = async () => {
 				if (currentLoadId === requestLoadId.current) {
 					const { video, fromCache } = createVideoSync(videoMeta, {
 						fromDiffSet: true,
@@ -338,7 +345,16 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				}
 			};
 
-			load();
+			if (imageMimeType) {
+				syncRectMeta(videoMeta);
+				flushSync(() => {
+					setImage(videoMeta.videoClip.sourceUrl);
+					setVideo(undefined);
+					setVideoMeta(videoMeta);
+				});
+			} else {
+				loadVideo();
+			}
 
 			return true;
 		},
@@ -348,29 +364,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	const transformRef = useRef<Trasnform>(transform);
 	transformRef.current = transform;
 
-	// const { video: __video, fromCache } = useCreation(() => {
-	//     return createVideoSync(videoMeta);
-	// }, []);
-
 	const [video, setVideo] = useState<HTMLVideoElement>();
-
-	// useEffect(() => {
-	//     return $on(
-	//         "start",
-	//         () => {
-	//             if (video && videoMeta) {
-	//                 syncRectMeta(videoMeta);
-	//                 if (!fromCache) {
-	//                     // video.muted = true;
-	//                     video.src = videoMeta.videoClip.sourceUrl;
-	//                     video.load();
-	//                     video.currentTime = videoMeta.start / 1_000_000;
-	//                 }
-	//             }
-	//         },
-	//         timeline
-	//     );
-	// }, [video, timeline]);
+	const [image, setImage] = useState<string>();
 
 	useEffect(() => {
 		return $ons(
@@ -443,104 +438,111 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 							mainTrack,
 						);
 
-						if (videoMeta) {
-							const realStart =
-								event.elapsedTime * 1_000 -
-								videoMeta.inPoint +
-								videoMeta.start;
-							const isDiffApplied = diffSetVideoMeta(
-								videoMeta,
-								realStart / 1_000_000,
-							);
-							if (isDiffApplied) {
-								setTransform(defaultTransform);
-							} else if (videoMeta.videoClip?.transitionParam) {
-								const tp = videoMeta.videoClip.transitionParam;
+						if (!videoMeta) {
+							setVideoMeta(undefined);
+							setVideo(undefined);
+							setImage(undefined);
+							setTransform(defaultTransform);
+							videoMetaRef.current = undefined;
+							return;
+						}
 
-								const newTransform = getDefaultTransform();
+						const realStart =
+							event.elapsedTime * 1_000 -
+							videoMeta.inPoint +
+							videoMeta.start;
+						const isDiffApplied = diffSetVideoMeta(
+							videoMeta,
+							realStart / 1_000_000,
+						);
+						if (isDiffApplied) {
+							setTransform(defaultTransform);
+						} else if (videoMeta.videoClip?.transitionParam) {
+							const tp = videoMeta.videoClip.transitionParam;
 
-								switch (tp.transitionCode) {
-									case "crossfadein": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMax: 1,
-											outputMin: 0,
-											transitionParam: tp,
-										});
-										newTransform.alpha = value;
-										break;
-									}
-									case "crossfadeout": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMin: 1,
-											outputMax: 0,
-											transitionParam: tp,
-										});
-										newTransform.alpha = value;
-										break;
-									}
-									case "slide_in": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMin:
-												-rectMetaRef.current.width *
-												rectMetaRef.current.scale.x,
-											outputMax: 0,
-											transitionParam: tp,
-										});
+							const newTransform = getDefaultTransform();
 
-										newTransform.translate.x = value;
-										break;
-									}
-									case "scale_in": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMin: 0.4,
-											outputMax: 1,
-											transitionParam: tp,
-										});
-
-										newTransform.scale.x = value;
-										newTransform.scale.y = value;
-
-										break;
-									}
-									case "scale_out": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMin: 1,
-											outputMax: 0.3,
-											transitionParam: tp,
-											easing: easings.easeOutBounce,
-										});
-
-										newTransform.scale.x = value;
-										newTransform.scale.y = value;
-										break;
-									}
-									case "slide_out": {
-										const value = applyTransition({
-											clip: videoMeta,
-											elapsedTime: event.elapsedTime,
-											outputMin: 0,
-											outputMax:
-												rectMetaRef.current.width *
-												rectMetaRef.current.scale.x,
-											transitionParam: tp,
-										});
-										newTransform.translate.x = value;
-										break;
-									}
-									default:
+							switch (tp.transitionCode) {
+								case "crossfadein": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMax: 1,
+										outputMin: 0,
+										transitionParam: tp,
+									});
+									newTransform.alpha = value;
+									break;
 								}
-								setTransform(newTransform);
+								case "crossfadeout": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+									newTransform.alpha = value;
+									break;
+								}
+								case "slide_in": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin:
+											-rectMetaRef.current.width *
+											rectMetaRef.current.scale.x,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+
+									newTransform.translate.x = value;
+									break;
+								}
+								case "scale_in": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 0.4,
+										outputMax: 1,
+										transitionParam: tp,
+									});
+
+									newTransform.scale.x = value;
+									newTransform.scale.y = value;
+
+									break;
+								}
+								case "scale_out": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0.3,
+										transitionParam: tp,
+										easing: easings.easeOutBounce,
+									});
+
+									newTransform.scale.x = value;
+									newTransform.scale.y = value;
+									break;
+								}
+								case "slide_out": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 0,
+										outputMax:
+											rectMetaRef.current.width *
+											rectMetaRef.current.scale.x,
+										transitionParam: tp,
+									});
+									newTransform.translate.x = value;
+									break;
+								}
+								default:
 							}
+							setTransform(newTransform);
 						}
 					},
 				},
@@ -598,8 +600,11 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	//     }, 100);
 	// });
 
-	return (
-		video && (
+	const flipX = 1;
+	const flipY = 1;
+
+	if (video) {
+		return (
 			<Filters
 				ref={cContainerRef}
 				// anchor={0.5}
@@ -617,8 +622,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				}
 				angle={transform.degree}
 				scale={{
-					x: rectMeta.scale.x * transform.scale.x,
-					y: rectMeta.scale.y * transform.scale.y,
+					x: rectMeta.scale.x * transform.scale.x * flipX,
+					y: rectMeta.scale.y * transform.scale.y * flipY,
 				}}
 				blur={filterParams}
 				alpha={transform.alpha}
@@ -626,6 +631,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					x: rectMeta.width / 2,
 					y: rectMeta.height / 2,
 				}}
+				// mask={graphics}
 			>
 				<Sprite
 					key={spriteKey}
@@ -643,7 +649,49 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					}
 				/>
 			</Filters>
-		)
-	);
+		);
+	}
+
+	if (image) {
+		return (
+			<Filters
+				ref={cContainerRef}
+				// anchor={0.5}
+				// HACK: I maybe only have a title bit idea why this works 🥹
+				key={containerKey}
+				x={
+					rectMeta.x +
+					(rectMeta.width * rectMeta.scale.x) / 2 +
+					transform.translate.x
+				}
+				y={
+					rectMeta.y +
+					(rectMeta.height * rectMeta.scale.y) / 2 +
+					transform.translate.y
+				}
+				angle={transform.degree}
+				scale={{
+					x: rectMeta.scale.x * transform.scale.x * flipX,
+					y: rectMeta.scale.y * transform.scale.y * flipY,
+				}}
+				blur={filterParams}
+				alpha={transform.alpha}
+				pivot={{
+					x: rectMeta.width / 2,
+					y: rectMeta.height / 2,
+				}}
+			>
+				<Sprite
+					key={spriteKey}
+					ref={cSpriteRef}
+					image={image}
+					height={isNumber(rectMeta.height) ? rectMeta.height : 0}
+					width={isNumber(rectMeta.width) ? rectMeta.width : 0}
+				/>
+			</Filters>
+		);
+	}
+
+	return null;
 });
 export default MainVideoTrack;

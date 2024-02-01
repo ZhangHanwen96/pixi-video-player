@@ -126,6 +126,11 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					<Stage
 						width={transformedRect.width}
 						height={transformedRect.height}
+						options={{
+							resolution: window.devicePixelRatio || 1,
+							// antialias: true,
+							// backgroundAlpha: 0,
+						}}
 					>
 						<SetUp duration={duration} />
 						<MainVideoTrack

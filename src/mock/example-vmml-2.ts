@@ -1,6 +1,7 @@
 import v1 from "./v3-1.mp4";
 import v2 from "./v3-2.mp4";
 import audio from "./audio3.wav";
+import freezeImage from "./freeze.jpeg";
 import { AudioTrack } from "@/interface/vmml";
 const vmml = {
 	version: 0.4,
@@ -184,6 +185,41 @@ const vmml = {
 							},
 						},
 					},
+					{
+						type: 101,
+						id: "25a1891f-959b-48f6-b72es-16cb20652bdss3",
+						start: 0,
+						end: 2000000,
+						inPoint: 18552000,
+						duration: 2000000,
+						originDuration: 2000000,
+						videoClip: {
+							sourceUrl: freezeImage,
+							thumbnailSourceUrl:
+								"https://static01.versa-ai.com/upload/4885c519afbd/59cdf7cb-c103-41bb-9797-0f624375a042.mp4?x-oss-process=video/snapshot,t_14720,f_jpg,w_120,m_fast",
+							dimension: {
+								height: 1280,
+								width: 720,
+							},
+							transitionParam: {
+								transitionCode: "crossfadein",
+								duration: 1_000_000,
+							},
+							mimeType: "image/jpeg",
+							posParam: {
+								centerX: 0.5,
+								centerY: 0.5,
+								centerZ: 0.5,
+								scaleX: 1.777,
+								scaleY: 1.777,
+							},
+							volume: 0,
+							filterParam: {
+								filterCode: "bg_blur",
+								filterValue: 100,
+							},
+						},
+					},
 				],
 			},
 			{
@@ -337,6 +373,37 @@ const vmml = {
 							volume: 0,
 						},
 					},
+					{
+						type: 102,
+						id: "25a1891f6cb20652bdss3",
+						start: 0,
+						end: 2000000,
+						inPoint: 18552000,
+						duration: 2000000,
+						originDuration: 2000000,
+						videoClip: {
+							sourceUrl: freezeImage,
+							transitionParam: {
+								transitionCode: "crossfadein",
+								duration: 1_000_000,
+							},
+							thumbnailSourceUrl:
+								"https://static01.versa-ai.com/upload/4885c519afbd/59cdf7cb-c103-41bb-9797-0f624375a042.mp4?x-oss-process=video/snapshot,t_14720,f_jpg,w_120,m_fast",
+							dimension: {
+								height: 1280,
+								width: 720,
+							},
+							mimeType: "image/jpeg",
+							posParam: {
+								centerX: 0.5,
+								centerY: 0.5,
+								centerZ: 0.5,
+								scaleX: 0.5625,
+								scaleY: 0.5625,
+							},
+							volume: 0,
+						},
+					},
 				],
 			},
 			{
@@ -417,10 +484,10 @@ const vmml = {
 						type: 202,
 						id: "ecf39cc8-af43-4ba1-8e6a-c28ab467ef71",
 						start: 0,
-						end: 3720000,
+						end: 5720000,
 						inPoint: 14832000,
-						duration: 3720000,
-						originDuration: 3720000,
+						duration: 5720000,
+						originDuration: 5720000,
 						textClip: {
 							textContent: "现在他们家99周年活动真的是给力",
 							posParam: {
@@ -455,8 +522,8 @@ const vmml = {
 						id: "W9mu45My13I1R1to3Jvr24444",
 						start: 5552000,
 						inPoint: 10552000,
-						end: 14104000,
-						duration: 8552000,
+						end: 16104000,
+						duration: 10552000,
 						originDuration: 186000000,
 						audioClip: {
 							sourceUrl: audio,

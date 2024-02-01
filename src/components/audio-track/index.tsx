@@ -21,10 +21,12 @@ const isValidAudioClip = (clip?: AudioTrack["clips"][number]) =>
 
 const mergeUtil = {
 	speed(speed: number) {
-		return speed * useTimelineStore.getState().timeline?.speed || 1;
+		return speed * (useTimelineStore.getState().timeline?.speed ?? 1);
 	},
 	volume(volume: number) {
-		return volume * useTimelineStore.getState().timeline?.audioVolume || 1;
+		return (
+			volume * (useTimelineStore.getState().timeline?.audioVolume ?? 1)
+		);
 	},
 };
 
@@ -48,7 +50,6 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	const timeline = useTimelineStore.use.timeline?.();
 	const currentIdRef = useRef<AudioTrack["clips"][number]>();
 	const deps = audioTrack ? audioTrack.clips.map((c) => c.id) : [];
-	const [tVolume, setTVolume] = useState(1);
 
 	// when audio track changes
 	useEffect(() => {
@@ -73,7 +74,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
 
 				if (!isValidAudioClip(audioMeta)) {
-					soundInstance?.pause();
+					// soundInstance?.pause();
+					sound.pauseAll();
 					setInstance(null);
 					currentIdRef.current = undefined;
 					return;
@@ -101,9 +103,9 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					start: parseFloat((realStart / 1_000_000).toFixed(2)),
 					loop: true,
 					speed: mergeUtil.speed(
-						audioMeta.audioClip.constantSpeed || 1,
+						audioMeta.audioClip.constantSpeed ?? 1,
 					),
-					volume: mergeUtil.volume(audioMeta.audioClip.volume || 1),
+					volume: mergeUtil.volume(audioMeta.audioClip.volume ?? 1),
 					singleInstance: true,
 				});
 			},
@@ -113,7 +115,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 
 	const setVolume = useMemoizedFn((v: number) => {
 		if (!soundInstance) return;
-		soundInstance.volume = v;
+		soundInstance.volume = mergeUtil.volume(v);
 	});
 
 	useEffect(() => {
@@ -122,7 +124,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			(event: EVENT_SEEK) => {
 				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
 				if (!isValidAudioClip(audioMeta)) {
-					soundInstance?.pause();
+					// soundInstance?.pause();
+					sound.pauseAll();
 					setInstance(null);
 					currentIdRef.current = undefined;
 					return;
@@ -174,7 +177,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					audioMeta.audioClip.sourceUrl,
 				);
 
-				soundInstance?.pause();
+				// soundInstance?.pause();
+				sound.stopAll();
 				setInstance(instance);
 
 				const realStart =
@@ -188,9 +192,9 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					start: parseFloat((realStart / 1_000_000).toFixed(2)),
 					loop: true,
 					speed: mergeUtil.speed(
-						audioMeta.audioClip.constantSpeed || 1,
+						audioMeta.audioClip.constantSpeed ?? 1,
 					),
-					volume: mergeUtil.volume(audioMeta.audioClip.volume || 1),
+					volume: mergeUtil.volume(audioMeta.audioClip.volume ?? 1),
 					singleInstance: true,
 				});
 
@@ -202,8 +206,6 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					nextTwoAudioMeta + 1,
 					nextTwoAudioMeta + 3,
 				);
-				// .map((c) => c.audioClip.sourceUrl)
-				// .filter(Boolean);
 
 				for (const clip of nextTwoAudio) {
 					const alias = `${AUDIO_ALIAS}_${clip.id}`;
@@ -220,7 +222,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			() => {
 				if (!soundInstance) return;
 				soundInstance.speed = mergeUtil.speed(
-					currentIdRef.current?.audioClip.constantSpeed || 1,
+					currentIdRef.current?.audioClip.constantSpeed ?? 1,
 				);
 			},
 			timeline,
@@ -246,61 +248,57 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 						const audioMeta = seekAudio(0, audioTrack);
 						if (isValidAudioClip(audioMeta)) {
 							// switch audio
-							if (currentIdRef.current?.id !== audioMeta.id) {
-								currentIdRef.current = audioMeta;
-								const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
-								const instance = findOrCreateSound(
-									alias,
-									audioMeta.audioClip.sourceUrl,
-								);
+							currentIdRef.current = audioMeta;
+							const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+							const instance = findOrCreateSound(
+								alias,
+								audioMeta.audioClip.sourceUrl,
+							);
 
-								setInstance(instance);
+							setInstance(instance);
 
-								if (instance.isPlaying) {
-									instance.pause();
-								}
-								instance.play({
-									singleInstance: true,
-									start: parseFloat(
-										(audioMeta.start / 1_000_000).toFixed(
-											2,
-										),
-									),
-									loop: true,
-									speed: mergeUtil.speed(
-										audioMeta?.audioClip.constantSpeed || 1,
-									),
-									volume: mergeUtil.volume(
-										audioMeta.audioClip.volume || 1,
-									),
-								});
-								// }
-								// else {
-								// 	// TODO:
-								// 	PIXI.Assets.load(alias).then((s: Sound) => {
-								// 		console.log(
-								// 			"start playing - 2",
-								// 			audioMeta,
-								// 		);
-								// 		instance.play({
-								// 			start: parseFloat(
-								// 				(
-								// 					audioMeta.start / 1_000_000
-								// 				).toFixed(2),
-								// 			),
-								// 			singleInstance: true,
-								// 			loop: true,
-								// 			speed: mergeUtil.speed(
-								// 				audioMeta?.audioClip
-								// 					.constantSpeed || 1,
-								// 			),
-								// 			volume: mergeUtil.volume(
-								// 				audioMeta.audioClip.volume || 1,
-								// 			),
-								// 		});
-								// 	});
-								// }
+							if (instance.isPlaying) {
+								instance.pause();
 							}
+							instance.play({
+								singleInstance: true,
+								start: parseFloat(
+									(audioMeta.start / 1_000_000).toFixed(2),
+								),
+								loop: true,
+								speed: mergeUtil.speed(
+									audioMeta?.audioClip.constantSpeed ?? 1,
+								),
+								volume: mergeUtil.volume(
+									audioMeta.audioClip.volume ?? 1,
+								),
+							});
+							// }
+							// else {
+							// 	// TODO:
+							// 	PIXI.Assets.load(alias).then((s: Sound) => {
+							// 		console.log(
+							// 			"start playing - 2",
+							// 			audioMeta,
+							// 		);
+							// 		instance.play({
+							// 			start: parseFloat(
+							// 				(
+							// 					audioMeta.start / 1_000_000
+							// 				).toFixed(2),
+							// 			),
+							// 			singleInstance: true,
+							// 			loop: true,
+							// 			speed: mergeUtil.speed(
+							// 				audioMeta?.audioClip
+							// 					.constantSpeed || 1,
+							// 			),
+							// 			volume: mergeUtil.volume(
+							// 				audioMeta.audioClip.volume || 1,
+							// 			),
+							// 		});
+							// 	});
+							// }
 						} else {
 							currentIdRef.current = undefined;
 							setInstance(null);
@@ -317,7 +315,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					event: "complete",
 					handler: () => {
 						currentIdRef.current = undefined;
-						soundInstance?.pause();
+						// soundInstance?.pause();
+						sound.stopAll();
 						setInstance(null);
 					},
 				},
@@ -325,9 +324,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					event: "audio-volume",
 					handler: () => {
 						if (!soundInstance) return;
-						soundInstance.volume = mergeUtil.volume(
-							currentIdRef.current?.audioClip.volume || 1,
+						const v = mergeUtil.volume(
+							currentIdRef.current?.audioClip.volume ?? 1,
 						);
+						soundInstance.volume = v;
 					},
 				},
 			],

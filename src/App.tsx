@@ -7,6 +7,7 @@ import Editor from "@monaco-editor/react";
 // import vmml2 from "@/mock/example-vmml-2";
 // import vmml3 from "@/mock/example-vmml-3";
 import { useSize } from "ahooks";
+import mockVmml from "@/mock/mock-vmml.json";
 
 import "./App.css";
 import { VMMLTemplateV4 } from "./interface/vmml";
@@ -35,7 +36,7 @@ function App() {
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [code, setCode] = useState("");
 
-	const [vmmlJson, setVmml] = useState<any>();
+	const [vmmlJson, setVmml] = useState<any>(mockVmml);
 	const preCodeRef = useRef("");
 
 	useEffect(() => {

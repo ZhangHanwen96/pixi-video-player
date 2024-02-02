@@ -18,20 +18,11 @@ import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
 import { EVENT_UPDATE, EVENT_SEEK } from "@/Timeline";
 import { useTezignPlayerStore } from "@/store/teizng-player";
-import {
-	clamp,
-	cloneDeep,
-	difference,
-	isInteger,
-	isNumber,
-	uniqBy,
-	uniqWith,
-} from "lodash-es";
+import { isInteger, isNumber } from "lodash-es";
 import preloadUtils, {
 	waitForCanPlay2,
 	waitForLoadedMetadata2,
 } from "@/preload";
-
 import { mergeRefs } from "@mantine/hooks";
 import { easings } from "@/easing";
 import { applyTransition } from "@/animation";
@@ -193,17 +184,18 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 						getCacheId(nextClip.videoClip.sourceUrl, nextClip.id),
 						video,
 					);
-					const _nextClip = nextClip;
+					const clip = nextClip;
 					// do not await
 					waitForLoadedMetadata2(
 						video,
-						_nextClip.videoClip.sourceUrl,
+						clip.videoClip.sourceUrl,
 					).then(() => {
 						console.log("%cloadedmetadata", "color: green;");
-						console.log(_nextClip);
-						video.currentTime = isInteger(currentTime)
-							? (currentTime as number)
-							: _nextClip.start / 1_000_000;
+						console.log(clip);
+						video.currentTime = clip.start / 1_000_000;
+						// isInteger(currentTime)
+						// ? (currentTime as number)
+						// : _nextClip.start / 1_000_000;
 					});
 					nextClipIndex++;
 					cacheCount--;
@@ -221,7 +213,9 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				const cachedVideo = videoCache.get(
 					getCacheId(metaData.videoClip.sourceUrl, metaData.id),
 				)!;
-				cachedVideo.currentTime = metaData.start / 1_000_000;
+				cachedVideo.currentTime = isInteger(currentTime)
+					? (currentTime as number)
+					: metaData.start / 1_000_000;
 				if (fromDiffSet) {
 					preloadNext();
 				}
@@ -251,7 +245,9 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				// TODO: sync rect
 				// syncRect(vWidth, vHeight);
 
-				video.currentTime = metaData.start / 1_000_000;
+				video.currentTime = isInteger(currentTime)
+					? (currentTime as number)
+					: metaData.start / 1_000_000;
 
 				video.removeEventListener("loadedmetadata", handler);
 			});

@@ -80,6 +80,7 @@ const TimeControl = () => {
 			}}
 		>
 			<button
+				type="button"
 				onClick={() => {
 					if (timeline) {
 						if (timeline.completed) {

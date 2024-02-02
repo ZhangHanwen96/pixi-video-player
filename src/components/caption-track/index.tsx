@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { FC, memo, useEffect, useRef, useState } from "react";
+import { FC, memo, useRef, useState } from "react";
 import { Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import { EVENT_UPDATE } from "@/Timeline";
@@ -8,6 +8,7 @@ import { $on } from "@/event-utils";
 import { CaptionTrack } from "@/interface/vmml";
 import { argb2Rgba } from "./utils";
 import { StageRect } from "@/interface/app";
+import { useDeepCompareEffect } from "ahooks";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
@@ -21,7 +22,7 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const textRef = useRef<PIXI.Text | null>(null);
 	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
 
-	useEffect(() => {
+	useDeepCompareEffect(() => {
 		if (!timeline) return;
 
 		return $on(

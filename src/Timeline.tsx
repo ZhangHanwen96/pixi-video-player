@@ -2,17 +2,6 @@ import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { clamp } from "lodash-es";
 
-import { captionTrack } from "./mock/captionTrack";
-import { useTimelineStore } from "./store";
-
-const mockCaption = captionTrack?.clips.map((clip) => {
-	return {
-		start: clip.inPoint / 1_000,
-		end: (clip.inPoint + clip.duration) / 1_000,
-		text: clip.textClip.textContent,
-	};
-});
-
 const FPS_60 = 60;
 const FPS_30 = 30;
 const FPS_24 = 24;
@@ -158,16 +147,16 @@ export class TimeLineContoller extends EventEmitter {
 
 	private update() {
 		// step 1: update caption
-		const currentCaption = mockCaption.find((caption) => {
-			return (
-				this.#elapsedTime >= caption.start &&
-				this.#elapsedTime <= caption.end
-			);
-		});
-		if (this.currentCaption !== currentCaption) {
-			this.currentCaption = currentCaption || null;
-			this.options.onCaptionChange(this.currentCaption?.text);
-		}
+		// const currentCaption = mockCaption.find((caption) => {
+		// 	return (
+		// 		this.#elapsedTime >= caption.start &&
+		// 		this.#elapsedTime <= caption.end
+		// 	);
+		// });
+		// if (this.currentCaption !== currentCaption) {
+		// 	this.currentCaption = currentCaption || null;
+		// 	this.options.onCaptionChange(this.currentCaption?.text);
+		// }
 
 		this.emit("update", {
 			elapsedTime: this.#elapsedTime,

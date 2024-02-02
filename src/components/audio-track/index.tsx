@@ -8,7 +8,7 @@ import { EVENT_SEEK } from "@/Timeline";
 import { seekAudio } from "./utils";
 import { applyAudioTransition } from "@/animation/audio";
 import { AudioTransitionCode } from "@/interface/animation";
-import { useMemoizedFn } from "ahooks";
+import { useDeepCompareEffect, useMemoizedFn } from "ahooks";
 
 const AUDIO_ALIAS = "AUDIO_TRACK";
 
@@ -52,7 +52,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	const deps = audioTrack ? audioTrack.clips.map((c) => c.id) : [];
 
 	// when audio track changes
-	useEffect(() => {
+	useDeepCompareEffect(() => {
 		if (!audioTrack.clips.length) return;
 
 		// const urls = [

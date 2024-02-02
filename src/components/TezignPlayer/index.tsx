@@ -1,7 +1,7 @@
 import { AudioTrack, VMMLTemplateV4, VideoTrack } from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/MainVideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import { FC, useEffect, useMemo, useRef, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import { useTimelineStore } from "@/store";
 // import CaptionTrack from "@/CaptionTrack";
 import SoundTrack from "../audio-track";
@@ -71,7 +71,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 
 	useEventListener(
 		"fullscreenchange",
-		(e) => {
+		() => {
 			if (!document.fullscreenElement) {
 				useTezignPlayerStore
 					.getState()

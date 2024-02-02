@@ -3,6 +3,7 @@
 [ ] image / video mime type logic
 [ ] video start logic
 [ ] crop
+[ ] type
 
 
 # React + TypeScript + Vite

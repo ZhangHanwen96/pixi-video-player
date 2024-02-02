@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import {
 	useMove,
 	useMouse,
@@ -203,7 +203,7 @@ const TimeControl = () => {
 				}}
 			>
 				{showIcon && (
-					<div className="w-12 h-12 flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
+					<div className="w-12 h-12 hover:scale-125 transition-all duration-100 ease flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
 						{statusIcon()}
 					</div>
 				)}
@@ -212,12 +212,12 @@ const TimeControl = () => {
 					onClick={(e) => {
 						e.stopPropagation();
 					}}
-					className="absolute bottom-0 inset-x-0 bg-black/30 backdrop-filter px-2 py-1 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
+					className="absolute bottom-0 inset-x-0 bg-black/70 backdrop-filter px-3 py-2 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
 				>
 					<div className="flex w-full flex-row items-center">
 						<span
 							onClick={handleButtonClick}
-							className="text-2xl text-slate-200 flex-none flex items-center shrink-0"
+							className="text-2xl text-slate-200 hover:text-white cursor-pointer flex-none flex items-center shrink-0"
 						>
 							{statusIcon()}
 						</span>
@@ -293,7 +293,7 @@ const TimeControl = () => {
 								}
 							>
 								<span
-									className="text-2xl text-slate-200 cursor-pointer"
+									className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer"
 									onClick={() => {
 										if (volume !== 0) {
 											volumeRef.current = volume;
@@ -344,7 +344,7 @@ const TimeControl = () => {
 									},
 								}}
 							>
-								<span className="text-2xl text-slate-200 cursor-pointer">
+								<span className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer">
 									<MdiSpeedometerSlow />
 								</span>
 							</Dropdown>
@@ -377,6 +377,7 @@ const TimeControl = () => {
                                     <MdiSpeedometerSlow />
                                 </span>
                             </Dropdown> */}
+							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 							<span
 								onClick={() => {
 									if (window.document.fullscreenElement) {
@@ -391,7 +392,7 @@ const TimeControl = () => {
 
 									forceUpdate();
 								}}
-								className="text-2xl text-slate-200 cursor-pointer ant-icon"
+								className="text-2xl hover:text-white inline-flex text-slate-200 cursor-pointer ant-icon"
 							>
 								{window.document.fullscreenElement ? (
 									<MdiFullscreenExit />

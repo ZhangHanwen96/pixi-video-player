@@ -23,5 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-src/assets/*.mp4
-src/assets/*.mp3
+*.mp4
+*.mp3

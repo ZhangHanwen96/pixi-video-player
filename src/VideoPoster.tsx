@@ -4,26 +4,27 @@ import clx from "classnames";
 import { useTimelineStore } from "./store";
 
 const VideoPoster: FC<{
-    className?: string;
-    url: string;
-    imgClassName?: string;
+	className?: string;
+	url: string;
+	imgClassName?: string;
 }> = ({ className, url, imgClassName }) => {
-    const showPoster = useTimelineStore.use.showPoster();
+	const showPoster = useTimelineStore.use.showPoster();
 
-    return (
-        showPoster && (
-            <div className={clx(className, "absolute inset-0")}>
-                <img
-                    src={url}
-                    alt="video poster"
-                    className={clx(
-                        "w-full h-full object-contain",
-                        imgClassName
-                    )}
-                />
-            </div>
-        )
-    );
+	return (
+		showPoster && (
+			<div className={clx(className, "absolute inset-0")}>
+				<img
+					src={url}
+					crossOrigin="anonymous"
+					alt="video poster"
+					className={clx(
+						"w-full h-full object-contain",
+						imgClassName,
+					)}
+				/>
+			</div>
+		)
+	);
 };
 
 export default memo(VideoPoster);

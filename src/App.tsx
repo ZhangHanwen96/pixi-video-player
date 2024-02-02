@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js";
 import { useMount, useDebounce, useThrottle } from "ahooks";
 import { TezignPlayer } from "./components/TezignPlayer";
-import vmml from "@/mock/example-vmml-1";
+// import vmml from "@/mock/example-vmml-1";
 import { Button, Drawer, FloatButton, Space, message } from "antd";
 import Editor from "@monaco-editor/react";
-import vmml2 from "@/mock/example-vmml-2";
-import vmml3 from "@/mock/example-vmml-3";
+// import vmml2 from "@/mock/example-vmml-2";
+// import vmml3 from "@/mock/example-vmml-3";
 import { useSize } from "ahooks";
 
 import "./App.css";
@@ -35,7 +35,7 @@ function App() {
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [code, setCode] = useState("");
 
-	const [vmmlJson, setVmml] = useState(vmml2);
+	const [vmmlJson, setVmml] = useState<any>();
 	const preCodeRef = useRef("");
 
 	useEffect(() => {
@@ -100,13 +100,15 @@ function App() {
 						}}
 					/>
 				</Drawer>
-				<TezignPlayer
-					containerRect={{
-						height: tHeight,
-						width: tWidth,
-					}}
-					vmml={vmmlJson.template as VMMLTemplateV4}
-				/>
+				{vmmlJson && (
+					<TezignPlayer
+						containerRect={{
+							height: tHeight,
+							width: tWidth,
+						}}
+						vmml={vmmlJson.template as VMMLTemplateV4}
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -294,52 +294,6 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		return $ons(
 			[
 				{
-					event: "start",
-					handler: () => {
-						const audioMeta = seekAudio(0, audioTrack);
-						if (isValidAudioClip(audioMeta)) {
-							currentMetaRef.current = audioMeta;
-							// switch audio
-							pauseAll();
-
-							if (!audioMeta.audioClip.sourceUrl) return;
-
-							let realStart =
-								(0 - audioMeta.inPoint + audioMeta.start) /
-								1_000_000;
-							realStart = parseFloat(realStart.toFixed(2));
-
-							let soundId = clipIdToSoundIDMap.get(audioMeta.id);
-							const sprite = spriteMap.get(
-								audioMeta.audioClip.sourceUrl,
-							)!;
-							const _state = { soundId } as { soundId: number };
-							sprite.once("play", (id) => {
-								sprite.seek(realStart, id);
-							});
-
-							if (!isNumber(soundId)) {
-								_state.soundId = soundId = sprite.play(
-									audioMeta.id,
-								);
-								clipIdToSoundIDMap.set(audioMeta.id, soundId);
-							} else {
-								sprite.play(soundId);
-							}
-							sprite.volume(
-								mergeUtil.volume(
-									audioMeta.audioClip.volume ?? 1,
-								),
-								soundId,
-							);
-							// sprite.seek(realStart / 1_000_000, soundId);
-						} else {
-							currentMetaRef.current = audioMeta;
-							pauseAll();
-						}
-					},
-				},
-				{
 					event: "resume",
 					handler: () => {
 						if (!currentMetaRef.current?.id) return;

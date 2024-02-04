@@ -172,8 +172,8 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 				{poster && <VideoPoster url={poster} />}
 				<TimeControlV2 />
 				{seekLoading && (
-					<div className="absolute z-[9999] inset-0 bg-black/20 flex items-center justify-center">
-						<Spin spinning size="large" />
+					<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
+						<Spin spinning tip={"加载中..."} size="large" />
 					</div>
 				)}
 			</div>

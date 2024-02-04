@@ -43,9 +43,9 @@ const getStatus = (timeline?: TimeLineContoller): Status => {
 
 const TimeControl = () => {
 	const { timeline } = useTimelineStore();
+	const isSeeking = useTezignPlayerStore.use.seekLoading(true);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const wrapperSize = useSize(wrapperRef);
-
 	const isMobileLayout = !!wrapperSize && wrapperSize.width < 400;
 
 	const volumeRef = useRef<number>(50);
@@ -249,7 +249,7 @@ const TimeControl = () => {
 					handleButtonClick();
 				}}
 			>
-				{showIcon && (
+				{showIcon && !isSeeking && (
 					<div className="w-12 h-12  hover:scale-125 transition-all duration-100 ease flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
 						{statusIcon()}
 					</div>

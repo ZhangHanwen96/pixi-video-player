@@ -84,8 +84,7 @@ const TimeControl = () => {
 				onClick={() => {
 					if (timeline) {
 						if (timeline.completed) {
-							// timeline.seek(0);
-							timeline.restart();
+							timeline.seek(0);
 							return;
 						}
 						if (timeline.isPlaying) {
@@ -101,7 +100,7 @@ const TimeControl = () => {
 							if (timeline.paused) {
 								timeline.resume();
 							} else {
-								timeline.start();
+								timeline.seek(0);
 							}
 						}
 					}

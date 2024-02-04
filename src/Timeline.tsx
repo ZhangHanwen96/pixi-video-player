@@ -24,7 +24,6 @@ let lastStartTime = 0;
 
 interface TimeLineContollerOptions {
 	totalDuration: number;
-	onCaptionChange: (caption?: string) => void;
 }
 
 export interface EVENT_UPDATE {
@@ -32,7 +31,6 @@ export interface EVENT_UPDATE {
 	remaningTime: number;
 	totalDuration: number;
 	progress: number;
-	caption: { start: number; end: number; text: string } | null;
 }
 export interface EVENT_SEEK {
 	elapsedTime: number;
@@ -150,24 +148,11 @@ export class TimeLineContoller extends EventEmitter {
 	}
 
 	private update() {
-		// step 1: update caption
-		// const currentCaption = mockCaption.find((caption) => {
-		// 	return (
-		// 		this.#elapsedTime >= caption.start &&
-		// 		this.#elapsedTime <= caption.end
-		// 	);
-		// });
-		// if (this.currentCaption !== currentCaption) {
-		// 	this.currentCaption = currentCaption || null;
-		// 	this.options.onCaptionChange(this.currentCaption?.text);
-		// }
-
 		this.emit("update", {
 			elapsedTime: this.#elapsedTime,
 			remaningTime: this.#remaningTime,
 			totalDuration: this.#totalDuration,
 			progress: clamp(this.#elapsedTime / this.#totalDuration, 0, 1),
-			caption: this.currentCaption,
 		});
 
 		this.emit("common-update");

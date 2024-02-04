@@ -1,0 +1,617 @@
+{
+	"version": 0.4,
+	"template": {
+		"bgColor": "00000000",
+		"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_2730,f_jpg,w_400,h_0",
+		"dimension": {
+			"height": 1280,
+			"width": 720
+		},
+		"tracks": [
+			{
+				"id": "4ce3b2e7-ab97-4369-b76f-23ba3806de56",
+				"type": 0,
+				"clips": [
+					{
+						"type": 101,
+						"id": "9f352c2b-30fa-4386-b5a7-b1805d405a66",
+						"start": 2680000,
+						"end": 6496000,
+						"inPoint": 0,
+						"duration": 3816000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "6944457e-95ae-459f-8dca-81e4747abfab",
+						"start": 9320000,
+						"end": 13664000,
+						"inPoint": 3816000,
+						"duration": 4344000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "927fa426-689e-4147-8646-4c2d77b09521",
+						"start": 12040000,
+						"end": 16504000,
+						"inPoint": 8160000,
+						"duration": 4464000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "ff533fc6-d801-44a7-9bfc-7d4953d80495",
+						"start": 17240000,
+						"end": 23648000,
+						"inPoint": 12624000,
+						"duration": 6408000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "a799a27e-b26a-4648-bcc9-32baf4181f63",
+						"start": 40200000,
+						"end": 45168000,
+						"inPoint": 19032000,
+						"duration": 4968000,
+						"originDuration": 79700000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4?x-oss-process=video/snapshot,t_34560,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "a5d329cb-694b-42fb-9c80-6d40b375849e",
+						"start": 23360000,
+						"end": 29480000,
+						"inPoint": 24000000,
+						"duration": 6120000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "bb6a1084-a2c6-4ffe-9540-978daed4073d",
+						"start": 40000,
+						"end": 3520000,
+						"inPoint": 30120000,
+						"duration": 3480000,
+						"originDuration": 79700000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4?x-oss-process=video/snapshot,t_34560,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": 1,
+				"id": "iokwpRFUd0m5jDyZAzqQG",
+				"clips": [
+					{
+						"type": 102,
+						"id": "fe0DTOQ5TbWwxdP8hb3j7",
+						"start": 2680000,
+						"end": 6496000,
+						"inPoint": 0,
+						"duration": 3816000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "fibpttSKQz5udn3WNjUES",
+						"start": 9320000,
+						"end": 13664000,
+						"inPoint": 3816000,
+						"duration": 4344000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "80SYU9zqa9lLLr-PbrrYK",
+						"start": 12040000,
+						"end": 16504000,
+						"inPoint": 8160000,
+						"duration": 4464000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "IqgwSgxb97o3czQCIzswS",
+						"start": 17240000,
+						"end": 23648000,
+						"inPoint": 12624000,
+						"duration": 6408000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "0N2n9WSMFCKisdbCwp7Nc",
+						"start": 40200000,
+						"end": 45168000,
+						"inPoint": 19032000,
+						"duration": 4968000,
+						"originDuration": 79700000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4?x-oss-process=video/snapshot,t_34560,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "t7qCOcyNlqQLqovR6F0P2",
+						"start": 23360000,
+						"end": 29480000,
+						"inPoint": 24000000,
+						"duration": 6120000,
+						"originDuration": 39966667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/dd5aa52bcbaa2f3a470affb296578906.MP4?x-oss-process=video/snapshot,t_23360,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "VFZs_XJDVBgM1swCyvagg",
+						"start": 40000,
+						"end": 3520000,
+						"inPoint": 30120000,
+						"duration": 3480000,
+						"originDuration": 79700000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/6c55de65fa2b58132912b1de6d8299cb.MP4?x-oss-process=video/snapshot,t_34560,f_jpg,w_120,m_fast",
+							"dimension": {
+								"width": 576,
+								"height": 1024
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.25,
+								"scaleY": 1.25
+							},
+							"volume": 0
+						}
+					}
+				]
+			},
+			{
+				"id": "e82ecd1f-5e3c-4720-9983-f3b0ac4c2c8d",
+				"type": 2,
+				"clips": [
+					{
+						"type": 202,
+						"id": "0a7fd09a-81a3-4e0f-a1e7-2454ad916234",
+						"start": 0,
+						"end": 3816000,
+						"inPoint": 0,
+						"duration": 3816000,
+						"originDuration": 3816000,
+						"textClip": {
+							"textContent": "欧莱雅精华，被誉为兰蔻小黑瓶的平替",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "ba1558e2-adb3-4021-8237-fed9b6729d29",
+						"start": 0,
+						"end": 4344000,
+						"inPoint": 3816000,
+						"duration": 4344000,
+						"originDuration": 4344000,
+						"textClip": {
+							"textContent": "价格仅为小黑瓶的三分之一，但功效却不逊色",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "04215835-84a5-422f-bfb5-d4f63cfba1b7",
+						"start": 0,
+						"end": 4464000,
+						"inPoint": 8160000,
+						"duration": 4464000,
+						"originDuration": 4464000,
+						"textClip": {
+							"textContent": "主打肌底液类型的保湿修护，轻松应对初老问题",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "a05b556b-2665-4136-8dfb-e8a6efdc8025",
+						"start": 0,
+						"end": 6408000,
+						"inPoint": 12624000,
+						"duration": 6408000,
+						"originDuration": 6408000,
+						"textClip": {
+							"textContent": "适合30岁以下的年轻肌肤，30岁以上的你，也可作为肌底液使用",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "737b0616-fac2-4a60-b100-33a1e993808b",
+						"start": 0,
+						"end": 4968000,
+						"inPoint": 19032000,
+						"duration": 4968000,
+						"originDuration": 4968000,
+						"textClip": {
+							"textContent": "质地清透，流动性强，尤其适合混合偏油肌肤",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "f55131cd-6e47-412b-9c95-7cf6fa29cc49",
+						"start": 0,
+						"end": 6120000,
+						"inPoint": 24000000,
+						"duration": 6120000,
+						"originDuration": 6120000,
+						"textClip": {
+							"textContent": "干皮肌肤使用可能觉得保湿不够，但配合其他精华，效果更佳",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "d79282df-3b65-446d-a13e-cba80a87856d",
+						"start": 0,
+						"end": 3480000,
+						"inPoint": 30120000,
+						"duration": 3480000,
+						"originDuration": 3480000,
+						"textClip": {
+							"textContent": "欧莱雅精华，让你的肌肤焕发新生",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.6
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": {
+								"height": 52,
+								"width": -1
+							},
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					}
+				]
+			},
+			{
+				"id": "t2sdY8Yf5Q0iYp4oAG4Cq",
+				"type": 3,
+				"clips": [
+					{
+						"type": 300,
+						"id": "Ucqfy9FNtj6Jag1wGnL7J",
+						"start": 0,
+						"inPoint": 0,
+						"end": 33600000,
+						"duration": 33600000,
+						"originDuration": 33600000,
+						"audioClip": {
+							"sourceUrl": "https://tezign-videomixer.oss-cn-beijing.aliyuncs.com/fa29deed-af2e-4285-b700-35116e57f1d5.wav"
+						}
+					}
+				]
+			}
+		]
+	},
+	"suggestParseMinVersion": 0.4
+}

@@ -4,8 +4,8 @@ import { TezignPlayer } from "./components/TezignPlayer";
 // import vmml from "@/mock/example-vmml-1";
 import { Button, Drawer, FloatButton, Space, message } from "antd";
 import Editor from "@monaco-editor/react";
-// import vmml2 from "@/mock/example-vmml-2";
-// import vmml3 from "@/mock/example-vmml-3";
+import vmml2 from "@/mock/example-vmml-2";
+import vmml3 from "@/mock/example-vmml-3";
 import { useSize } from "ahooks";
 import mockVmml from "@/mock/mock-vmml.json";
 
@@ -14,6 +14,7 @@ import { VMMLTemplateV4 } from "./interface/vmml";
 import { useEffect, useRef, useState } from "react";
 
 const ratio_16_9 = 16 / 9;
+const ratio_9_16 = 9 / 16;
 
 function App() {
 	const ref = useRef<HTMLDivElement>(null);
@@ -50,8 +51,13 @@ function App() {
 		}
 	}, [sheetOpen]);
 
+	const isTooVertical = tWidth / tHeight <= 3 / 4;
+	const classes = isTooVertical
+		? "w-[35vw]"
+		: '"w-[85vw] lg:w-[70vw] 2xl:w-[60vw]"';
+
 	return (
-		<div className="w-[85vw] lg:w-[70vw] 2xl:w-[60vw]">
+		<div className={classes}>
 			<div ref={ref} className="flex-none w-full min-w-[300px] bg-white">
 				<FloatButton
 					type="primary"

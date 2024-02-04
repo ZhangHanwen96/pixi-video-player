@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Sound, sound } from "@pixi/sound";
+import { Sound, SoundLibrary, sound } from "@pixi/sound";
 import { $on, $ons } from "@/event-utils";
 import { useTimelineStore } from "@/store";
 import { AudioTrack } from "@/interface/vmml";
@@ -8,7 +8,10 @@ import { EVENT_SEEK } from "@/Timeline";
 import { seekAudio } from "./utils";
 import { applyAudioTransition } from "@/animation/audio";
 import { AudioTransitionCode } from "@/interface/animation";
-import { useDeepCompareEffect, useMemoizedFn } from "ahooks";
+import { useDeepCompareEffect, useMemoizedFn, useMount } from "ahooks";
+import { hooks } from "../Controller/hooks";
+
+// TODO: sound instance per component
 
 const AUDIO_ALIAS = "AUDIO_TRACK";
 
@@ -48,7 +51,7 @@ const findOrCreateSound = (alias: string, url: string) => {
 const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	const [soundInstance, setInstance] = useState<Sound | null>(null);
 	const timeline = useTimelineStore.use.timeline?.();
-	const currentIdRef = useRef<AudioTrack["clips"][number]>();
+	const currentMetaRef = useRef<AudioTrack["clips"][number]>();
 	const deps = audioTrack ? audioTrack.clips.map((c) => c.id) : [];
 
 	// when audio track changes
@@ -67,38 +70,52 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		}
 	}, [...deps]);
 
-	useEffect(() => {
-		return $on(
-			"seek",
-			(event: EVENT_SEEK) => {
-				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
+	useMount(() => {
+		let audioMeta: ReturnType<typeof seekAudio>;
+		let id = 0;
+		let currentId = id;
+		hooks.beforeEach(({ context, name }) => {
+			if (name === "seek") {
+				currentId = context.currentId = ++id;
+			}
+		});
+		hooks.hook("seek", async ({ currentTime }) => {
+			audioMeta = seekAudio(currentTime, audioTrack);
+			if (!isValidAudioClip(audioMeta)) {
+				// soundInstance?.pause();
+				sound.pauseAll();
+				setInstance(null);
+				currentMetaRef.current = undefined;
+				return;
+			}
+			if (audioMeta.id === currentMetaRef.current?.id) {
+				return;
+			}
+			// TODO: async preload
+			const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+			const instance = findOrCreateSound(
+				alias,
+				audioMeta.audioClip.sourceUrl,
+			);
+			sound.stopAll();
+			if (instance.isPlaying) {
+				instance.pause();
+			}
+		});
+		hooks.afterEach(({ args, context, name }) => {
+			if (name === "seek" && context.currentId === currentId) {
+				currentMetaRef.current = audioMeta;
 
-				if (!isValidAudioClip(audioMeta)) {
-					// soundInstance?.pause();
-					sound.pauseAll();
-					setInstance(null);
-					currentIdRef.current = undefined;
-					return;
-				}
-
-				if (audioMeta.id !== currentIdRef.current?.id) {
-					return;
-				}
-
+				const { currentTime } = args[0];
+				const realStart =
+					currentTime * 1_000 - audioMeta.inPoint + audioMeta.start;
 				const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
 				const instance = findOrCreateSound(
 					alias,
 					audioMeta.audioClip.sourceUrl,
 				);
 
-				const realStart =
-					event.elapsedTime * 1_000 -
-					audioMeta.inPoint +
-					audioMeta.start;
-
-				if (instance.isPlaying) {
-					instance.pause();
-				}
+				setInstance(instance);
 				instance.play({
 					start: parseFloat((realStart / 1_000_000).toFixed(2)),
 					loop: true,
@@ -108,10 +125,55 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					volume: mergeUtil.volume(audioMeta.audioClip.volume ?? 1),
 					singleInstance: true,
 				});
-			},
-			timeline,
-		);
-	}, [soundInstance, timeline, audioTrack]);
+			}
+		});
+	});
+
+	// useEffect(() => {
+	// 	return $on(
+	// 		"seek",
+	// 		(event: EVENT_SEEK) => {
+	// 			const audioMeta = seekAudio(event.elapsedTime, audioTrack);
+
+	// 			if (!isValidAudioClip(audioMeta)) {
+	// 				// soundInstance?.pause();
+	// 				sound.pauseAll();
+	// 				setInstance(null);
+	// 				currentMetaRef.current = undefined;
+	// 				return;
+	// 			}
+
+	// 			if (audioMeta.id !== currentMetaRef.current?.id) {
+	// 				return;
+	// 			}
+
+	// 			const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
+	// 			const instance = findOrCreateSound(
+	// 				alias,
+	// 				audioMeta.audioClip.sourceUrl,
+	// 			);
+
+	// 			const realStart =
+	// 				event.elapsedTime * 1_000 -
+	// 				audioMeta.inPoint +
+	// 				audioMeta.start;
+
+	// 			if (instance.isPlaying) {
+	// 				instance.pause();
+	// 			}
+	// 			instance.play({
+	// 				start: parseFloat((realStart / 1_000_000).toFixed(2)),
+	// 				loop: true,
+	// 				speed: mergeUtil.speed(
+	// 					audioMeta.audioClip.constantSpeed ?? 1,
+	// 				),
+	// 				volume: mergeUtil.volume(audioMeta.audioClip.volume ?? 1),
+	// 				singleInstance: true,
+	// 			});
+	// 		},
+	// 		timeline,
+	// 	);
+	// }, [soundInstance, timeline, audioTrack]);
 
 	const setVolume = useMemoizedFn((v: number) => {
 		if (!soundInstance) return;
@@ -127,10 +189,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					// soundInstance?.pause();
 					sound.pauseAll();
 					setInstance(null);
-					currentIdRef.current = undefined;
+					currentMetaRef.current = undefined;
 					return;
 				}
-				if (audioMeta.id === currentIdRef.current?.id) {
+				if (audioMeta.id === currentMetaRef.current?.id) {
 					// transition
 					let transitionCode: AudioTransitionCode | undefined;
 					let transitionDuration = 0;
@@ -169,7 +231,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					setVolume(nextVolume);
 					return;
 				}
-				currentIdRef.current = audioMeta;
+				currentMetaRef.current = audioMeta;
 
 				const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
 				const instance = findOrCreateSound(
@@ -222,7 +284,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			() => {
 				if (!soundInstance) return;
 				soundInstance.speed = mergeUtil.speed(
-					currentIdRef.current?.audioClip.constantSpeed ?? 1,
+					currentMetaRef.current?.audioClip.constantSpeed ?? 1,
 				);
 			},
 			timeline,
@@ -248,13 +310,14 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 						const audioMeta = seekAudio(0, audioTrack);
 						if (isValidAudioClip(audioMeta)) {
 							// switch audio
-							currentIdRef.current = audioMeta;
+							currentMetaRef.current = audioMeta;
 							const alias = `${AUDIO_ALIAS}_${audioMeta.id}`;
 							const instance = findOrCreateSound(
 								alias,
 								audioMeta.audioClip.sourceUrl,
 							);
 
+							sound.stopAll();
 							setInstance(instance);
 
 							if (instance.isPlaying) {
@@ -300,7 +363,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 							// 	});
 							// }
 						} else {
-							currentIdRef.current = undefined;
+							currentMetaRef.current = undefined;
+							sound.stopAll();
 							setInstance(null);
 						}
 					},
@@ -314,7 +378,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				{
 					event: "complete",
 					handler: () => {
-						currentIdRef.current = undefined;
+						currentMetaRef.current = undefined;
 						// soundInstance?.pause();
 						sound.stopAll();
 						setInstance(null);
@@ -325,7 +389,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					handler: () => {
 						if (!soundInstance) return;
 						const v = mergeUtil.volume(
-							currentIdRef.current?.audioClip.volume ?? 1,
+							currentMetaRef.current?.audioClip.volume ?? 1,
 						);
 						soundInstance.volume = v;
 					},

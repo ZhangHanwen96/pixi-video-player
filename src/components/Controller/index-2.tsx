@@ -8,7 +8,7 @@ import {
 	mergeRefs,
 } from "@mantine/hooks";
 import { EVENT_UPDATE, FRAME_RATE, TimeLineContoller } from "@/Timeline";
-import { useMemoizedFn, useUpdate } from "ahooks";
+import { useMemoizedFn, useUpdate, useResponsive, useSize } from "ahooks";
 import { useTimelineStore } from "@/store";
 import MdiFullscreenExit from "~icons/mdi/fullscreen-exit";
 import MdiFullscreen from "~icons/mdi/fullscreen";
@@ -43,6 +43,10 @@ const getStatus = (timeline?: TimeLineContoller): Status => {
 
 const TimeControl = () => {
 	const { timeline } = useTimelineStore();
+	const wrapperRef = useRef<HTMLDivElement>(null);
+	const wrapperSize = useSize(wrapperRef);
+
+	const isMobileLayout = !!wrapperSize && wrapperSize.width < 400;
 
 	const volumeRef = useRef<number>(50);
 
@@ -194,16 +198,59 @@ const TimeControl = () => {
 
 	const showIcon = ["resume", "start"].includes(status);
 
+	const renderSlider = () => {
+		return (
+			<div
+				ref={sliderContainerRef}
+				className="flex-auto group/slider rounded-sm bg-gray-700 cursor-pointer relative h-[4px] group hover:h-[6px] hover:bg-gray-400 origin-center transition-all duration-300 ease-in-out"
+			>
+				<div
+					style={{
+						width: `calc(var(--progress, 0) * 100%)`,
+					}}
+					className="bg-sky-600 cursor-pointer h-full"
+				/>
+				{/* Thumb */}
+				<div
+					className="rounded-[50%] bg-slate-100 top-1/2 -translate-y-1/2"
+					style={{
+						position: "absolute",
+						// left: `calc(${value * 100}% - ${8}px)`,
+						left: `calc(var(--progress, 0) * 100% - 8px)`,
+						width: 16,
+						height: 16,
+					}}
+				/>
+
+				<div
+					className="absolute bottom-full mb-2 -translate-x-1/2 group-hover/slider:translate-y-0 origin-center invisible group-hover/slider:visible group-hover/slider:opacity-100 opacity-70 delay-150"
+					style={{
+						left: `calc(${currentHoverProgress} * 100%)`,
+						transition: "transform 0s, opacity 0.3s ease",
+					}}
+				>
+					<div className="bg-white py-1 px-2 text-black rounded text-xs">
+						{format(
+							(parseFloat(currentHoverProgress) * totalDuration) /
+								1_000,
+						)}
+					</div>
+				</div>
+			</div>
+		);
+	};
+
 	return (
 		<>
 			<div
 				className="absolute inset-0 cursor-default flex items-center justify-center"
+				ref={wrapperRef}
 				onClick={() => {
 					handleButtonClick();
 				}}
 			>
 				{showIcon && (
-					<div className="w-12 h-12 hover:scale-125 transition-all duration-100 ease flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
+					<div className="w-12 h-12  hover:scale-125 transition-all duration-100 ease flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
 						{statusIcon()}
 					</div>
 				)}
@@ -214,6 +261,9 @@ const TimeControl = () => {
 					}}
 					className="absolute bottom-0 inset-x-0 bg-black/70 backdrop-filter px-3 py-2 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
 				>
+					{isMobileLayout && (
+						<div className="mx-1 mb-2">{renderSlider()}</div>
+					)}
 					<div className="flex w-full flex-row items-center">
 						<span
 							onClick={handleButtonClick}
@@ -221,50 +271,16 @@ const TimeControl = () => {
 						>
 							{statusIcon()}
 						</span>
-						<div
-							ref={sliderContainerRef}
-							className="flex-auto group/slider mx-8 rounded-sm bg-gray-700 cursor-pointer relative h-[4px] group hover:h-[6px] hover:bg-gray-400 origin-center transition-all duration-300 ease-in-out"
-						>
-							<div
-								style={{
-									width: `calc(var(--progress, 0) * 100%)`,
-								}}
-								className="bg-sky-600 cursor-pointer h-full"
-							/>
-							{/* Thumb */}
-							<div
-								className="rounded-[50%] bg-slate-100 top-1/2 -translate-y-1/2"
-								style={{
-									position: "absolute",
-									// left: `calc(${value * 100}% - ${8}px)`,
-									left: `calc(var(--progress, 0) * 100% - 8px)`,
-									width: 16,
-									height: 16,
-								}}
-							/>
-
-							<div
-								className="absolute bottom-full mb-2 -translate-x-1/2 group-hover/slider:translate-y-0 origin-center invisible group-hover/slider:visible group-hover/slider:opacity-100 opacity-70 delay-150"
-								style={{
-									left: `calc(${currentHoverProgress} * 100%)`,
-									transition:
-										"transform 0s, opacity 0.3s ease",
-								}}
-							>
-								<div className="bg-white py-1 px-2 text-black rounded text-xs">
-									{format(
-										(parseFloat(currentHoverProgress) *
-											totalDuration) /
-											1_000,
-									)}
-								</div>
+						{!isMobileLayout && (
+							<div className="mx-8 flex-auto">
+								{renderSlider()}
 							</div>
-						</div>
-						<div className="flex gap-2 items-center">
+						)}
+						<div className="flex gap-2 flex-none items-center">
 							<div
 								ref={durationDisplayRef}
 								data-time-fallback="00:00 / 00:00"
-								className="display-time text-white"
+								className="display-time text-white pr-2"
 							/>
 							<Popover
 								arrow={false}

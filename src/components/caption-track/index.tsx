@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { FC, memo, useRef, useState } from "react";
-import { Text } from "@pixi/react";
+import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
+import { Container, Graphics, Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import { EVENT_UPDATE } from "@/Timeline";
 import { useTimelineStore } from "@/store";
@@ -18,12 +18,18 @@ interface CaptionTrackProps {
 export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const { timeline } = useTimelineStore();
 
-	const [text, setText] = useState("");
 	const textRef = useRef<PIXI.Text | null>(null);
+	const graphicsRef = useRef<PIXI.Graphics | null>(null);
 	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
 
+	const timerRef = useRef<any>();
+
 	useDeepCompareEffect(() => {
-		if (!timeline) return;
+		if (!timeline) {
+			textRef.current!.text = "";
+			captionClipRef.current = undefined;
+			return;
+		}
 
 		return $on(
 			"update",
@@ -39,9 +45,38 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 					);
 				});
 
-				if (captionClipRef.current?.id !== currentCaption?.id) {
+				if (
+					captionClipRef.current?.id !== currentCaption?.id &&
+					textRef.current
+				) {
 					captionClipRef.current = currentCaption;
-					setText(captionClipRef.current?.textClip.textContent ?? "");
+					const t =
+						captionClipRef.current?.textClip.textContent ?? "";
+					textRef.current.text = t;
+					clearTimeout(timerRef.current);
+
+					timerRef.current = setTimeout(() => {
+						if (
+							!textRef.current ||
+							!graphicsRef.current ||
+							!captionClipRef.current
+						)
+							return;
+						const bound = textRef.current.getBounds();
+						graphicsRef.current.clear();
+						if (!t) return;
+						const bgColor =
+							captionClipRef.current.textClip.backgroundColor;
+						if (!bgColor) return;
+						graphicsRef.current.beginFill(argb2Rgba(bgColor), 1);
+						graphicsRef.current.drawRoundedRect(
+							bound.x - 10,
+							bound.y - 10,
+							bound.width + 20,
+							bound.height + 20,
+							5,
+						);
+					});
 				}
 			},
 			timeline,
@@ -79,39 +114,44 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	} satisfies Partial<PIXI.ITextStyle>;
 
 	return (
-		<Text
-			anchor={{
-				x: 0.5,
-				y: 0,
-			}}
-			x={stageRect.width * centerX}
-			scale={stageRect.scale}
-			y={stageRect.height * centerY}
-			ref={textRef}
-			text={text}
-			zIndex={100}
-			style={
-				new PIXI.TextStyle({
-					align: "center",
-					// dropShadow: true,
-					// dropShadowColor: "#ccced2",
-					// dropShadowBlur: 4,
-					// dropShadowAngle: Math.PI / 6,
-					// dropShadowDistance: 6,
-					// breakWords: true,
-					// TODO:
-					// textBaseline: "top",
-					// padding: 30,
-					wordWrap: true,
-					lineJoin: "round",
-					whiteSpace: "pre",
-					breakWords: true,
-					wordWrapWidth: (stageRect.width / stageRect.scale) * 0.85,
-					...customStyles,
-				})
-			}
-			resolution={window.devicePixelRatio || 1}
-		/>
+		<Container>
+			{/* background */}
+			<Graphics ref={graphicsRef} zIndex={100} />
+			<Text
+				anchor={{
+					x: 0.5,
+					y: 0,
+				}}
+				x={stageRect.width * centerX}
+				scale={stageRect.scale}
+				y={stageRect.height * centerY}
+				ref={textRef}
+				// text={text}
+				zIndex={100}
+				style={
+					new PIXI.TextStyle({
+						align: "center",
+						// dropShadow: true,
+						// dropShadowColor: "#ccced2",
+						// dropShadowBlur: 4,
+						// dropShadowAngle: Math.PI / 6,
+						// dropShadowDistance: 6,
+						// breakWords: true,
+						// TODO:
+						// textBaseline: "top",
+						// padding: 30,
+						wordWrap: true,
+						lineJoin: "round",
+						whiteSpace: "pre",
+						breakWords: true,
+						wordWrapWidth:
+							(stageRect.width / stageRect.scale) * 0.85,
+						...customStyles,
+					})
+				}
+				resolution={window.devicePixelRatio || 1}
+			/>
+		</Container>
 	);
 };
 

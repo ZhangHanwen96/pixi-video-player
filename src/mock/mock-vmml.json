@@ -630,13 +630,25 @@
 				"clips": [
 					{
 						"type": 300,
-						"id": "RDEj1rOVm6G9sc5Ni_wUA",
+						"id": "RDEj1rOVm6G9sc5Ni_wUAsad2",
 						"start": 0,
 						"inPoint": 0,
+						"end": 4000000,
+						"duration": 4000000,
+						"originDuration": 4000000,
+						"audioClip": {}
+					},
+					{
+						"type": 300,
+						"id": "RDEj1rOVm6G9sc5Ni_wUA",
+						"start": 0,
+						"inPoint": 4000000,
 						"end": 31535986,
 						"duration": 31535986,
 						"originDuration": 31535986,
 						"audioClip": {
+							"volumeFadeIn": 2000000,
+							"volume": 1,
 							"sourceUrl": "https://tezign-videomixer.oss-cn-beijing.aliyuncs.com/ce36c2b9-e190-4b98-a929-aaa299261638.wav"
 						}
 					}

@@ -5,6 +5,7 @@ import { FC, useEffect, useMemo, useState } from "react";
 import { useTimelineStore } from "@/store";
 // import CaptionTrack from "@/CaptionTrack";
 import SoundTrack from "../audio-track";
+import SoundTrackNew from "../audio-track/new";
 import TimeControlV2 from "@/components/Controller/index-2";
 import { calculatRectByObjectFit } from "@/util";
 import { useTezignPlayerStore } from "@/store/teizng-player";
@@ -67,7 +68,18 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		if (!mainTrack?.clips.length) return 0;
 		const lastClip = mainTrack.clips[mainTrack.clips.length - 1];
 		return (lastClip.inPoint + lastClip.duration) / 1_000;
-	}, [mainTrack]);
+		let duration = 0;
+		for (const track of vmml.tracks) {
+			const lastClip = track.clips[track.clips.length - 1];
+			if (lastClip) {
+				duration = Math.max(
+					duration,
+					(lastClip.inPoint + lastClip.duration) / 1_000,
+				);
+			}
+		}
+		return duration;
+	}, [vmml.tracks]);
 
 	useEventListener(
 		"fullscreenchange",
@@ -92,7 +104,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 
 	const [poster, setPoster] = useState("");
 
-	useMount(() => {
+	useEffect(() => {
 		const load = async () => {
 			const url = mainTrack?.clips[0].videoClip?.sourceUrl;
 			if (url) {
@@ -102,9 +114,9 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		};
 
 		load();
-	});
+	}, [mainTrack?.clips[0].videoClip?.sourceUrl]);
 
-	const loading = useTezignPlayerStore.use.loading();
+	const seekLoading = useTezignPlayerStore.use.seekLoading();
 
 	return (
 		<div
@@ -117,7 +129,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 				style={{
 					width,
 					height,
-					backgroundColor: "#2e2d2d",
+					backgroundColor: "#313131",
 				}}
 				className="group/container flex items-center justify-center overflow-hidden relative"
 				id="player-container"
@@ -128,6 +140,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 						height={transformedRect.height}
 						options={{
 							resolution: window.devicePixelRatio || 1,
+							autoStart: false,
 							// antialias: true,
 							// backgroundAlpha: 0,
 						}}
@@ -149,21 +162,18 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							captionTrack={captionTrack as any}
 						/>
 						{audioTrack && (
-							<SoundTrack audioTrack={audioTrack as AudioTrack} />
+							<SoundTrackNew
+								audioTrack={audioTrack as AudioTrack}
+							/>
 						)}
 					</Stage>
 				)}
 
 				{poster && <VideoPoster url={poster} />}
 				<TimeControlV2 />
-				{loading && (
-					<div
-						style={{
-							background: "rgb(223 223 223 / 24%)",
-						}}
-						className="absolute inset-0 flex items-center justify-center"
-					>
-						<Spin spinning={true} size="large" />
+				{seekLoading && (
+					<div className="absolute z-[9999] inset-0 bg-black/20 flex items-center justify-center">
+						<Spin spinning size="large" />
 					</div>
 				)}
 			</div>

@@ -1,6 +1,9 @@
 import EventEmitter from "eventemitter3";
 import * as PIXI from "pixi.js";
 import { clamp } from "lodash-es";
+import { hooks } from "./components/Controller/hooks";
+import { sleep } from "./utils/delay";
+import { useTezignPlayerStore } from "./store/teizng-player";
 
 const FPS_60 = 60;
 const FPS_30 = 30;
@@ -45,6 +48,8 @@ export class TimeLineContoller extends EventEmitter {
 	#FPS = 60;
 	#audioVolume = 1;
 
+	#seekAbort: any;
+
 	#rafId: null | number = null;
 
 	constructor(
@@ -79,12 +84,34 @@ export class TimeLineContoller extends EventEmitter {
 	 *
 	 * @param currentTime in milli seconds
 	 */
-	seek(currentTime: number, type?: "control") {
+	async seek(currentTime: number) {
 		if (currentTime < 0 || currentTime > this.#totalDuration) {
 			throw new Error("Invalid time");
 		}
 
+		this.#seekAbort?.();
+
 		console.log(`%cSeek ${currentTime}`, "color: green; font-size: 28px;");
+
+		const ahook = hooks.callHookParallel("seek", {
+			currentTime,
+		});
+
+		this.stop();
+		useTezignPlayerStore.getState().startSeekLoading();
+		const sleeping = sleep(2_00);
+
+		console.time("[seek start]");
+		await Promise.race([
+			ahook,
+			new Promise((_, reject) => {
+				this.#seekAbort = reject;
+			}),
+		]);
+		console.timeEnd("[seek start]");
+
+		await sleeping;
+		useTezignPlayerStore.getState().finishSeekLoading();
 
 		this.#elapsedTime = currentTime;
 		this.#remaningTime = clamp(
@@ -92,29 +119,7 @@ export class TimeLineContoller extends EventEmitter {
 			0,
 			this.#totalDuration,
 		);
-		// TODO: useful??? maybe remove laster
-		this.emit("seek", {
-			elapsedTime: this.#elapsedTime,
-		});
-
 		lastStartTime = Date.now();
-		// if (type === "control" && !this.isPlaying) {
-		// 	// this.emit("seek", currentTime);
-		// 	// this.emit("seek", {
-		// 	// 	elapsedTime: this.#elapsedTime,
-		// 	// });
-		// 	const stop = this.stop.bind(this);
-		// 	let _frames = 30;
-		// 	this.on("interal_animation", function animation() {
-		// 		_frames--;
-		// 		if (_frames === 0) {
-		// 			stop();
-		// 		}
-		// 	});
-
-		// 	this.animate();
-		// 	return;
-		// }
 
 		if (this.paused || !this.isPlaying) {
 			if (this.paused) {
@@ -122,7 +127,6 @@ export class TimeLineContoller extends EventEmitter {
 			} else {
 				this.start();
 			}
-			// this.animate();
 		} else if (this.completed) {
 			this.animate();
 		}

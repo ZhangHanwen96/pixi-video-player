@@ -98,11 +98,11 @@ export const waitForLoadedMetadata2 = (
 	return promise;
 };
 
-const waitForCanPlay = (url: string, currentTime: number = 0) => {
+const waitForCanPlay = (url: string, currentTime = 0) => {
 	const { promise, reject, resolve } = withPromise<HTMLVideoElement>();
 	const video = document.createElement("video");
 	video.crossOrigin = "anonymous";
-	video.muted = true;
+	video.muted = false;
 	video.autoplay = false;
 
 	setTimeout(() => {
@@ -144,12 +144,39 @@ const waitForCanPlay = (url: string, currentTime: number = 0) => {
 };
 
 export const waitForCanPlay2 = (video: HTMLVideoElement) => {
-	const { promise, reject, resolve } = withPromise<HTMLVideoElement>();
+	const { promise, resolve } = withPromise<HTMLVideoElement>();
 	video.addEventListener("canplay", function handler() {
 		resolve(video);
 		video.removeEventListener("canplay", handler);
 	});
 
+	return promise;
+};
+
+export const waitForCanPlay3 = (
+	video: HTMLVideoElement,
+	currentTime: number,
+) => {
+	const { promise, resolve } = withPromise<HTMLVideoElement>();
+
+	const onCanPlay = () => {
+		resolve(video);
+		video.removeEventListener("canplay", onCanPlay);
+	};
+
+	const onSeeked = () => {
+		if (video.readyState >= 4) {
+			resolve(video);
+		} else {
+			video.addEventListener("canplay", onCanPlay);
+		}
+
+		video.removeEventListener("seeked", onSeeked);
+	};
+
+	video.addEventListener("seeked", onSeeked);
+
+	video.currentTime = currentTime;
 	return promise;
 };
 
@@ -160,6 +187,9 @@ const preloadUtils = {
 	hardCancelVideoLoad,
 	waitForLoadedMetadata,
 	waitForCanPlay,
+	waitForLoadedMetadata2,
+	waitForCanPlay2,
+	waitForCanPlay3,
 };
 
 export default preloadUtils;

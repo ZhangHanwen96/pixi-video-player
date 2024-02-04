@@ -111,6 +111,7 @@ interface VideoClip {
 	posParam: PositionParam;
 	filterParam?: FilterParam;
 	transitionParam?: TransitionParam;
+	volume?: number;
 }
 
 interface PositionParam {

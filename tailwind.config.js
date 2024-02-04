@@ -1,15 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-    content: [
-      "./index.html",
-      "./src/**/*.{js,ts,jsx,tsx}",
-    ],
-    theme: {
-      extend: {},
-    },
-    plugins: [],
-    corePlugins: {
-        container: false,
-        preflight: false
-      },
-  }
+	content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+	theme: {
+		extend: {},
+	},
+	plugins: [require("@tailwindcss/container-queries")],
+	corePlugins: {
+		container: false,
+		preflight: false,
+	},
+};

@@ -1,0 +1,677 @@
+{
+	"template": {
+		"bgColor": "00000000",
+		"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_7410,f_jpg,w_400,h_0",
+		"dimension": { "height": 1280, "width": 720 },
+		"tracks": [
+			{
+				"id": "d35b6f7c-6aab-4d15-b1ad-afb49e76110f",
+				"type": 0,
+				"clips": [
+					{
+						"type": 101,
+						"id": "xO7mVI5i3t2PJDC_qRHMn",
+						"start": 0,
+						"end": 15000000,
+						"inPoint": 0,
+						"duration": 15000000,
+						"originDuration": 15090000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/abcbc675ee3c5ba8eba50037d3b7bf45.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/abcbc675ee3c5ba8eba50037d3b7bf45.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 654, "height": 368 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 3.4782608695652173,
+								"scaleY": 3.4782608695652173
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "2dc2e4b7-e7bb-410b-9cdb-7d64ee246cf7",
+						"start": 7360000,
+						"end": 11152000,
+						"inPoint": 15000000,
+						"duration": 3792000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "0b9ecd27-4e82-44e3-b856-3cc364b4a653",
+						"start": 9240000,
+						"end": 12960000,
+						"inPoint": 18792000,
+						"duration": 3720000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "ef93ffb3-d75e-490a-8486-8636ddf2829b",
+						"start": 13360000,
+						"end": 16100000,
+						"inPoint": 22512000,
+						"duration": 2740000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "dfcd3174-6a0f-494e-bd1f-96e8dff734bb",
+						"start": 0,
+						"end": 3212000,
+						"inPoint": 25252000,
+						"duration": 3212000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "85546ab6-c6a8-40aa-b1f0-60accb773b37",
+						"start": 14480000,
+						"end": 16100000,
+						"inPoint": 28464000,
+						"duration": 1620000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "81a65a42-0c24-4e6e-b398-cd398c53eb63",
+						"start": 0,
+						"end": 1860000,
+						"inPoint": 30084000,
+						"duration": 1860000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "160379b4-e256-4bf5-9bfe-fd893b13e453",
+						"start": 8560000,
+						"end": 11728000,
+						"inPoint": 31944000,
+						"duration": 3168000,
+						"originDuration": 14333333,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/35f71f895c1a770f73cfb82cc4b8710c.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/35f71f895c1a770f73cfb82cc4b8710c.mp4?x-oss-process=video/snapshot,t_8560,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "e558945e-e5d7-4ac3-aade-2e710e8c6131",
+						"start": 80000,
+						"end": 3800000,
+						"inPoint": 35112000,
+						"duration": 3720000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "P2fOqG0A7-u5PF6il2Sp-",
+						"start": 0,
+						"end": 21000000,
+						"inPoint": 38832000,
+						"duration": 21000000,
+						"originDuration": 21766667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 1920, "height": 1080 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.1851851851851851,
+								"scaleY": 1.1851851851851851
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					}
+				]
+			},
+			{
+				"type": 1,
+				"id": "fjoXAqIiCBbTY9FKIOjjh",
+				"clips": [
+					{
+						"type": 102,
+						"id": "Z4YTGBn6Q5tjbXfhcDLBZ",
+						"start": 0,
+						"end": 15000000,
+						"inPoint": 0,
+						"duration": 15000000,
+						"originDuration": 15090000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/abcbc675ee3c5ba8eba50037d3b7bf45.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/abcbc675ee3c5ba8eba50037d3b7bf45.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 654, "height": 368 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.1009174311926606,
+								"scaleY": 1.1009174311926606
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "dXNaGnEhC8HvZxYdfRDlV",
+						"start": 7360000,
+						"end": 11152000,
+						"inPoint": 15000000,
+						"duration": 3792000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "3WW0jh2_uPBI257lMiu_z",
+						"start": 9240000,
+						"end": 12960000,
+						"inPoint": 18792000,
+						"duration": 3720000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "rmK5CAZhQYaNA0wa7cSgN",
+						"start": 13360000,
+						"end": 16100000,
+						"inPoint": 22512000,
+						"duration": 2740000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "ZbwbATGZjFcDRPAZACpCV",
+						"start": 0,
+						"end": 3212000,
+						"inPoint": 25252000,
+						"duration": 3212000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "Dc1II3vDDEdp-p29CZ6P7",
+						"start": 14480000,
+						"end": 16100000,
+						"inPoint": 28464000,
+						"duration": 1620000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "_xzugVLtEG6taGhRmq1A9",
+						"start": 0,
+						"end": 1860000,
+						"inPoint": 30084000,
+						"duration": 1860000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "T0EHXid4_6v8vM_tTGKRB",
+						"start": 8560000,
+						"end": 11728000,
+						"inPoint": 31944000,
+						"duration": 3168000,
+						"originDuration": 14333333,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/35f71f895c1a770f73cfb82cc4b8710c.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/35f71f895c1a770f73cfb82cc4b8710c.mp4?x-oss-process=video/snapshot,t_8560,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "FhjDak9C8a8orySzjmuMT",
+						"start": 80000,
+						"end": 3800000,
+						"inPoint": 35112000,
+						"duration": 3720000,
+						"originDuration": 16100000,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_3000,f_jpg,w_120,m_fast",
+							"dimension": { "width": 720, "height": 1280 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0
+						}
+					},
+					{
+						"type": 102,
+						"id": "Y3S5LUmyms4XN7XOpNkrf",
+						"start": 0,
+						"end": 21000000,
+						"inPoint": 38832000,
+						"duration": 21000000,
+						"originDuration": 21766667,
+						"videoClip": {
+							"sourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 1920, "height": 1080 },
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 0.375,
+								"scaleY": 0.375
+							},
+							"volume": 0
+						}
+					}
+				]
+			},
+			{
+				"id": "d39b03bc-e48e-4ec8-8f29-a1b9af4d8453",
+				"type": 2,
+				"clips": [
+					{
+						"type": 202,
+						"id": "1e731e2a-7f20-48fa-a60e-860e4dfc4e80",
+						"start": 0,
+						"end": 3792000,
+						"inPoint": 15000000,
+						"duration": 3792000,
+						"originDuration": 3792000,
+						"textClip": {
+							"textContent": "爱马电动车，科技与生活的完美融合",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "36f18b14-c6fe-4365-aae6-2b0a2a037759",
+						"start": 0,
+						"end": 3720000,
+						"inPoint": 18792000,
+						"duration": 3720000,
+						"originDuration": 3720000,
+						"textClip": {
+							"textContent": "独特电机设计，强劲动力源源不断",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "e5087c0c-3d5c-4635-b96e-1b4a33e2c10e",
+						"start": 0,
+						"end": 5952000,
+						"inPoint": 22512000,
+						"duration": 5952000,
+						"originDuration": 5952000,
+						"textClip": {
+							"textContent": "无论城市街头，还是郊外乡村，行驶中的爱马都是一道靓丽的风景",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "470a3592-537b-42b9-9e3d-baf15bd9fa63",
+						"start": 0,
+						"end": 3480000,
+						"inPoint": 28464000,
+						"duration": 3480000,
+						"originDuration": 3480000,
+						"textClip": {
+							"textContent": "便捷的科技，带给你全新的骑行体验",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "e1e3216d-2a77-41f8-967d-c935bf587a8c",
+						"start": 0,
+						"end": 3168000,
+						"inPoint": 31944000,
+						"duration": 3168000,
+						"originDuration": 3168000,
+						"textClip": {
+							"textContent": "多色选择，丰富你的骑行生活",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					},
+					{
+						"type": 202,
+						"id": "fa3ad921-79e7-41f4-b587-27b2204f12af",
+						"start": 0,
+						"end": 3720000,
+						"inPoint": 35112000,
+						"duration": 3720000,
+						"originDuration": 3720000,
+						"textClip": {
+							"textContent": "爱马电动车，是你探索世界的最佳伙伴",
+							"posParam": {
+								"centerX": 0.5,
+								"centerZ": 0.5,
+								"centerY": 0.67
+							},
+							"fontSourceUrl": "https://static-common.tezign.com/fonts/xinyi.ttf",
+							"dimension": { "height": 65, "width": -1 },
+							"textColor": "#FF000000",
+							"strokeWidth": 0,
+							"backgroundColor": "#FFFFDF01"
+						}
+					}
+				]
+			},
+			{
+				"id": "s9o76RNl12xYcU1RjM1iQ",
+				"type": 3,
+				"clips": [
+					{
+						"type": 300,
+						"id": "QqC2_-zQUwl9voha36Sv-",
+						"start": 0,
+						"inPoint": 0,
+						"end": 23831995,
+						"duration": 23831995,
+						"originDuration": 23831995,
+						"audioClip": {
+							"sourceUrl": "https://tezign-videomixer.oss-cn-beijing.aliyuncs.com/fd6ea25a-6067-45cc-a66d-67c0267748a5.wav"
+						}
+					}
+				]
+			}
+		]
+	}
+}

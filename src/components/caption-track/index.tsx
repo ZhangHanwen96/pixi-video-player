@@ -29,12 +29,15 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 		if (!timeline) {
 			textRef.current!.text = "";
 			captionClipRef.current = undefined;
+			clearTimeout(timerRef.current);
+			graphicsRef.current?.clear();
 			return;
 		}
 
 		return $on(
 			"update",
 			(event: EVENT_UPDATE) => {
+				if (!textRef.current) return;
 				const currentCaption = captionTrack.clips.find((clip) => {
 					const start = clip.inPoint / 1_000;
 					const end = (clip.inPoint + clip.duration) / 1_000;
@@ -46,23 +49,23 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 					);
 				});
 
-				if (
-					captionClipRef.current?.id !== currentCaption?.id &&
-					textRef.current
-				) {
+				if (captionClipRef.current?.id !== currentCaption?.id) {
 					captionClipRef.current = currentCaption;
 					const t =
 						captionClipRef.current?.textClip.textContent ?? "";
 					textRef.current.text = t;
+
 					clearTimeout(timerRef.current);
 
 					timerRef.current = setTimeout(() => {
-						if (
-							!textRef.current ||
-							!graphicsRef.current ||
-							!captionClipRef.current
-						)
+						if (!textRef.current || !graphicsRef.current) {
 							return;
+						}
+						if (!captionClipRef.current) {
+							graphicsRef.current.clear();
+							return;
+						}
+
 						const bound = textRef.current.getBounds();
 						graphicsRef.current.clear();
 						if (!t) return;

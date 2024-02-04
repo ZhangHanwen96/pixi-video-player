@@ -6,6 +6,7 @@ import { Button, Drawer, FloatButton, Space, message } from "antd";
 import Editor from "@monaco-editor/react";
 import vmml2 from "@/mock/example-vmml-2";
 import vmml3 from "@/mock/example-vmml-3";
+import debugvmml from "@/mock/debugvmml.json";
 import { useSize } from "ahooks";
 import mockVmml from "@/mock/mock-vmml.json";
 
@@ -37,7 +38,7 @@ function App() {
 	const [sheetOpen, setSheetOpen] = useState(false);
 	const [code, setCode] = useState("");
 
-	const [vmmlJson, setVmml] = useState<any>(mockVmml);
+	const [vmmlJson, setVmml] = useState<any>(debugvmml);
 	const preCodeRef = useRef("");
 
 	useEffect(() => {

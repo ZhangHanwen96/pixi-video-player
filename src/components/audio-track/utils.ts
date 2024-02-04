@@ -13,9 +13,5 @@ export const seekAudio = (currentTime: number, track: AudioTrack) => {
 		);
 	});
 
-	if (!found) {
-		throw new Error("Invalid time");
-	}
-
 	return found;
 };

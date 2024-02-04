@@ -121,7 +121,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		hooks.hook("seek", async ({ currentTime }) => {
 			audioMeta = seekAudio(currentTime, audioTrack);
 			pauseAll();
-			if (!isValidAudioClip(audioMeta)) {
+			if (!audioMeta || !isValidAudioClip(audioMeta)) {
 				return;
 			}
 			if (audioMeta.id === currentMetaRef.current?.id) {
@@ -130,7 +130,11 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			await loadedPromiseMap.get(audioMeta.audioClip.sourceUrl);
 		});
 		hooks.afterEach(({ args, context, name }) => {
-			if (name === "seek" && context.currentId === currentId) {
+			if (
+				name === "seek" &&
+				context.currentId === currentId &&
+				audioMeta
+			) {
 				currentMetaRef.current = audioMeta;
 
 				const { currentTime } = args[0];
@@ -178,8 +182,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			"update",
 			(event: EVENT_SEEK) => {
 				const audioMeta = seekAudio(event.elapsedTime, audioTrack);
-				const isSameMeta = audioMeta.id === currentMetaRef.current?.id;
-				if (!isValidAudioClip(audioMeta)) {
+				const isSameMeta = audioMeta?.id === currentMetaRef.current?.id;
+				if (!audioMeta || !isValidAudioClip(audioMeta)) {
 					// avoid repeating
 					if (isSameMeta) return;
 					pauseAll();

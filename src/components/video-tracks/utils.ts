@@ -13,9 +13,5 @@ export const seekVideo = (currentTime: number, track: VideoTrack) => {
 		);
 	});
 
-	if (!found) {
-		throw new Error("Invalid time");
-	}
-
 	return found;
 };

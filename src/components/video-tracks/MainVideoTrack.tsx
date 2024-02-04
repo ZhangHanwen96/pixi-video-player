@@ -428,7 +428,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	};
 
 	useEffect(() => {
-		let videoMeta: VideoMeta;
+		let videoMeta: VideoMeta | undefined;
 		let id = 0;
 		let currentId = id;
 		hooks.beforeEach(({ name, args, context }) => {

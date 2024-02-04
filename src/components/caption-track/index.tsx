@@ -2,13 +2,14 @@
 import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
 import { Container, Graphics, Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
-import { EVENT_UPDATE } from "@/Timeline";
+import { EVENT_UPDATE, TimelineEventTypes } from "@/Timeline";
 import { useTimelineStore } from "@/store";
 import { $on } from "@/event-utils";
 import { CaptionTrack } from "@/interface/vmml";
 import { argb2Rgba } from "./utils";
 import { StageRect } from "@/interface/app";
 import { useDeepCompareEffect } from "ahooks";
+import EventEmitter from "eventemitter3";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
@@ -79,7 +80,7 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 					});
 				}
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline, ...captionTrack.clips.map((c) => c.id)]);
 

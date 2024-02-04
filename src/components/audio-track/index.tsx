@@ -4,12 +4,13 @@ import { $on, $ons } from "@/event-utils";
 import { useTimelineStore } from "@/store";
 import { AudioTrack } from "@/interface/vmml";
 import { FC, memo, useEffect, useRef, useState } from "react";
-import { EVENT_SEEK } from "@/Timeline";
+import { EVENT_SEEK, TimelineEventTypes } from "@/Timeline";
 import { seekAudio } from "./utils";
 import { applyAudioTransition } from "@/animation/audio";
 import { AudioTransitionCode } from "@/interface/animation";
 import { useDeepCompareEffect, useMemoizedFn, useMount } from "ahooks";
 import { hooks } from "../Controller/hooks";
+import EventEmitter from "eventemitter3";
 
 // TODO: sound instance per component
 
@@ -274,7 +275,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					findOrCreateSound(alias, clip.audioClip.sourceUrl);
 				}
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [soundInstance, timeline, audioTrack]);
 
@@ -287,7 +288,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					currentMetaRef.current?.audioClip.constantSpeed ?? 1,
 				);
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline, soundInstance, audioTrack]);
 
@@ -297,7 +298,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			() => {
 				soundInstance?.stop();
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [soundInstance, timeline]);
 
@@ -395,7 +396,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					},
 				},
 			],
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [soundInstance, timeline, audioTrack]);
 

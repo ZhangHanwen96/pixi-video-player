@@ -32,11 +32,24 @@ export interface EVENT_UPDATE {
 	totalDuration: number;
 	progress: number;
 }
+
 export interface EVENT_SEEK {
 	elapsedTime: number;
 }
 
-export class TimeLineContoller extends EventEmitter {
+export interface TimelineEventTypes {
+	update: (e: EVENT_UPDATE) => void;
+	seek: (e: EVENT_SEEK) => void;
+	"common-update": () => void;
+	"audio-volume": (volume: number) => void;
+	complete: () => void;
+	start: () => void;
+	resume: () => void;
+	pause: () => void;
+	speed: (speed: number) => void;
+}
+
+export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 	#totalDuration = 0;
 	#remaningTime = 0;
 	#elapsedTime = 0;

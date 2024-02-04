@@ -5,6 +5,7 @@ import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
 import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
 import { DisplayObject } from "pixi.js";
 import * as PIXI from "pixi.js";
+import EventEmitter from "eventemitter3";
 import React, {
 	forwardRef,
 	useCallback,
@@ -16,7 +17,12 @@ import React, {
 } from "react";
 import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
-import { EVENT_UPDATE, EVENT_SEEK } from "@/Timeline";
+import {
+	EVENT_UPDATE,
+	EVENT_SEEK,
+	TimeLineContoller,
+	TimelineEventTypes,
+} from "@/Timeline";
 import { useTezignPlayerStore } from "@/store/teizng-player";
 import { isInteger, isNumber } from "lodash-es";
 import preloadUtils, {
@@ -388,7 +394,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					},
 				},
 			],
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [video, timeline]);
 
@@ -512,7 +518,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			[
 				{
 					event: "update",
-					handler: (event: EVENT_UPDATE) => {
+					handler: (event) => {
 						if (useTimelineStore.getState().showPoster) {
 							useTimelineStore.getState().togglePoster();
 						}
@@ -630,7 +636,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					},
 				},
 			],
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline, mainTrack]);
 
@@ -646,7 +652,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					video.playbackRate = speed;
 				}
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline, video]);
 

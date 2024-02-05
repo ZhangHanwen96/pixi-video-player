@@ -1,9 +1,13 @@
 # TODO:
 ## MainTrack
-[ ] image / video mime type logic
-[ ] video start logic
-[ ] crop
+[x] image / video mime type logic
+[x] refactor 'seek' to hookable to allow global loading
+[x] remove video start logic to seek
+[x] refactor/fix audio track
+[x] caption background
+[ ] crop <Sprite />
 [ ] type
+[ ] full screen
 
 
 # React + TypeScript + Vite

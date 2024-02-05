@@ -65,7 +65,7 @@ export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 
 	constructor(
 		protected options: TimeLineContollerOptions,
-		protected app: PIXI.Application,
+		public app: PIXI.Application,
 	) {
 		super();
 		this.#totalDuration = options.totalDuration;

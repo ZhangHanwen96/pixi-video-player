@@ -6,6 +6,7 @@ import { useTimelineStore } from "@/store";
 // import CaptionTrack from "@/CaptionTrack";
 import SoundTrack from "../audio-track";
 import SoundTrackNew from "../audio-track/new";
+import * as PIXI from "pixi.js";
 import TimeControlV2 from "@/components/Controller/index-2";
 import { calculatRectByObjectFit } from "@/util";
 import { useTezignPlayerStore } from "@/store/teizng-player";
@@ -13,7 +14,7 @@ import { useEventListener, useMount } from "ahooks";
 import CaptionTrack from "../caption-track";
 import VideoPoster from "@/VideoPoster";
 import { extractFrame } from "@/utils/extractVideoFrame";
-import { Spin } from "antd";
+import { FloatButton, Spin, message } from "antd";
 
 const SetUp: FC<{
 	duration: number;
@@ -25,6 +26,44 @@ const SetUp: FC<{
 	}, [app, duration]);
 
 	return null;
+};
+
+const ScreenShot = () => {
+	const timeline = useTimelineStore.use.timeline?.(true);
+
+	return (
+		<FloatButton
+			onClick={async () => {
+				if (!timeline || !timeline.app.view.toBlob) {
+					message.error("something went wrong...");
+					return;
+				}
+				const { stage, screen } = timeline.app;
+				const visibleArea = new PIXI.Rectangle(
+					screen.x,
+					screen.y,
+					screen.width,
+					screen.height,
+				);
+				const url = await timeline.app.renderer.extract.base64(
+					stage,
+					"image/png",
+					1,
+					visibleArea,
+				);
+
+				const a = document.createElement("a");
+				a.href = url;
+				a.download = "screen-shot.png";
+				a.click();
+				a.remove();
+			}}
+			style={{
+				top: 24,
+				right: 24,
+			}}
+		/>
+	);
 };
 
 interface TezignPlayerProps {
@@ -68,17 +107,17 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		if (!mainTrack?.clips.length) return 0;
 		const lastClip = mainTrack.clips[mainTrack.clips.length - 1];
 		return (lastClip.inPoint + lastClip.duration) / 1_000;
-		let duration = 0;
-		for (const track of vmml.tracks) {
-			const lastClip = track.clips[track.clips.length - 1];
-			if (lastClip) {
-				duration = Math.max(
-					duration,
-					(lastClip.inPoint + lastClip.duration) / 1_000,
-				);
-			}
-		}
-		return duration;
+		// let duration = 0;
+		// for (const track of vmml.tracks) {
+		// 	const lastClip = track.clips[track.clips.length - 1];
+		// 	if (lastClip) {
+		// 		duration = Math.max(
+		// 			duration,
+		// 			(lastClip.inPoint + lastClip.duration) / 1_000,
+		// 		);
+		// 	}
+		// }
+		// return duration;
 	}, [vmml.tracks]);
 
 	useEventListener(
@@ -94,7 +133,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 			} else {
 				useTezignPlayerStore
 					.getState()
-					.setRect(window.innerWidth, window.outerWidth);
+					.setRect(window.outerWidth, window.outerHeight);
 			}
 		},
 		{
@@ -134,6 +173,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 				className="group/container flex items-center justify-center overflow-hidden relative"
 				id="player-container"
 			>
+				<ScreenShot />
 				{!!mainTrack && (
 					<Stage
 						width={transformedRect.width}

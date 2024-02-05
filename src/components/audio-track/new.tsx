@@ -2,16 +2,22 @@
 import { $on, $ons } from "@/event-utils";
 import { useTimelineStore } from "@/store";
 import { AudioTrack } from "@/interface/vmml";
-import { FC, memo, useEffect, useRef, useState } from "react";
-import { EVENT_SEEK } from "@/Timeline";
+import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
+import { EVENT_SEEK, TimelineEventTypes } from "@/Timeline";
 import { seekAudio } from "./utils";
 import { applyAudioTransition } from "@/animation/audio";
 import { AudioTransitionCode } from "@/interface/animation";
 import { Howl, Howler, SoundSpriteDefinitions } from "howler";
-import { useDeepCompareEffect, useMemoizedFn, useMount } from "ahooks";
+import {
+	useCreation,
+	useDeepCompareEffect,
+	useMemoizedFn,
+	useMount,
+} from "ahooks";
 import { hooks } from "../Controller/hooks";
 import { withPromise } from "@/utils/withPromise";
 import { isNumber } from "lodash-es";
+import EventEmitter from "eventemitter3";
 
 // TODO: sound instance per component
 
@@ -33,64 +39,96 @@ const mergeUtil = {
 	},
 };
 
-const spriteMap = new Map<string, Howl>();
-const loadedPromiseMap = new Map<string, Promise<Howl>>();
-const clipIdToSoundIDMap = new Map<string, number>();
+const useInitSpriteState = () => {
+	const { clipIdToSoundIDMap, loadedPromiseMap, spriteMap } = useCreation(
+		() => ({
+			spriteMap: new Map<string, Howl>(),
+			loadedPromiseMap: new Map<string, Promise<Howl>>(),
+			clipIdToSoundIDMap: new Map<string, number>(),
+		}),
+		[],
+	);
 
-const createSoundSprite = (src: string, clips: AudioTrack["clips"]) => {
-	if (spriteMap.has(src)) {
-		return {
-			sound: spriteMap.get(src) as Howl,
-			loaded: loadedPromiseMap.get(src),
-		};
-	}
-	const sprite = clips.reduce((acc, clip) => {
-		if (!clip.audioClip.sourceUrl) return acc;
-		const range = [
-			clip.start / 1_000,
-			(clip.start + clip.duration) / 1_000,
-		] as [number, number];
-		acc[clip.id] = [...range, true];
-		return acc;
-	}, {} as SoundSpriteDefinitions);
+	const createSoundSprite = useMemoizedFn(
+		(src: string, clips: AudioTrack["clips"]) => {
+			if (spriteMap.has(src)) {
+				return {
+					sound: spriteMap.get(src) as Howl,
+					loaded: loadedPromiseMap.get(src),
+				};
+			}
+			const sprite = clips.reduce((acc, clip) => {
+				if (!clip.audioClip.sourceUrl) return acc;
+				const range = [
+					clip.start / 1_000,
+					(clip.start + clip.duration) / 1_000,
+				] as [number, number];
+				acc[clip.id] = [...range, true];
+				return acc;
+			}, {} as SoundSpriteDefinitions);
 
-	console.log(sprite, "sprite");
+			console.log(sprite, "sprite");
 
-	const { promise, reject, resolve } = withPromise<Howl>();
-	loadedPromiseMap.set(src, promise);
+			const { promise, reject, resolve } = withPromise<Howl>();
+			loadedPromiseMap.set(src, promise);
 
-	const sound = new Howl({
-		src: [src],
-		autoplay: false,
-		html5: true,
-		sprite,
-		onload: () => {
-			resolve(sound);
-		},
-		onloaderror: (id, error) => {
-			reject({
-				error,
-				id,
+			const sound = new Howl({
+				src: [src],
+				autoplay: false,
+				html5: true,
+				sprite,
+				onload: () => {
+					resolve(sound);
+				},
+				onloaderror: (id, error) => {
+					reject({
+						error,
+						id,
+					});
+				},
 			});
+			spriteMap.set(src, sound);
+			return {
+				sound,
+				loaded: promise,
+			};
 		},
-	});
-	spriteMap.set(src, sound);
-	return {
-		sound,
-		loaded: promise,
-	};
-};
+	);
 
-const pauseAll = () => {
-	for (const [, sound] of spriteMap) {
-		sound.pause();
-	}
+	useMount(() => {
+		return () => {
+			for (const [_, sprite] of spriteMap) {
+				sprite.unload();
+			}
+			spriteMap.clear();
+		};
+	});
+
+	return {
+		clipIdToSoundIDMap,
+		loadedPromiseMap,
+		spriteMap,
+		pauseAll: useCallback(() => {
+			for (const [, sound] of spriteMap) {
+				sound.pause();
+			}
+		}, [spriteMap]),
+		createSoundSprite,
+	};
 };
 
 const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	const timeline = useTimelineStore.use.timeline?.();
 	const currentMetaRef = useRef<AudioTrack["clips"][number]>();
 	const deps = audioTrack ? audioTrack.clips.map((c) => c.id) : [];
+
+	const {
+		clipIdToSoundIDMap,
+		createSoundSprite,
+		loadedPromiseMap,
+		pauseAll,
+		spriteMap,
+	} = useInitSpriteState();
 
 	useDeepCompareEffect(() => {
 		if (!audioTrack.clips.length) return;
@@ -107,6 +145,13 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		for (const [url, clips] of urlToClips) {
 			createSoundSprite(url, clips);
 		}
+
+		return () => {
+			for (const [_, sprite] of spriteMap) {
+				sprite.unload();
+			}
+			spriteMap.clear();
+		};
 	}, [...deps]);
 
 	useMount(() => {
@@ -258,7 +303,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				);
 				// sprite.seek(realStart / 1_000_000, soundId);
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline, audioTrack]);
 
@@ -280,7 +325,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				)!;
 				sprite.rate(v, soundId);
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline]);
 
@@ -290,7 +335,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			() => {
 				pauseAll();
 			},
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline]);
 
@@ -340,7 +385,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					},
 				},
 			],
-			timeline,
+			timeline as EventEmitter<TimelineEventTypes>,
 		);
 	}, [timeline]);
 

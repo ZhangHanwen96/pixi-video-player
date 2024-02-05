@@ -36,21 +36,14 @@ import { applyTransition } from "@/animation";
 import { hooks } from "../Controller/hooks";
 import { withPromise } from "@/utils/withPromise";
 import { sleep } from "@/utils/delay";
+import { withTimeLog } from "@/utils/withTimeLog";
+import { loadImage } from "@/utils/loadImage";
 
 const graphics = new PIXI.Graphics();
 graphics.beginFill(0xffffff);
 graphics.drawRect(0, 0, 300, 400);
 graphics.endFill();
 
-const loadImage = async (url: string) => {
-	const img = new Image();
-	const { promise, reject, resolve } = withPromise<HTMLImageElement>();
-	img.onload = () => resolve(img);
-	img.onerror = reject;
-
-	img.src = url;
-	return promise;
-};
 interface Props {
 	containerRef?: React.Ref<PIXI.Container<DisplayObject>>;
 	spriteRef?: React.Ref<PIXI.Sprite>;
@@ -92,8 +85,6 @@ const imageCache = new Map<string, HTMLImageElement>();
 
 const MAX_PRELOAD = 3;
 
-const { startPreloading, finishPreloading } = useTezignPlayerStore.getState();
-
 const getCacheId = (url: string, clipId: string) => {
 	return `${url}-${clipId}`;
 };
@@ -122,6 +113,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 	const [videoMeta, setVideoMeta] = useState<VideoMeta>();
 	const videoMetaRef = useRef<VideoMeta | null>();
+
 	const changeVideoCurrentTime = useMemoizedFn((currentTime: number) => {
 		if (!video) return;
 		video.currentTime = currentTime;
@@ -322,9 +314,10 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 				// !canPlay
 				if (video.readyState < 4) {
-					console.time("waitForCanPlay2 ----");
-					await waitForCanPlay2(video);
-					console.timeEnd("waitForCanPlay2 ----");
+					await withTimeLog(
+						() => waitForCanPlay2(video),
+						"[diffSetVideoMeta] wait for can play",
+					);
 				}
 				if (currentLoadId !== requestLoadId.current) {
 					return;
@@ -431,7 +424,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		let videoMeta: VideoMeta | undefined;
 		let id = 0;
 		let currentId = id;
-		hooks.beforeEach(({ name, args, context }) => {
+		hooks.beforeEach(({ name, context }) => {
 			if (name === "seek") {
 				currentId = context.currentId = ++id;
 			}
@@ -452,19 +445,22 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 			const isImage = videoMeta.videoClip.mimeType.startsWith("image");
 			if (isImage) {
-				console.log("isImage");
 				if (!imageCache.has(videoMeta.videoClip.sourceUrl)) {
-					console.time("load image");
-					const img = await loadImage(videoMeta.videoClip.sourceUrl);
-					console.timeEnd("load image");
+					const img = await withTimeLog(
+						async () => loadImage(videoMeta!.videoClip.sourceUrl),
+						"Load Image",
+					);
 					imageCache.set(videoMeta.videoClip.sourceUrl, img);
 				}
 				return;
 			}
 			const start =
 				currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
-			// 1. check if ready to play
-			await waitForCachePlayable(videoMeta, start / 1_000_000);
+
+			await withTimeLog(
+				() => waitForCachePlayable(videoMeta!, start / 1_000_000),
+				"[seek video] wait for can play",
+			);
 		});
 		hooks.afterEach(async ({ name, args, context }) => {
 			if (name !== "seek" || !videoMeta) return;
@@ -482,7 +478,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				flushSync(() => {
 					setVideoMeta(videoMeta);
 					setVideo(undefined);
-					setImage(imageCache.get(videoMeta.videoClip.sourceUrl));
+					setImage(imageCache.get(videoMeta!.videoClip.sourceUrl));
 				});
 				return;
 			}
@@ -506,7 +502,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			flushSync(() => {
 				setVideoMeta(videoMeta);
 				setVideo(cachedVideo);
-				cachedVideo.volume = videoMeta.videoClip.volume ?? 1;
+				cachedVideo.volume = videoMeta!.videoClip.volume ?? 1;
 				cachedVideo.play();
 				// cachedVideo.autoplay = true;
 			});

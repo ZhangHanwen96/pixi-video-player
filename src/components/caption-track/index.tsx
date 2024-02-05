@@ -27,9 +27,9 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 
 	useDeepCompareEffect(() => {
 		if (!timeline) {
-			textRef.current!.text = "";
-			captionClipRef.current = undefined;
 			clearTimeout(timerRef.current);
+			captionClipRef.current = undefined;
+			textRef.current!.text = "";
 			graphicsRef.current?.clear();
 			return;
 		}
@@ -51,27 +51,30 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 
 				if (captionClipRef.current?.id !== currentCaption?.id) {
 					captionClipRef.current = currentCaption;
-					const t =
+					const text =
 						captionClipRef.current?.textClip.textContent ?? "";
-					textRef.current.text = t;
+					textRef.current.text = text;
 
 					clearTimeout(timerRef.current);
+					if (!text) {
+						return graphicsRef.current?.clear();
+					}
 
 					timerRef.current = setTimeout(() => {
-						if (!textRef.current || !graphicsRef.current) {
+						if (!graphicsRef.current) {
 							return;
 						}
-						if (!captionClipRef.current) {
-							graphicsRef.current.clear();
+						graphicsRef.current.clear();
+
+						if (!captionClipRef.current || !textRef.current) {
 							return;
 						}
 
-						const bound = textRef.current.getBounds();
-						graphicsRef.current.clear();
-						if (!t) return;
 						const bgColor =
 							captionClipRef.current.textClip.backgroundColor;
 						if (!bgColor) return;
+
+						const bound = textRef.current.getBounds();
 						graphicsRef.current.beginFill(argb2Rgba(bgColor), 1);
 						graphicsRef.current.drawRoundedRect(
 							bound.x - 10,
@@ -90,8 +93,8 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	/** properties */
 	const centerY = captionClipRef.current?.textClip.posParam.centerY ?? 0.5;
 	const centerX = captionClipRef.current?.textClip.posParam.centerX ?? 0.5;
-	const fontSize = captionClipRef.current?.textClip.dimension?.height || 24;
-	// const lineSpacing = captionClipRef.current?.textClip.lineSpacing;
+	const fontSize = captionClipRef.current?.textClip.dimension?.height ?? 24;
+
 	const fontFamily =
 		captionClipRef.current?.textClip.fontFamily ||
 		"Arial, Helvetica, sans-serif";
@@ -101,10 +104,10 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const strokeColor = captionClipRef.current?.textClip.strokeColor
 		? argb2Rgba(captionClipRef.current?.textClip.strokeColor)
 		: "#000000";
-	const strokeWidth = captionClipRef.current?.textClip.strokeWidth || 3;
+	const strokeWidth = captionClipRef.current?.textClip.strokeWidth ?? 3;
 	const italic = captionClipRef.current?.textClip.italic;
 	const bold = captionClipRef.current?.textClip.bold;
-	const letterSpacing = captionClipRef.current?.textClip.letterSpacing || 0;
+	const letterSpacing = captionClipRef.current?.textClip.letterSpacing ?? 0;
 
 	const customStyles = {
 		fontSize,

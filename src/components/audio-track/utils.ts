@@ -1,5 +1,4 @@
 import { AudioTrack } from "@/interface/vmml";
-
 /**
  *
  * @param currentTime in milli seconds

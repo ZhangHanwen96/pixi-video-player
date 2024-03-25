@@ -1,8 +1,11 @@
 export default {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-    'postcss-import': {},
-    'tailwindcss/nesting': 'postcss-nested',
-  },
-}
+	plugins: {
+		tailwindcss: {},
+		autoprefixer: {},
+		"postcss-import": {},
+		"tailwindcss/nesting": "postcss-nested",
+		// "postcss-prefixer": {
+		// 	prefix: "vmml",
+		// },
+	},
+};

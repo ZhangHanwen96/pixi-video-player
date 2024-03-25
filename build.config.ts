@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 
 export default defineBuildConfig({
 	// If entries is not provided, will be automatically inferred from package.json
-	entries: ["./src/components/TezignPlayer"],
+	entries: ["./src/lib-entry"],
 
 	// Change outDir, default is 'dist'
 	outDir: "dist",
@@ -16,6 +16,7 @@ export default defineBuildConfig({
 	// 	"@": path.resolve(__dirname, "./src"),
 	// },
 	failOnWarn: false,
+
 	rollup: {
 		emitCJS: true,
 		alias: {

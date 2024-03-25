@@ -1,26 +1,25 @@
 import { AudioTrack, VMMLTemplateV4, VideoTrack } from "@/interface/vmml";
-import MainVideoTrack from "../video-tracks/MainVideoTrack";
+import MainVideoTrack from "../video-tracks/VideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import { FC, useEffect, useMemo, useState } from "react";
+import { FC, useDeferredValue, useEffect, useMemo, useTransition } from "react";
 import { useTimelineStore } from "@/store";
-// import CaptionTrack from "@/CaptionTrack";
-import SoundTrack from "../audio-track";
+
 import SoundTrackNew from "../audio-track/new";
 import * as PIXI from "pixi.js";
 import TimeControlV2 from "@/components/Controller/index-2";
 import { calculatRectByObjectFit } from "@/util";
 import { useTezignPlayerStore } from "@/store/teizng-player";
-import { useEventListener, useMount } from "ahooks";
+import { useEventListener, useSize } from "ahooks";
 import CaptionTrack from "../caption-track";
 import VideoPoster from "@/VideoPoster";
-import { extractFrame } from "@/utils/extractVideoFrame";
 import { FloatButton, Spin, message } from "antd";
+import { usePoster } from "./usePoster";
+import { BasicTarget } from "ahooks/lib/utils/domTarget";
 
 const SetUp: FC<{
 	duration: number;
 }> = ({ duration }) => {
 	const app = useApp();
-
 	useEffect(() => {
 		useTimelineStore.getState().setApp(app, duration);
 	}, [app, duration]);
@@ -66,25 +65,48 @@ const ScreenShot = () => {
 	);
 };
 
-interface TezignPlayerProps {
+type TezignPlayerProps = {
 	vmml: VMMLTemplateV4;
-	containerRect: { width: number; height: number };
-}
+	width?: number;
+	height?: number;
+	container?: BasicTarget;
+};
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
 	vmml,
-	containerRect: containerRectFromProps,
+	height: pHeight,
+	width: pWidth,
+	container,
 }) => {
+	if (!vmml) {
+		throw new Error("No vmml found");
+	}
+
 	const {
 		containerRect: { height, width },
 		setRect,
 	} = useTezignPlayerStore();
 
+	const autoTrackSize = typeof container !== "undefined";
+	const maybeContainerSize = useSize(container);
+
+	const pRect = useMemo(() => {
+		if (autoTrackSize) {
+			return maybeContainerSize;
+		}
+		return {
+			width: pWidth,
+			height: pHeight,
+		};
+	}, [container, pWidth, pHeight, maybeContainerSize]);
+
 	useEffect(() => {
 		if (document.fullscreenElement) return;
-		setRect(containerRectFromProps.width, containerRectFromProps.height);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [containerRectFromProps.height, containerRectFromProps.width]);
+		if (!pRect?.height || !pRect?.width) {
+			return;
+		}
+		setRect(pRect.width, pRect.height);
+	}, [pRect]);
 
 	const transformedRect = useMemo(() => {
 		const rect = calculatRectByObjectFit(
@@ -95,30 +117,23 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 			"contain",
 		);
 		return rect;
-	}, [vmml.dimension, height, width]);
+	}, [vmml, height, width]);
 
-	// TODO: main and sub got reversed
-	const mainTrack = vmml.tracks.find((t) => t.type === 1);
 	const audioTrack = vmml.tracks.find((t) => t.type === 3);
-	const subTrack = vmml.tracks.find((t) => t.type === 0);
 	const captionTrack = vmml.tracks.find((t) => t.type === 2);
 
+	const videoTracks = useMemo(() => {
+		return vmml.tracks
+			.filter(({ type }) => type === 0 || type === 1)
+			.sort((a, b) => a.type - b.type);
+	}, [vmml]);
+
 	const duration = useMemo(() => {
+		const mainTrack = videoTracks[0];
 		if (!mainTrack?.clips.length) return 0;
 		const lastClip = mainTrack.clips[mainTrack.clips.length - 1];
 		return (lastClip.inPoint + lastClip.duration) / 1_000;
-		// let duration = 0;
-		// for (const track of vmml.tracks) {
-		// 	const lastClip = track.clips[track.clips.length - 1];
-		// 	if (lastClip) {
-		// 		duration = Math.max(
-		// 			duration,
-		// 			(lastClip.inPoint + lastClip.duration) / 1_000,
-		// 		);
-		// 	}
-		// }
-		// return duration;
-	}, [vmml.tracks]);
+	}, [videoTracks]);
 
 	useEventListener(
 		"fullscreenchange",
@@ -127,8 +142,8 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 				useTezignPlayerStore
 					.getState()
 					.setRect(
-						containerRectFromProps.width,
-						containerRectFromProps.height,
+						pRect?.width ?? window.innerWidth / 2,
+						pRect?.height ?? window.innerHeight / 2,
 					);
 			} else {
 				useTezignPlayerStore
@@ -141,21 +156,16 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		},
 	);
 
-	const [poster, setPoster] = useState("");
-
-	useEffect(() => {
-		const load = async () => {
-			const url = mainTrack?.clips[0].videoClip?.sourceUrl;
-			if (url) {
-				const src = await extractFrame(url, 3);
-				setPoster(src);
-			}
-		};
-
-		load();
-	}, [mainTrack?.clips[0].videoClip?.sourceUrl]);
+	const sourceUrl = useDeferredValue(
+		videoTracks[0]?.clips[0].videoClip?.sourceUrl,
+	);
+	const [poster] = usePoster(sourceUrl);
 
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
+
+	if (!videoTracks.length) {
+		throw new Error("No video track found");
+	}
 
 	return (
 		<div
@@ -174,40 +184,35 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 				id="player-container"
 			>
 				<ScreenShot />
-				{!!mainTrack && (
+				{
 					<Stage
-						width={transformedRect.width}
-						height={transformedRect.height}
+						width={useDeferredValue(transformedRect.width)}
+						height={useDeferredValue(transformedRect.height)}
 						options={{
 							resolution: window.devicePixelRatio || 1,
 							autoStart: false,
-							// antialias: true,
-							// backgroundAlpha: 0,
 						}}
 					>
 						<SetUp duration={duration} />
-						<MainVideoTrack
-							mainTrack={subTrack as VideoTrack}
-							stageRect={transformedRect}
-							vmml={vmml}
-						/>
-						<MainVideoTrack
-							mainTrack={mainTrack as VideoTrack}
-							stageRect={transformedRect}
-							vmml={vmml}
-						/>
-
-						<CaptionTrack
-							stageRect={transformedRect}
-							captionTrack={captionTrack as any}
-						/>
+						{videoTracks.map((track) => (
+							<MainVideoTrack
+								mainTrack={track as VideoTrack}
+								stageRect={transformedRect}
+							/>
+						))}
+						{captionTrack && (
+							<CaptionTrack
+								stageRect={transformedRect}
+								captionTrack={captionTrack as any}
+							/>
+						)}
 						{audioTrack && (
 							<SoundTrackNew
 								audioTrack={audioTrack as AudioTrack}
 							/>
 						)}
 					</Stage>
-				)}
+				}
 
 				{poster && <VideoPoster url={poster} />}
 				<TimeControlV2 />

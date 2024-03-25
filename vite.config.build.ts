@@ -5,6 +5,10 @@ import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 import dts from "vite-plugin-dts";
 import peerdep from "rollup-plugin-peer-deps-external";
+import { dirname, resolve } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -33,11 +37,12 @@ export default defineConfig({
 				props.height = "1em";
 			},
 		}),
-		dts({
-			declarationOnly: true,
-			rollupTypes: true,
-		}),
-		peerdep(),
+		// dts({
+		// 	rollupTypes: true,
+		// 	pathsToAliases: true,
+		// 	outDir: './dist',
+		// }),
+		// peerdep(),
 	],
 	// set alias for src => @
 	resolve: {
@@ -46,8 +51,10 @@ export default defineConfig({
 		},
 	},
 	build: {
+		emptyOutDir: true,
+		cssCodeSplit: true,
 		lib: {
-			entry: "./src/components/TezignPlayer/index.tsx",
+			entry: resolve(__dirname, "./src/lib-entry.ts"),
 			fileName(format, entryName) {
 				if (format === "es") {
 					return `${entryName}.mjs`;
@@ -57,7 +64,11 @@ export default defineConfig({
 				}
 				return `${entryName}.js`;
 			},
-			formats: ["es"],
+			formats: ["es", "cjs"],
+		},
+		rollupOptions: {
+			// plugins: [peerdep()],
+			external: ["react", "react-dom", "react/jsx-runtime", "pixi.js", "ahooks", "react-router-dom", "react-i18next"],
 		},
 	},
 });

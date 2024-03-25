@@ -1,10 +1,8 @@
-import { clamp } from "lodash-es";
-
 /**
  * With thanks to ai easings.net
  * https://github.com/ai/easings.net/blob/master/src/easings/easingsFunctions.ts
  */
-interface EasingDictionary {
+type EasingDictionary = {
 	linear: (t: number) => number;
 	easeInQuad: (t: number) => number;
 	easeOutQuad: (t: number) => number;
@@ -36,7 +34,9 @@ interface EasingDictionary {
 	easeInBounce: (t: number) => number;
 	easeOutBounce: (t: number) => number;
 	easeInOutBounce: (t: number) => number;
-}
+};
+
+export type EasingFunctionName = keyof EasingDictionary;
 
 const c1 = 1.70158;
 const c2 = c1 * 1.525;
@@ -50,13 +50,14 @@ const bounceOut = (x) => {
 
 	if (x < 1 / d1) {
 		return n1 * x * x;
-	} else if (x < 2 / d1) {
-		return n1 * (x -= 1.5 / d1) * x + 0.75;
-	} else if (x < 2.5 / d1) {
-		return n1 * (x -= 2.25 / d1) * x + 0.9375;
-	} else {
-		return n1 * (x -= 2.625 / d1) * x + 0.984375;
 	}
+	if (x < 2 / d1) {
+		return n1 * (x -= 1.5 / d1) * x + 0.75;
+	}
+	if (x < 2.5 / d1) {
+		return n1 * (x -= 2.25 / d1) * x + 0.9375;
+	}
+	return n1 * (x -= 2.625 / d1) * x + 0.984375;
 };
 
 export type EasingFunction = (t: number) => number;

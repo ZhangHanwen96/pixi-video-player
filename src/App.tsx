@@ -1,17 +1,11 @@
-import * as PIXI from "pixi.js";
-import { useMount, useDebounce, useThrottle } from "ahooks";
+import { useThrottle } from "ahooks";
 import { TezignPlayer } from "./components/TezignPlayer";
-// import vmml from "@/mock/example-vmml-1";
 import { Button, Drawer, FloatButton, Space, message } from "antd";
 import Editor from "@monaco-editor/react";
-import vmml2 from "@/mock/example-vmml-2";
-import vmml3 from "@/mock/example-vmml-3";
-import debugvmml from "@/mock/debugvmml.json";
 import { useSize } from "ahooks";
-import mockVmml from "@/mock/mock-vmml.json";
-
+import debugvmml from "@/mock/debugvmml.json";
 import "./App.css";
-import { VMMLTemplateV4 } from "./interface/vmml";
+import { VMMLTemplateV4 } from "@/interface/vmml";
 import { useEffect, useRef, useState } from "react";
 
 const ratio_16_9 = 16 / 9;
@@ -55,11 +49,11 @@ function App() {
 	const isTooVertical = tWidth / tHeight <= 3 / 4;
 	const classes = isTooVertical
 		? "w-[35vw]"
-		: '"w-[85vw] lg:w-[70vw] 2xl:w-[60vw]"';
+		: "w-[85vw] lg:w-[70vw] 2xl:w-[60vw]";
 
 	return (
 		<div className={classes}>
-			<div ref={ref} className="flex-none w-full min-w-[300px] bg-white">
+			<div ref={ref} className="aspect-video flex w-full bg-white">
 				<FloatButton
 					type="primary"
 					style={{
@@ -110,10 +104,9 @@ function App() {
 				</Drawer>
 				{vmmlJson && (
 					<TezignPlayer
-						containerRect={{
-							height: tHeight,
-							width: tWidth,
-						}}
+						container={() => ref.current as HTMLDivElement}
+						// width={useDeferredValue(tWidth)}
+						// height={useDeferredValue(tHeight)}
 						vmml={vmmlJson.template as VMMLTemplateV4}
 					/>
 				)}

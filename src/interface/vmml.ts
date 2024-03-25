@@ -33,11 +33,13 @@ interface Track {
 }
 
 export interface VideoTrack extends Track {
-	clips: (Clip & { videoClip: VideoClip })[];
+	clips: any[];
+	// clips: (Clip & { videoClip: VideoClip })[];
 }
 
 export interface AudioTrack extends Track {
-	clips: (Clip & { audioClip: AudioClip })[];
+	clips: any[];
+	// clips: (Clip & { audioClip: AudioClip })[];
 }
 
 export interface CaptionTrack extends Track {

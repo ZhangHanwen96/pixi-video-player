@@ -1,13 +1,15 @@
 import { $on, $ons } from "@/event-utils";
-import { VideoTrack, VMMLTemplateV4 } from "@/interface/vmml";
+import { VideoTrack } from "@/interface/vmml";
 import { useTimelineStore } from "@/store";
+import { GlitchFilter } from "@pixi/filter-glitch";
+import { RadialBlurFilter } from "@pixi/filter-radial-blur";
 import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
 import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
-import { DisplayObject } from "pixi.js";
 import * as PIXI from "pixi.js";
 import EventEmitter from "eventemitter3";
-import React, {
+import {
 	forwardRef,
+	memo,
 	useCallback,
 	useEffect,
 	useId,
@@ -17,25 +19,16 @@ import React, {
 } from "react";
 import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
-import {
-	EVENT_UPDATE,
-	EVENT_SEEK,
-	TimeLineContoller,
-	TimelineEventTypes,
-} from "@/Timeline";
-import { useTezignPlayerStore } from "@/store/teizng-player";
-import { isInteger, isNumber } from "lodash-es";
+import { TimelineEventTypes } from "@/Timeline";
+import { isInteger, isNumber, set } from "lodash-es";
 import preloadUtils, {
 	waitForCanPlay2,
-	waitForCanPlay3,
 	waitForLoadedMetadata2,
 } from "@/preload";
 import { mergeRefs } from "@mantine/hooks";
 import { easings } from "@/easing";
-import { applyTransition } from "@/animation";
+import { applyTransition, isInTransition } from "@/animation";
 import { hooks } from "../Controller/hooks";
-import { withPromise } from "@/utils/withPromise";
-import { sleep } from "@/utils/delay";
 import { withTimeLog } from "@/utils/withTimeLog";
 import { loadImage } from "@/utils/loadImage";
 
@@ -43,6 +36,8 @@ const graphics = new PIXI.Graphics();
 graphics.beginFill(0xffffff);
 graphics.drawRect(0, 0, 300, 400);
 graphics.endFill();
+
+const circleGraphicsMask = new PIXI.Graphics();
 
 interface Props {
 	mainTrack: VideoTrack;
@@ -73,6 +68,32 @@ const getDefaultTransform = () => {
 };
 
 const defaultTransform = getDefaultTransform();
+const defaultGlitch = {
+	enabled: false,
+	slices: 5,
+	blue: {
+		x: 0,
+		y: 0,
+	},
+	green: {
+		x: 0,
+		y: 0,
+	},
+	red: {
+		x: 0,
+		y: 0,
+	},
+};
+
+const defaultRadialBlur = {
+	center: {
+		x: 0,
+		y: 0,
+	},
+	radius: 200,
+	angle: 0,
+	enabled: false,
+};
 
 type Trasnform = typeof defaultTransform;
 
@@ -80,6 +101,8 @@ type VideoMeta = VideoTrack["clips"][number];
 
 const Filters = withFilters(Container, {
 	blur: PIXI.BlurFilter,
+	glitch: GlitchFilter,
+	radialBlur: RadialBlurFilter,
 	// adjust: AdjustmentFilter,
 });
 
@@ -118,6 +141,13 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 	const [videoMeta, setVideoMeta] = useState<VideoMeta>();
 	const videoMetaRef = useRef<VideoMeta | null>();
+
+	const [mask, setMask] = useState<PIXI.Graphics>();
+	const maskRef = useRef(mask);
+
+	const resetMask = useMemoizedFn(() => {
+		setMask(undefined);
+	});
 
 	const changeVideoCurrentTime = useMemoizedFn((currentTime: number) => {
 		if (!video) return;
@@ -267,24 +297,25 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 	const syncRectMeta = useMemoizedFn((videoMeta: VideoMeta) => {
 		const videoClip = videoMeta.videoClip;
-		const { dimension } = videoClip;
+		const { dimension: videoDimension } = videoClip;
+		/** pre-calculated -> object-fit: contain */
 		const scaleX = videoClip.posParam.scaleX ?? 1;
 		const scaleY = videoClip.posParam.scaleY ?? 1;
 		flushSync(() => {
 			setRectMeta({
-				height: dimension.height,
-				width: dimension.width,
+				height: videoDimension.height,
+				width: videoDimension.width,
 				scale: {
 					x: scaleX * stageRect.scale,
 					y: scaleY * stageRect.scale,
 				},
 				x:
 					(stageRect.width -
-						dimension.width * scaleX * stageRect.scale) /
+						videoDimension.width * scaleX * stageRect.scale) /
 					2,
 				y:
 					(stageRect.height -
-						dimension.height * scaleY * stageRect.scale) /
+						videoDimension.height * scaleY * stageRect.scale) /
 					2,
 			});
 		});
@@ -410,9 +441,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		clip: VideoMeta,
 		currentTime: number,
 	) => {
-		const video = videoCache.get(
-			getCacheId(clip.videoClip.sourceUrl, clip.id),
-		);
+		const cacheId = getCacheId(clip.videoClip.sourceUrl, clip.id);
+		const video = videoCache.get(cacheId);
 		if (video) {
 			await preloadUtils.waitForCanPlay3(video, currentTime);
 			return;
@@ -423,7 +453,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			currentTime,
 		);
 		newVideo.volume = clip.videoClip.volume ?? 1;
-		videoCache.set(getCacheId(clip.videoClip.sourceUrl, clip.id), newVideo);
+		videoCache.set(cacheId, newVideo);
 	};
 
 	useEffect(() => {
@@ -441,8 +471,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				__reset();
 				return;
 			}
-			const isDiff = videoMeta.id !== videoMetaRef.current?.id;
 
+			const isDiff = videoMeta.id !== videoMetaRef.current?.id;
 			if (!isDiff) {
 				return;
 			}
@@ -515,6 +545,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		});
 	}, []);
 
+	console.log(stageRect, rectMeta);
+
 	useEffect(() => {
 		return $ons(
 			[
@@ -544,16 +576,230 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 							realStart / 1_000_000,
 						);
 
-						// TODO: calculate transform based on videoMeta
 						if (isDiffApplied) {
 							pauseCurrentVideo();
+
+							// reset transform
 							setTransform(defaultTransform);
+							// reset mask
+							resetMask();
+							// reset glitch
+							resetGlitch();
 						} else if (videoMeta.videoClip?.transitionParam) {
+							/** animation | transform */
 							const tp = videoMeta.videoClip.transitionParam;
 
 							const newTransform = getDefaultTransform();
 
+							const rectMeta = rectMetaRef.current;
+
 							switch (tp.transitionCode) {
+								// case "radial_blur_in": {
+								// 	const value = applyTransition({
+								// 		clip: videoMeta,
+								// 		elapsedTime: event.elapsedTime,
+								// 		outputMin: 0,
+								// 		outputMax: 1,
+								// 		transitionParam: tp,
+								// 	});
+								// 	console.log("radial_blur_in", value);
+								// 	const angle = (1 - value) * -180;
+								// 	const cx =
+								// 		rectMeta.x +
+								// 		(rectMeta.width * rectMeta.scale.x) / 2;
+								// 	const cy =
+								// 		rectMeta.y +
+								// 		(rectMeta.height * rectMeta.scale.y) /
+								// 			2;
+								// 	const radius = Math.sqrt(
+								// 		rectMeta.width ** 2 +
+								// 			rectMeta.height ** 2,
+								// 	);
+								// 	const params = {
+								// 		center: {
+								// 			x: rectMeta.x,
+								// 			y: rectMeta.y,
+								// 		},
+								// 		radius: 100,
+								// 		angle: 180,
+								// 		kernelSize: 15,
+								// 		enabled: true,
+								// 	};
+								// 	setRadialBlurParams(params);
+								// 	break;
+								// }
+
+								case "glitch": {
+									const isIn = isInTransition(
+										videoMeta,
+										tp,
+										event.elapsedTime,
+									);
+									if (isIn) {
+										const isOn = Math.random() > 0.5;
+										const getRandomDir = () =>
+											Math.random() > 0.5 ? 1 : -1;
+										const getRand = (
+											from: number,
+											to: number,
+										) =>
+											Math.random() * (to - from) +
+											from * getRandomDir();
+
+										if (!glitchAppliedTime.current) {
+											glitchAppliedTime.current =
+												performance.now();
+
+											setGlitchParams({
+												enabled: isOn,
+												slices:
+													Math.round(
+														Math.random() * 10,
+													) + 2,
+												blue: {
+													x:
+														Math.random() *
+														50 *
+														getRandomDir(),
+													y:
+														Math.random() *
+														50 *
+														getRandomDir(),
+												},
+												green: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												red: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+											});
+										} else if (
+											performance.now() -
+												glitchAppliedTime.current >
+											48
+										) {
+											glitchAppliedTime.current =
+												performance.now();
+											setGlitchParams({
+												enabled: isOn,
+												slices:
+													Math.round(
+														Math.random() * 10,
+													) + 2,
+												blue: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												green: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												red: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+											});
+										}
+									} else {
+										resetGlitch();
+									}
+									break;
+								}
+								case "circle_in": {
+									if (
+										maskRef.current !== circleGraphicsMask
+									) {
+										setMask(circleGraphicsMask);
+									}
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMax: 1,
+										outputMin: 0,
+										transitionParam: tp,
+									});
+
+									circleGraphicsMask.clear();
+									const radius = Math.sqrt(
+										rectMeta.width ** 2 +
+											rectMeta.height ** 2,
+									);
+									const startRadius = 0;
+									const cx =
+										rectMeta.x +
+										(rectMeta.width * rectMeta.scale.x) / 2;
+									const cy =
+										rectMeta.y +
+										(rectMeta.height * rectMeta.scale.y) /
+											2;
+									circleGraphicsMask.pivot.set(cx, cy);
+									circleGraphicsMask.beginFill(0xffffff);
+									circleGraphicsMask.drawCircle(
+										cx,
+										cy,
+										startRadius + value * radius,
+									);
+									circleGraphicsMask.endFill();
+									break;
+								}
+								case "circle_out": {
+									if (
+										maskRef.current !== circleGraphicsMask
+									) {
+										setMask(circleGraphicsMask);
+									}
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+									circleGraphicsMask.clear();
+									const radius = Math.sqrt(
+										rectMeta.width ** 2 +
+											rectMeta.height ** 2,
+									);
+									const startRadius = 50;
+									const cx =
+										rectMeta.x +
+										(rectMeta.width * rectMeta.scale.x) / 2;
+									const cy =
+										rectMeta.y +
+										(rectMeta.height * rectMeta.scale.y) /
+											2;
+									circleGraphicsMask.pivot.set(cx, cy);
+									circleGraphicsMask.beginFill(0xffffff);
+									circleGraphicsMask.drawCircle(
+										cx,
+										cy,
+										value * radius,
+									);
+									circleGraphicsMask.endFill();
+									break;
+								}
 								case "crossfadein": {
 									const value = applyTransition({
 										clip: videoMeta,
@@ -677,6 +923,19 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		};
 	}, [videoMeta?.videoClip.filterParam]);
 
+	const [glitchParams, setGlitchParams] = useState(defaultGlitch);
+	const glitchAppliedTime = useRef<number>();
+	const resetGlitch = useMemoizedFn(() => {
+		if (glitchParams === defaultGlitch) return;
+		setGlitchParams(defaultGlitch);
+	});
+
+	const [radialBlurParams, setRadialBlurParams] = useState(defaultRadialBlur);
+	const resetRadialBlur = useMemoizedFn(() => {
+		if (radialBlurParams === defaultRadialBlur) return;
+		setRadialBlurParams(radialBlurParams);
+	});
+
 	const clipId = videoMeta?.id || "";
 
 	const containerKey = clipId ? `${clipId}-${compId}` : compId;
@@ -705,9 +964,17 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		return (
 			<Filters
 				ref={cContainerRef}
-				// anchor={0.5}
 				// HACK: I maybe only have a title bit idea why this works 🥹
 				key={containerKey}
+				glitch={{
+					fillMode: GlitchFilter.LOOP,
+					seed: 0.3,
+					...glitchParams,
+				}}
+				radialBlur={{
+					...radialBlurParams,
+				}}
+				// position related
 				x={
 					rectMeta.x +
 					(rectMeta.width * rectMeta.scale.x) / 2 +
@@ -718,6 +985,11 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					(rectMeta.height * rectMeta.scale.y) / 2 +
 					transform.translate.y
 				}
+				pivot={{
+					x: rectMeta.width / 2,
+					y: rectMeta.height / 2,
+				}}
+				//
 				angle={transform.degree}
 				scale={{
 					x: rectMeta.scale.x * transform.scale.x * flipX,
@@ -725,11 +997,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				}}
 				blur={filterParams}
 				alpha={transform.alpha}
-				pivot={{
-					x: rectMeta.width / 2,
-					y: rectMeta.height / 2,
-				}}
-				// mask={graphics}
+				mask={mask}
 			>
 				<Sprite
 					key={spriteKey}
@@ -778,6 +1046,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					x: rectMeta.width / 2,
 					y: rectMeta.height / 2,
 				}}
+				mask={mask}
 			>
 				<Sprite
 					key={`${spriteKey}`}
@@ -790,6 +1059,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		);
 	}
 
-	throw new Error("No video | image");
+	return null;
 });
-export default MainVideoTrack;
+export default memo(MainVideoTrack);

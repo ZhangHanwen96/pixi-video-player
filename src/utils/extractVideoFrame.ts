@@ -9,7 +9,7 @@ export const extractFrame = async (url: string, frame: number) => {
 	const canvas = document.createElement("canvas");
 	canvas.style.display = "none";
 	const context = canvas.getContext("2d")!;
-	video.addEventListener("loadeddata", function () {
+	video.addEventListener("loadeddata", () => {
 		// Set the canvas size to match the video
 		canvas.width = video.videoWidth;
 		canvas.height = video.videoHeight;
@@ -17,10 +17,11 @@ export const extractFrame = async (url: string, frame: number) => {
 		video.currentTime = frame / 30;
 	});
 
-	video.addEventListener("seeked", function () {
+	video.addEventListener("seeked", () => {
 		// Draw the video frame to the canvas
 		context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+		video.remove();
 		// Convert the canvas to an image format
 		resolve(canvas.toDataURL("image/png"));
 	});

@@ -32,6 +32,10 @@
 							"filterParam": {
 								"filterCode": "bg_blur",
 								"filterValue": 100
+							},
+							"transitionParam": {
+								"transitionCode": "glitch",
+								"duration": 1000000
 							}
 						}
 					},
@@ -59,6 +63,10 @@
 							"filterParam": {
 								"filterCode": "bg_blur",
 								"filterValue": 100
+							},
+							"transitionParam": {
+								"transitionCode": "circle_out",
+								"duration": 2000000
 							}
 						}
 					},
@@ -304,7 +312,11 @@
 								"scaleX": 1.1009174311926606,
 								"scaleY": 1.1009174311926606
 							},
-							"volume": 0
+							"volume": 0,
+							"transitionParam": {
+								"transitionCode": "glitch",
+								"duration": 1000000
+							}
 						}
 					},
 					{
@@ -327,7 +339,11 @@
 								"scaleX": 1,
 								"scaleY": 1
 							},
-							"volume": 0
+							"volume": 0,
+							"transitionParam": {
+								"transitionCode": "circle_out",
+								"duration": 2000000
+							}
 						}
 					},
 					{

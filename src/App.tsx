@@ -53,7 +53,14 @@ function App() {
 
 	return (
 		<div className={classes}>
-			<div ref={ref} className="aspect-video flex w-full bg-white">
+			<div
+				ref={ref}
+				className="aspect-video flex w-full bg-white"
+				// style={{
+				// 	aspectRatio: 4 / 16,
+				// 	width: "50vw",
+				// }}
+			>
 				<FloatButton
 					type="primary"
 					style={{
@@ -104,6 +111,7 @@ function App() {
 				</Drawer>
 				{vmmlJson && (
 					<TezignPlayer
+						key={vmmlJson.template.tracks[0].id}
 						container={() => ref.current as HTMLDivElement}
 						// width={useDeferredValue(tWidth)}
 						// height={useDeferredValue(tHeight)}

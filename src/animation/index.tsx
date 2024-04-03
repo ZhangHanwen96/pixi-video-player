@@ -1,10 +1,6 @@
 import { EasingFunction, interpolate } from "@/easing";
 import { TransitionCode, TransitionParam } from "@/interface/animation";
-import {
-	createInterpolator,
-	InterpolatorConfig,
-	easings,
-} from "@react-spring/web";
+import { easings } from "@react-spring/web";
 import { VideoTrack } from "@/interface/vmml";
 import { clamp } from "lodash-es";
 
@@ -55,9 +51,62 @@ const transitionCodeMap: Record<
 			easings: easings.easeOutSine,
 		},
 	},
+	circle_in: {
+		type: "intro",
+		default: {
+			easings: easings.easeInSine,
+		},
+	},
+	circle_out: {
+		type: "outro",
+		default: {
+			easings: easings.easeOutSine,
+		},
+	},
+	glitch: {
+		type: "outro",
+		default: {
+			easings: easings.easeInSine,
+		},
+	},
+	radial_blur_in: {
+		type: "intro",
+		default: {
+			easings: easings.easeInSine,
+		},
+	},
+	radial_blur_out: {
+		type: "outro",
+		default: {
+			easings: easings.easeOutSine,
+		},
+	},
 };
 
 const ms = 1_000;
+
+export const isInTransition = (
+	clip: VideoTrack["clips"][number],
+	transitionParam: TransitionParam,
+	elapsedTime: number,
+) => {
+	const duration = transitionParam.duration / ms;
+	const transition = transitionCodeMap[transitionParam.transitionCode];
+
+	let transitionInpoint: number;
+	let transitionOutpoint: number;
+
+	if (transition.type === "outro") {
+		transitionOutpoint = (clip.inPoint + clip.duration) / ms;
+		transitionInpoint = transitionOutpoint - duration;
+	} else {
+		transitionOutpoint = clip.inPoint / ms + duration;
+		transitionInpoint = clip.inPoint / ms;
+	}
+	return (
+		transitionInpoint <= elapsedTime && transitionOutpoint >= elapsedTime
+	);
+};
 
 export const applyTransition = (options: {
 	outputMin: number;

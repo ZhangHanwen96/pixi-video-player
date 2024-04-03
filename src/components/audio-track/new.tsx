@@ -13,6 +13,7 @@ import {
 	useDeepCompareEffect,
 	useMemoizedFn,
 	useMount,
+	useUnmount,
 } from "ahooks";
 import { hooks } from "../Controller/hooks";
 import { withPromise } from "@/utils/withPromise";
@@ -95,13 +96,11 @@ const useInitSpriteState = () => {
 		},
 	);
 
-	useMount(() => {
-		return () => {
-			for (const [_, sprite] of spriteMap) {
-				sprite.unload();
-			}
-			spriteMap.clear();
-		};
+	useUnmount(() => {
+		for (const [_, sprite] of spriteMap) {
+			sprite.unload();
+		}
+		spriteMap.clear();
 	});
 
 	return {

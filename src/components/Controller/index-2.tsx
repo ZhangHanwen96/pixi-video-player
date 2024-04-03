@@ -19,8 +19,9 @@ import MdiPlayCircleOutline from "~icons/mdi/play-circle-outline";
 import MdiPauseCircleOutline from "~icons/mdi/pause-circle-outline";
 import MdiRestart from "~icons/mdi/restart";
 import { $on } from "@/event-utils";
-import { Dropdown, Slider, Popover } from "antd";
+import { Dropdown, Slider, Popover, Switch } from "antd";
 import { useTezignPlayerStore } from "@/store/teizng-player";
+import classNames from "classnames";
 
 type Status = "pending" | "start" | "stop" | "resume" | "restart";
 
@@ -196,6 +197,13 @@ const TimeControl = () => {
 		}
 	};
 
+	const toggleCaptionEditor = () => {
+		useTezignPlayerStore.setState({
+			showCaptionEditor:
+				!useTezignPlayerStore.getState().showCaptionEditor,
+		});
+	};
+
 	const showIcon = ["resume", "start"].includes(status);
 
 	const renderSlider = () => {
@@ -243,7 +251,7 @@ const TimeControl = () => {
 	return (
 		<>
 			<div
-				className="absolute inset-0 cursor-default flex items-center justify-center"
+				className="absolute group/container inset-0 cursor-default flex items-center justify-center"
 				ref={wrapperRef}
 				onClick={() => {
 					handleButtonClick();
@@ -259,12 +267,20 @@ const TimeControl = () => {
 					onClick={(e) => {
 						e.stopPropagation();
 					}}
-					className="absolute bottom-0 inset-x-0 bg-black/70 backdrop-filter px-3 py-2 delay-300 group-hover/container:translate-y-0 transition-transform duration-300 ease-in-out"
+					className={classNames([
+						"translate-y-full group-hover/container:translate-y-0",
+						"absolute bottom-0 inset-x-0 bg-black/50 backdrop-filter px-3 py-2 delay-150 transition-transform duration-300 ease-in-out",
+					])}
 				>
 					{isMobileLayout && (
 						<div className="mx-1 mb-2">{renderSlider()}</div>
 					)}
-					<div className="flex w-full flex-row items-center">
+					<div
+						className={classNames([
+							"flex w-full flex-row items-center",
+							isMobileLayout && "justify-between",
+						])}
+					>
 						<span
 							onClick={handleButtonClick}
 							className="text-2xl text-slate-200 hover:text-white cursor-pointer flex-none flex items-center shrink-0"
@@ -281,6 +297,10 @@ const TimeControl = () => {
 								ref={durationDisplayRef}
 								data-time-fallback="00:00 / 00:00"
 								className="display-time text-white pr-2"
+							/>
+							<Switch
+								defaultChecked={false}
+								onChange={toggleCaptionEditor}
 							/>
 							<Popover
 								arrow={false}
@@ -364,7 +384,6 @@ const TimeControl = () => {
 									<MdiSpeedometerSlow />
 								</span>
 							</Dropdown>
-
 							{/* <Dropdown
                                 menu={{
                                     items: [

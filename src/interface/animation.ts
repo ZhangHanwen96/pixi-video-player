@@ -4,7 +4,9 @@ export type TransitionCode =
 	| "slide_in"
 	| "slide_out"
 	| "scale_in"
-	| "scale_out";
+	| "scale_out"
+	| "circle_in"
+	| "circle_out";
 
 export type TransitionParam = {
 	transitionCode: TransitionCode;

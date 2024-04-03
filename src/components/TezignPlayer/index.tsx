@@ -1,4 +1,9 @@
-import { AudioTrack, VMMLTemplateV4, VideoTrack } from "@/interface/vmml";
+import {
+	AudioTrack,
+	CaptionTrack,
+	VMMLTemplateV4,
+	VideoTrack,
+} from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/VideoTrack";
 import { Stage, useApp } from "@pixi/react";
 import { FC, useDeferredValue, useEffect, useMemo, useTransition } from "react";
@@ -9,20 +14,26 @@ import * as PIXI from "pixi.js";
 import TimeControlV2 from "@/components/Controller/index-2";
 import { calculatRectByObjectFit } from "@/util";
 import { useTezignPlayerStore } from "@/store/teizng-player";
-import { useEventListener, useSize } from "ahooks";
-import CaptionTrack from "../caption-track";
+import { useEventListener, useSize, useUnmount } from "ahooks";
+import CaptionTrackComponent from "../caption-track";
 import VideoPoster from "@/VideoPoster";
 import { FloatButton, Spin, message } from "antd";
 import { usePoster } from "./usePoster";
 import { BasicTarget } from "ahooks/lib/utils/domTarget";
+import CaptionEditor from "../caption-editor";
 
 const SetUp: FC<{
 	duration: number;
 }> = ({ duration }) => {
 	const app = useApp();
+
 	useEffect(() => {
 		useTimelineStore.getState().setApp(app, duration);
 	}, [app, duration]);
+
+	useUnmount(() => {
+		useTimelineStore.getState().timeline?.stop();
+	});
 
 	return null;
 };
@@ -86,6 +97,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		containerRect: { height, width },
 		setRect,
 	} = useTezignPlayerStore();
+	const showCaptionEditor = useTezignPlayerStore.use.showCaptionEditor(true);
 
 	const autoTrackSize = typeof container !== "undefined";
 	const maybeContainerSize = useSize(container);
@@ -108,6 +120,9 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		setRect(pRect.width, pRect.height);
 	}, [pRect]);
 
+	/**
+	 * transform the stage rect to fit the outer html element container
+	 */
 	const transformedRect = useMemo(() => {
 		const rect = calculatRectByObjectFit(
 			{
@@ -159,7 +174,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	const sourceUrl = useDeferredValue(
 		videoTracks[0]?.clips[0].videoClip?.sourceUrl,
 	);
-	const [poster] = usePoster(sourceUrl);
+	const { poster, loading } = usePoster(sourceUrl);
 
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
 
@@ -168,60 +183,76 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	}
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				position: "relative",
-			}}
-		>
+		<>
 			<div
 				style={{
-					width,
-					height,
-					backgroundColor: "#313131",
+					display: "flex",
+					position: "relative",
 				}}
-				className="group/container flex items-center justify-center overflow-hidden relative"
-				id="player-container"
 			>
-				<ScreenShot />
-				{
-					<Stage
-						width={useDeferredValue(transformedRect.width)}
-						height={useDeferredValue(transformedRect.height)}
-						options={{
-							resolution: window.devicePixelRatio || 1,
-							autoStart: false,
-						}}
-					>
-						<SetUp duration={duration} />
-						{videoTracks.map((track) => (
-							<MainVideoTrack
-								mainTrack={track as VideoTrack}
-								stageRect={transformedRect}
+				<div
+					style={{
+						width,
+						height,
+						backgroundColor: "#313131",
+					}}
+					className="group/container flex items-center justify-center overflow-hidden relative"
+					id="player-container"
+				>
+					<ScreenShot />
+					{
+						<Stage
+							width={useDeferredValue(transformedRect.width)}
+							height={useDeferredValue(transformedRect.height)}
+							options={{
+								resolution: window.devicePixelRatio || 1,
+								autoStart: false,
+							}}
+						>
+							<SetUp duration={duration} />
+							{videoTracks.map((track) => (
+								<MainVideoTrack
+									mainTrack={track as VideoTrack}
+									stageRect={transformedRect}
+								/>
+							))}
+							{captionTrack && (
+								<CaptionTrackComponent
+									stageRect={transformedRect}
+									captionTrack={captionTrack as any}
+								/>
+							)}
+							{audioTrack && (
+								<SoundTrackNew
+									audioTrack={audioTrack as AudioTrack}
+								/>
+							)}
+						</Stage>
+					}
+					{poster && <VideoPoster url={poster} />}
+					<TimeControlV2 />
+					{seekLoading && (
+						<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
+							<Spin
+								className="text-teal-500"
+								spinning
+								tip={"加载中..."}
+								size="large"
 							/>
-						))}
-						{captionTrack && (
-							<CaptionTrack
-								stageRect={transformedRect}
-								captionTrack={captionTrack as any}
-							/>
-						)}
-						{audioTrack && (
-							<SoundTrackNew
-								audioTrack={audioTrack as AudioTrack}
-							/>
-						)}
-					</Stage>
-				}
-
-				{poster && <VideoPoster url={poster} />}
-				<TimeControlV2 />
-				{seekLoading && (
-					<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
-						<Spin spinning tip={"加载中..."} size="large" />
-					</div>
-				)}
+						</div>
+					)}
+				</div>
 			</div>
-		</div>
+			{captionTrack && showCaptionEditor && (
+				<CaptionEditor
+					onClose={() => {
+						useTezignPlayerStore.setState({
+							showCaptionEditor: false,
+						});
+					}}
+					captionTrack={captionTrack as CaptionTrack}
+				/>
+			)}
+		</>
 	);
 };

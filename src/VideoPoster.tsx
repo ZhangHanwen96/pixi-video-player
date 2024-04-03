@@ -17,10 +17,7 @@ const VideoPoster: FC<{
 					src={url}
 					crossOrigin="anonymous"
 					alt="video poster"
-					className={clx(
-						"w-full h-full object-contain",
-						imgClassName,
-					)}
+					className={clx("w-full h-full object-cover", imgClassName)}
 				/>
 			</div>
 		)

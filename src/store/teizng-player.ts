@@ -24,6 +24,7 @@ interface Actions {
 	startSeekLoading: () => void;
 	finishSeekLoading: () => void;
 	seekLoading: boolean;
+	showCaptionEditor: boolean;
 }
 
 export const tezignPlayerStore = create(
@@ -33,6 +34,7 @@ export const tezignPlayerStore = create(
 			setVmml(vmml) {
 				set(() => ({ vmml }));
 			},
+			showCaptionEditor: false,
 			loading: false,
 			seekLoading: false,
 			startSeekLoading: () => {

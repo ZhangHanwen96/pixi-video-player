@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 
 export const usePoster = (url?: string) => {
 	const [poster, setPoster] = useState("");
+	const [loading, setLoading] = useState(false);
+
 	useEffect(() => {
 		if (!url) return;
 		let dirty = false;
@@ -13,11 +15,20 @@ export const usePoster = (url?: string) => {
 			setPoster(src);
 		};
 
-		generatePoster();
+		setLoading(true);
+		(async () => {
+			try {
+				await generatePoster();
+			} finally {
+				if (dirty) return;
+				setLoading(false);
+			}
+		})();
+
 		return () => {
 			dirty = true;
 		};
 	}, [url]);
 
-	return [poster, setPoster] as const;
+	return { poster, loading } as const;
 };

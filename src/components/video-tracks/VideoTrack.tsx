@@ -4,7 +4,12 @@ import { useTimelineStore } from "@/store";
 import { GlitchFilter } from "@pixi/filter-glitch";
 import { RadialBlurFilter } from "@pixi/filter-radial-blur";
 import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
-import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
+import {
+	useDeepCompareEffect,
+	useMemoizedFn,
+	useUnmountedRef,
+	useUpdateEffect,
+} from "ahooks";
 import * as PIXI from "pixi.js";
 import EventEmitter from "eventemitter3";
 import {
@@ -460,12 +465,12 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		let videoMeta: VideoMeta | undefined;
 		let id = 0;
 		let currentId = id;
-		hooks.beforeEach(({ name, context }) => {
+		const unsub = hooks.beforeEach(({ name, context }) => {
 			if (name === "seek") {
-				currentId = context.currentId = ++id;
+				currentId = context.currentVideoId = ++id;
 			}
 		});
-		hooks.hook("seek", async ({ currentTime }) => {
+		const unsub2 = hooks.hook("seek", async ({ currentTime }) => {
 			videoMeta = seekVideo(currentTime, mainTrack);
 			if (!videoMeta) {
 				__reset();
@@ -498,7 +503,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				"[seek video] wait for can play",
 			);
 		});
-		hooks.afterEach(async ({ name, args, context }) => {
+		const unsub3 = hooks.afterEach(async ({ name, args, context }) => {
 			if (name !== "seek" || !videoMeta) return;
 			if (currentId !== context.currentId) return;
 			const { currentTime } = args[0];
@@ -543,6 +548,9 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				// cachedVideo.autoplay = true;
 			});
 		});
+		return () => {
+			hooks.removeAllHooks();
+		};
 	}, []);
 
 	console.log(stageRect, rectMeta);

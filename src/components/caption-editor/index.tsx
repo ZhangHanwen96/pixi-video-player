@@ -148,10 +148,6 @@ const CaptionEditor: FC<{ captionTrack: CaptionTrack; onClose: () => void }> =
 			);
 			if (!activeElement) return;
 
-			if ("scrollIntoViewIfNeeded" in activeElement) {
-				activeElement.scrollIntoViewIfNeeded();
-				return;
-			}
 			activeElement.scrollIntoView({
 				behavior: "smooth",
 				block: "center",

@@ -56,7 +56,7 @@ export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 	currentCaption?: { start: number; end: number; text: string } | null = null;
 	// #startTime: number = 0;
 	#speed = 1;
-	#FPS = 60;
+	#FPS = 30;
 	#audioVolume = 1;
 
 	#seekAbort: any;

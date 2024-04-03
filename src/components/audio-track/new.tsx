@@ -68,7 +68,11 @@ const useInitSpriteState = () => {
 				return acc;
 			}, {} as SoundSpriteDefinitions);
 
-			console.log(sprite, "sprite");
+			console.log(
+				"%cCreating Sprite",
+				"color: green; font-weight: 600; font-size: 14px;",
+			);
+			console.log("sprite: ", sprite);
 
 			const { promise, reject, resolve } = withPromise<Howl>();
 			loadedPromiseMap.set(src, promise);
@@ -88,6 +92,7 @@ const useInitSpriteState = () => {
 					});
 				},
 			});
+
 			spriteMap.set(src, sound);
 			return {
 				sound,
@@ -96,12 +101,12 @@ const useInitSpriteState = () => {
 		},
 	);
 
-	useUnmount(() => {
-		for (const [_, sprite] of spriteMap) {
-			sprite.unload();
-		}
-		spriteMap.clear();
-	});
+	// useUnmount(() => {
+	// 	for (const [_, sprite] of spriteMap) {
+	// 		sprite.unload();
+	// 	}
+	// 	spriteMap.clear();
+	// });
 
 	return {
 		clipIdToSoundIDMap,
@@ -145,6 +150,9 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			createSoundSprite(url, clips);
 		}
 
+		console.log("------- spriteMap");
+		console.log(Array.from(spriteMap.entries()));
+
 		return () => {
 			for (const [_, sprite] of spriteMap) {
 				sprite.unload();
@@ -157,12 +165,12 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		let audioMeta: ReturnType<typeof seekAudio>;
 		let id = 0;
 		let currentId = id;
-		hooks.beforeEach(({ context, name }) => {
+		const remove = hooks.beforeEach(({ context, name }) => {
 			if (name === "seek") {
-				currentId = context.currentId = ++id;
+				currentId = context.currentAudioId = ++id;
 			}
 		});
-		hooks.hook("seek", async ({ currentTime }) => {
+		const remove2 = hooks.hook("seek", async ({ currentTime }) => {
 			audioMeta = seekAudio(currentTime, audioTrack);
 			pauseAll();
 			if (!audioMeta || !isValidAudioClip(audioMeta)) {
@@ -173,10 +181,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			}
 			await loadedPromiseMap.get(audioMeta.audioClip.sourceUrl);
 		});
-		hooks.afterEach(({ args, context, name }) => {
+		const remove3 = hooks.afterEach(({ args, context, name }) => {
 			if (
 				name === "seek" &&
-				context.currentId === currentId &&
+				context.currentAudioId === currentId &&
 				audioMeta
 			) {
 				currentMetaRef.current = audioMeta;
@@ -193,7 +201,19 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 
 				let soundId = clipIdToSoundIDMap.get(audioMeta.id);
 				const _state = { soundId } as { soundId: number };
+				console.info(
+					"audioMeta.audioClip.sourceUrl",
+					audioMeta.audioClip.sourceUrl,
+				);
+				console.info(Array.from(spriteMap.entries()));
 				const sprite = spriteMap.get(audioMeta.audioClip.sourceUrl)!;
+
+				if (!sprite) {
+					console.error("Sprite Not Found");
+					console.error(audioMeta.audioClip.sourceUrl);
+					return;
+				}
+
 				sprite.once("play", (id) => {
 					sprite.seek(realStart, id);
 				});
@@ -209,6 +229,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				);
 			}
 		});
+
+		return () => {
+			hooks.removeAllHooks();
+		};
 	});
 
 	const setVolume = useMemoizedFn((v: number) => {

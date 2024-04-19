@@ -9,10 +9,12 @@
 		"build": "vite build",
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
-		"build:tsup": "tsup"
+		"build:tsup": "tsup",
+		"bundle:tailwind": "npx tailwind"
 	},
 	"dependencies": {
 		"@mantine/hooks": "^7.2.2",
+		"@million/lint": "^0.0.73",
 		"@pixi/filter-adjustment": "^5.1.1",
 		"@pixi/filter-glitch": "^5.1.1",
 		"@pixi/filter-radial-blur": "^5.1.1",
@@ -26,6 +28,7 @@
 		"hookable": "^5.5.3",
 		"howler": "^2.2.4",
 		"immer": "^10.0.4",
+		"leva": "^0.9.35",
 		"lodash-es": "^4.17.21",
 		"rc-util": "^5.39.1",
 		"react-draggable": "^4.4.6",

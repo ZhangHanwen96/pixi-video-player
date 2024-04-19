@@ -11,6 +11,7 @@ import { EVENT_UPDATE, FRAME_RATE, TimeLineContoller } from "@/Timeline";
 import { useMemoizedFn, useUpdate, useResponsive, useSize } from "ahooks";
 import { useTimelineStore } from "@/store";
 import MdiFullscreenExit from "~icons/mdi/fullscreen-exit";
+import MdiPlay from "~icons/mdi/play";
 import MdiFullscreen from "~icons/mdi/fullscreen";
 import MdiSpeedometerSlow from "~icons/mdi/speedometer-slow";
 import MdiVolume from "~icons/mdi/volume";
@@ -45,6 +46,7 @@ const getStatus = (timeline?: TimeLineContoller): Status => {
 const TimeControl = () => {
 	const { timeline } = useTimelineStore();
 	const isSeeking = useTezignPlayerStore.use.seekLoading(true);
+	const showCaptionEditor = useTezignPlayerStore.use.showCaptionEditor(true);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const wrapperSize = useSize(wrapperRef);
 	const isMobileLayout = !!wrapperSize && wrapperSize.width < 400;
@@ -187,11 +189,11 @@ const TimeControl = () => {
 			case "restart":
 				return <MdiRestart />;
 			case "start":
-				return <MdiPlayCircleOutline />;
+				return <MdiPlay />;
 			case "stop":
 				return <MdiPauseCircleOutline />;
 			case "resume":
-				return <MdiPlayCircleOutline />;
+				return <MdiPlay />;
 			default:
 				return null;
 		}
@@ -216,7 +218,7 @@ const TimeControl = () => {
 					style={{
 						width: `calc(var(--progress, 0) * 100%)`,
 					}}
-					className="bg-sky-600 cursor-pointer h-full"
+					className="bg-white cursor-pointer h-full"
 				/>
 				{/* Thumb */}
 				<div
@@ -258,8 +260,10 @@ const TimeControl = () => {
 				}}
 			>
 				{showIcon && !isSeeking && (
-					<div className="w-12 h-12  hover:scale-125 transition-all duration-100 ease flex items-center justify-center cursor-pointer z-20 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
-						{statusIcon()}
+					<div className="w-16 h-16 hover:scale-110 transition-all duration-100 ease-in flex items-center justify-center cursor-pointer z-10 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
+						<span className="text-5xl grid place-items-center">
+							{statusIcon()}
+						</span>
 					</div>
 				)}
 
@@ -269,7 +273,7 @@ const TimeControl = () => {
 					}}
 					className={classNames([
 						"translate-y-full group-hover/container:translate-y-0",
-						"absolute bottom-0 inset-x-0 bg-black/50 backdrop-filter px-3 py-2 delay-150 transition-transform duration-300 ease-in-out",
+						"absolute bottom-0 inset-x-0 bg-black/30 backdrop-filter px-3 py-2 delay-150 transition-transform duration-300 ease-in-out",
 					])}
 				>
 					{isMobileLayout && (
@@ -297,10 +301,6 @@ const TimeControl = () => {
 								ref={durationDisplayRef}
 								data-time-fallback="00:00 / 00:00"
 								className="display-time text-white pr-2"
-							/>
-							<Switch
-								defaultChecked={false}
-								onChange={toggleCaptionEditor}
 							/>
 							<Popover
 								arrow={false}

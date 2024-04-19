@@ -1,12 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import AutoImport from "unplugin-auto-import/vite";
+import MillionCompiler from "@million/lint";
 import IconsResolver from "unplugin-icons/resolver";
 import Icons from "unplugin-icons/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
 	plugins: [
+		// MillionCompiler.vite(),
 		react(),
 		AutoImport({
 			include: [

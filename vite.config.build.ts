@@ -37,11 +37,10 @@ export default defineConfig({
 				props.height = "1em";
 			},
 		}),
-		// dts({
-		// 	rollupTypes: true,
-		// 	pathsToAliases: true,
-		// 	outDir: './dist',
-		// }),
+		dts({
+			rollupTypes: true,
+			tsconfigPath: resolve(__dirname, "./tsconfig.json"),
+		}),
 		// peerdep(),
 	],
 	// set alias for src => @
@@ -68,7 +67,15 @@ export default defineConfig({
 		},
 		rollupOptions: {
 			// plugins: [peerdep()],
-			external: ["react", "react-dom", "react/jsx-runtime", "pixi.js", "ahooks", "react-router-dom", "react-i18next"],
+			external: [
+				"react",
+				"react-dom",
+				"react/jsx-runtime",
+				"pixi.js",
+				"ahooks",
+				"react-router-dom",
+				"react-i18next",
+			],
 		},
 	},
 });

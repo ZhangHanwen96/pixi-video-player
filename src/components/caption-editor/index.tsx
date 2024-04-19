@@ -1,7 +1,8 @@
 // import MdiDragHorizontal from "~icons/mdi/drag-horizontal";
 import { EVENT_UPDATE, TimelineEventTypes } from "@/Timeline";
 import MdiDrag from "~icons/mdi/drag";
-import { motion, useDragControls } from "framer-motion";
+import MdiCloseThick from "~icons/mdi/close-thick";
+import { motion, useDragControls, AnimatePresence } from "framer-motion";
 import { useMergedState } from "rc-util";
 import dayjs, { Dayjs } from "dayjs";
 import { TimePicker } from "antd";
@@ -105,142 +106,148 @@ const CaptionClip: FC<{
 	);
 };
 
-const CaptionEditor: FC<{ captionTrack: CaptionTrack; onClose: () => void }> =
-	({ captionTrack: _captionTrack, onClose }) => {
-		const [captionTrack, setCaptionTrack] = useMergedState(_captionTrack);
+const CaptionEditor: FC<{
+	captionTrack: CaptionTrack;
+	onClose: () => void;
+	open: boolean;
+}> = ({ captionTrack: _captionTrack, onClose, open }) => {
+	const [captionTrack, setCaptionTrack] = useMergedState(_captionTrack);
 
-		const updateUtil = {
-			updateTime: (id: string, type: "start" | "end", to: number) => {
-				const newState = produce(captionTrack, (draft) => {
-					const clip = draft.clips.find((clip) => clip.id === id);
-					if (!clip) return;
-					if (type === "start") {
-						clip.inPoint = to;
-					} else {
-						clip.duration = to - clip.inPoint;
-					}
-				});
-				setCaptionTrack(newState);
-			},
-			updateCaption: (id: string, cap: string) => {
-				const newState = produce(captionTrack, (draft) => {
-					const clip = draft.clips.find((clip) => clip.id === id);
-					if (!clip) return;
-					clip.textClip.textContent = cap;
-				});
-				setCaptionTrack(newState);
-			},
-		};
-
-		const timeline = useTimelineStore.use.timeline?.(true);
-		const [captionClip, setCaptionClip] =
-			useState<CaptionTrack["clips"][number]>();
-		const captionClipRef = useRef<CaptionTrack["clips"][number]>();
-
-		const activeId = captionClip?.id;
-		const containerRef = useRef<HTMLDivElement>(null);
-
-		useEffect(() => {
-			// scroll to active caption
-			if (!containerRef.current || !activeId) return;
-			const activeElement = containerRef.current.querySelector(
-				`[data-clipId="${activeId}"]`,
-			);
-			if (!activeElement) return;
-
-			activeElement.scrollIntoView({
-				behavior: "smooth",
-				block: "center",
-				inline: "center",
+	const updateUtil = {
+		updateTime: (id: string, type: "start" | "end", to: number) => {
+			const newState = produce(captionTrack, (draft) => {
+				const clip = draft.clips.find((clip) => clip.id === id);
+				if (!clip) return;
+				if (type === "start") {
+					clip.inPoint = to;
+				} else {
+					clip.duration = to - clip.inPoint;
+				}
 			});
-		}, [activeId, containerRef.current]);
-
-		useDeepCompareEffect(() => {
-			return $on(
-				"update",
-				(event: EVENT_UPDATE) => {
-					const currentCaption = captionTrack.clips.find((clip) => {
-						const start = clip.inPoint / 1_000;
-						const end = (clip.inPoint + clip.duration) / 1_000;
-						return (
-							event.elapsedTime >= start &&
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore
-							event.elapsedTime <= end
-						);
-					});
-
-					if (captionClipRef.current?.id !== currentCaption?.id) {
-						captionClipRef.current = currentCaption;
-						setCaptionClip(currentCaption);
-					}
-				},
-				timeline as EventEmitter<TimelineEventTypes>,
-			);
-		}, [timeline, ...captionTrack.clips.map(({ id }) => id)]);
-
-		const seekPlayer = useMemoizedFn(
-			(clip: CaptionTrack["clips"][number]) => {
-				timeline?.seek(clip.inPoint / 1_000);
-			},
-		);
-
-		const controls = useDragControls();
-
-		return (
-			// <Draggable
-			// 	defaultPosition={{
-			// 		x: 100,
-			// 		y: 0,
-			// 	}}
-			// 	defaultClassName="fixed z-10"
-			// 	handle=".handle"
-			// >
-			<motion.div
-				className="fixed z-10 top-1/4 right-8"
-				dragControls={controls}
-				drag
-				dragListener={false}
-				transition={{
-					type: "spring",
-					duration: 0,
-				}}
-				dragMomentum={false}
-			>
-				<div
-					onPointerDown={(e) => {
-						controls.start(e);
-					}}
-					className="handle relative w-full h-8 cursor-move bg-black/80 backdrop-blur text-3xl text-white hover:text-cyan-400 duration-150 ease-in-out transition-all"
-				>
-					<MdiDrag />
-					<span
-						onClick={onClose}
-						className="absolute right-2 cursor-pointer text-white hover:text-white"
-					>
-						x
-					</span>
-				</div>
-				<div
-					ref={containerRef}
-					className="w-[500px] h-[400px] flex flex-col gap-4 resize-y bg-white/70  backdrop-blur-sm py-4 px-4 overflow-y-auto"
-				>
-					{captionTrack.clips.map((clip) => {
-						return (
-							<CaptionClip
-								updateTime={updateUtil.updateTime}
-								updateCaption={updateUtil.updateCaption}
-								seekPlayer={() => seekPlayer(clip)}
-								active={activeId === clip.id}
-								key={clip.id}
-								clip={clip}
-							/>
-						);
-					})}
-				</div>
-			</motion.div>
-			// </Draggable>
-		);
+			setCaptionTrack(newState);
+		},
+		updateCaption: (id: string, cap: string) => {
+			const newState = produce(captionTrack, (draft) => {
+				const clip = draft.clips.find((clip) => clip.id === id);
+				if (!clip) return;
+				clip.textClip.textContent = cap;
+			});
+			setCaptionTrack(newState);
+		},
 	};
+
+	const timeline = useTimelineStore.use.timeline?.(true);
+	const [captionClip, setCaptionClip] =
+		useState<CaptionTrack["clips"][number]>();
+	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
+
+	const activeId = captionClip?.id;
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		// scroll to active caption
+		if (!containerRef.current || !activeId) return;
+		const activeElement = containerRef.current.querySelector(
+			`[data-clipId="${activeId}"]`,
+		);
+		if (!activeElement) return;
+
+		activeElement.scrollIntoView({
+			behavior: "smooth",
+			block: "center",
+			inline: "center",
+		});
+	}, [activeId, containerRef.current]);
+
+	useDeepCompareEffect(() => {
+		return $on(
+			"update",
+			(event: EVENT_UPDATE) => {
+				const currentCaption = captionTrack.clips.find((clip) => {
+					const start = clip.inPoint / 1_000;
+					const end = (clip.inPoint + clip.duration) / 1_000;
+					return (
+						event.elapsedTime >= start &&
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						event.elapsedTime <= end
+					);
+				});
+
+				if (captionClipRef.current?.id !== currentCaption?.id) {
+					captionClipRef.current = currentCaption;
+					setCaptionClip(currentCaption);
+				}
+			},
+			timeline as EventEmitter<TimelineEventTypes>,
+		);
+	}, [timeline, ...captionTrack.clips.map(({ id }) => id)]);
+
+	const seekPlayer = useMemoizedFn((clip: CaptionTrack["clips"][number]) => {
+		timeline?.seek(clip.inPoint / 1_000);
+	});
+
+	const controls = useDragControls();
+
+	return (
+		// <Draggable
+		// 	defaultPosition={{
+		// 		x: 100,
+		// 		y: 0,
+		// 	}}
+		// 	defaultClassName="fixed z-10"
+		// 	handle=".handle"
+		// >
+		<AnimatePresence>
+			{open && (
+				<motion.div
+					initial={{ scale: 0.9 }}
+					animate={{ scale: 1 }}
+					exit={{ scale: 0.9 }}
+					className="antialiased fixed z-10 top-12 right-8"
+					dragControls={controls}
+					drag
+					dragListener={false}
+					transition={{
+						type: "spring",
+						duration: 0,
+					}}
+					dragMomentum={false}
+				>
+					<div
+						onPointerDown={(e) => {
+							controls.start(e);
+						}}
+						className="handle justify-center  items-center flex relative w-full h-8 cursor-move bg-black/80 backdrop-blur text-3xl text-white hover:text-cyan-400 duration-150 ease-in-out transition-all"
+					>
+						<MdiDrag />
+						<MdiCloseThick
+							onClick={onClose}
+							className="absolute right-2 text-xl cursor-pointer text-white hover:text-white"
+						/>
+					</div>
+					<div
+						ref={containerRef}
+						className="w-[500px] h-[400px] flex flex-col gap-4 resize-y bg-white/70  backdrop-blur-sm py-4 px-4 overflow-y-auto"
+					>
+						{captionTrack.clips.map((clip) => {
+							return (
+								<CaptionClip
+									updateTime={updateUtil.updateTime}
+									updateCaption={updateUtil.updateCaption}
+									seekPlayer={() => seekPlayer(clip)}
+									active={activeId === clip.id}
+									key={clip.id}
+									clip={clip}
+								/>
+							);
+						})}
+					</div>
+				</motion.div>
+			)}
+		</AnimatePresence>
+		// </Draggable>
+	);
+};
 
 export default CaptionEditor;

@@ -7,17 +7,19 @@ const VideoPoster: FC<{
 	className?: string;
 	url: string;
 	imgClassName?: string;
-}> = ({ className, url, imgClassName }) => {
+	style?: React.CSSProperties;
+}> = ({ className, url, imgClassName, style }) => {
 	const showPoster = useTimelineStore.use.showPoster();
 
 	return (
 		showPoster && (
-			<div className={clx(className, "absolute inset-0")}>
+			<div className={clx(className, "absolute inset-0 opacity-90")}>
 				<img
-					src={url}
+					style={style}
 					crossOrigin="anonymous"
 					alt="video poster"
 					className={clx("w-full h-full object-cover", imgClassName)}
+					src={url}
 				/>
 			</div>
 		)

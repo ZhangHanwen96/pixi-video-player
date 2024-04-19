@@ -553,8 +553,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		};
 	}, []);
 
-	console.log(stageRect, rectMeta);
-
 	useEffect(() => {
 		return $ons(
 			[

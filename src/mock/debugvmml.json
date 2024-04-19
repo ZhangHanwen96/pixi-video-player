@@ -94,6 +94,10 @@
 							"filterParam": {
 								"filterCode": "bg_blur",
 								"filterValue": 100
+							},
+							"transitionParam": {
+								"transitionCode": "circle_in",
+								"duration": 2000000
 							}
 						}
 					},
@@ -366,7 +370,11 @@
 								"scaleX": 1,
 								"scaleY": 1
 							},
-							"volume": 0
+							"volume": 0,
+							"transitionParam": {
+								"transitionCode": "circle_in",
+								"duration": 2000000
+							}
 						}
 					},
 					{

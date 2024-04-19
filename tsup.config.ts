@@ -1,6 +1,6 @@
 import { defineConfig, build } from "tsup";
 import Icons from "unplugin-icons/esbuild";
-import packageJson from './package.json'
+import packageJson from "./package.json";
 
 const dependencies = Object.keys(packageJson.dependencies || {});
 const peerDependencies = Object.keys(packageJson.peerDependencies || {});
@@ -12,7 +12,7 @@ export default defineConfig({
 	format: ["cjs", "esm"],
 	outDir: "dist",
 	dts: true,
-	external: [...dependencies, ...peerDependencies, 'react/jsx-runtime'],
+	external: [...dependencies, ...peerDependencies, "react/jsx-runtime"],
 	injectStyle: false,
 	esbuildPlugins: [
 		Icons({
@@ -26,8 +26,8 @@ export default defineConfig({
 	],
 	esbuildOptions(options, context) {
 		options.banner = {
-			"js": "/* Create by @tezign Zhang Hanwen */",
-		}
+			js: "/* Create by @tezign Zhang Hanwen */",
+		};
 	},
 	clean: true,
 });

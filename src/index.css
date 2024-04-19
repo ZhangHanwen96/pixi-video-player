@@ -8,3 +8,8 @@
         @apply text-sm;
     }
 }
+
+* {
+  font-smooth: antialiased;
+  
+}

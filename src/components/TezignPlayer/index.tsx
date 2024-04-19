@@ -6,7 +6,14 @@ import {
 } from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/VideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import { FC, useDeferredValue, useEffect, useMemo, useTransition } from "react";
+import {
+	CSSProperties,
+	FC,
+	useDeferredValue,
+	useEffect,
+	useMemo,
+	useTransition,
+} from "react";
 import { useTimelineStore } from "@/store";
 
 import SoundTrackNew from "../audio-track/new";
@@ -21,6 +28,7 @@ import { FloatButton, Spin, message } from "antd";
 import { usePoster } from "./usePoster";
 import { BasicTarget } from "ahooks/lib/utils/domTarget";
 import CaptionEditor from "../caption-editor";
+import { useDelayLoading } from "@/hooks/useDelayLoading";
 
 const SetUp: FC<{
 	duration: number;
@@ -81,6 +89,10 @@ type TezignPlayerProps = {
 	width?: number;
 	height?: number;
 	container?: BasicTarget;
+	poster?: {
+		url: string;
+		objectFit: CSSProperties["objectFit"];
+	};
 };
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
@@ -88,6 +100,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	height: pHeight,
 	width: pWidth,
 	container,
+	poster: _poster,
 }) => {
 	if (!vmml) {
 		throw new Error("No vmml found");
@@ -174,9 +187,34 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	const sourceUrl = useDeferredValue(
 		videoTracks[0]?.clips[0].videoClip?.sourceUrl,
 	);
-	const { poster, loading } = usePoster(sourceUrl);
+	const { poster } = usePoster(_poster?.url ? undefined : sourceUrl);
 
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
+
+	// improve UX, normally seekLoading wouldn't last longer than 250ms
+	const isLoading = useDelayLoading({
+		loading: seekLoading,
+		delay: 250,
+	});
+
+	const renderPoster = () => {
+		if (_poster?.url) {
+			return (
+				<VideoPoster
+					style={
+						_poster.objectFit
+							? {
+									objectFit: _poster.objectFit,
+							  }
+							: undefined
+					}
+					url={_poster.url}
+				/>
+			);
+		}
+		if (!poster) return null;
+		return <VideoPoster url={poster} />;
+	};
 
 	if (!videoTracks.length) {
 		throw new Error("No video track found");
@@ -194,12 +232,12 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					style={{
 						width,
 						height,
-						backgroundColor: "#313131",
+						backgroundColor: "#000000e2",
 					}}
 					className="group/container flex items-center justify-center overflow-hidden relative"
 					id="player-container"
 				>
-					<ScreenShot />
+					{/* <ScreenShot /> */}
 					{
 						<Stage
 							width={useDeferredValue(transformedRect.width)}
@@ -229,9 +267,9 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							)}
 						</Stage>
 					}
-					{poster && <VideoPoster url={poster} />}
+					{renderPoster()}
 					<TimeControlV2 />
-					{seekLoading && (
+					{isLoading && (
 						<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
 							<Spin
 								className="text-teal-500"
@@ -243,13 +281,14 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					)}
 				</div>
 			</div>
-			{captionTrack && showCaptionEditor && (
+			{captionTrack && (
 				<CaptionEditor
 					onClose={() => {
 						useTezignPlayerStore.setState({
 							showCaptionEditor: false,
 						});
 					}}
+					open={showCaptionEditor}
 					captionTrack={captionTrack as CaptionTrack}
 				/>
 			)}

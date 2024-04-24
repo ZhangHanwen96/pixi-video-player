@@ -6,7 +6,9 @@ export const usePoster = (url?: string) => {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (!url) return;
+		if (!url) {
+			setPoster("");
+		}
 		let dirty = false;
 
 		const generatePoster = async () => {
@@ -20,7 +22,9 @@ export const usePoster = (url?: string) => {
 			try {
 				await generatePoster();
 			} finally {
-				if (dirty) return;
+				if (dirty) {
+					return;
+				}
 				setLoading(false);
 			}
 		})();

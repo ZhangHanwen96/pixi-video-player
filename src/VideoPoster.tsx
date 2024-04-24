@@ -13,7 +13,7 @@ const VideoPoster: FC<{
 
 	return (
 		showPoster && (
-			<div className={clx(className, "absolute inset-0 opacity-90")}>
+			<div className={clx(className, "absolute inset-0")}>
 				<img
 					style={style}
 					crossOrigin="anonymous"

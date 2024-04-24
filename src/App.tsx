@@ -5,16 +5,19 @@ import Editor, { useMonaco } from "@monaco-editor/react";
 import { useSize } from "ahooks";
 import defaultVMML from "@/mock/debugvmml.json";
 import custom_1 from "@/mock/custom_1.json";
+import custom_2 from "@/mock/custom_2.json";
+import custom_3 from "@/mock/custom_3.json";
 import githubTheme from "./github.theme.json";
 import MdiCodeJson from "~icons/mdi/code-json";
 import MdiClosedCaptionOutline from "~icons/mdi/closed-caption-outline";
 import "./App.css";
 import { VMMLTemplateV4 } from "@/interface/vmml";
-import { useEffect, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 import CaptionEditor from "./components/caption-editor";
 import { useTezignPlayerStore } from "./store/teizng-player";
 import { useControls, folder, button } from "leva";
 import { flushSync } from "react-dom";
+import { usePoster } from "./components/TezignPlayer/usePoster";
 
 const ratio_16_9 = 16 / 9;
 const ratio_9_16 = 9 / 16;
@@ -22,9 +25,15 @@ const ratio_9_16 = 9 / 16;
 const defaultPreset = {
 	default: defaultVMML,
 	"自定义-1": custom_1,
+	"自定义-2": custom_2,
+	"自定义-3": custom_3,
 };
 
-let customIndex = 1;
+const aspect_ratio_mapping = {
+	"16:9": 16 / 9,
+	"9:16": 9 / 16,
+	"4:3": 4 / 3,
+};
 
 function App() {
 	const ref = useRef<HTMLDivElement>(null);
@@ -35,13 +44,19 @@ function App() {
 
 	const [vmmlJson, setVmml] = useState<any>(defaultVMML);
 
-	const [{ preset }, set] = useControls(() => ({
+	const [{ preset, auto_poster, aspectRatio }, set] = useControls(() => ({
 		preset: {
 			value: "default",
 			options: Object.keys(presets),
 			onChange: (v) => {
 				setVmml(presets[v as keyof typeof presets]);
 			},
+		},
+
+		auto_poster: true,
+		aspectRatio: {
+			value: "16:9",
+			options: ["16:9", "9:16", "4:3"],
 		},
 		编辑VMML: button((get) => {
 			setSheetOpen((p) => !p);
@@ -54,8 +69,6 @@ function App() {
 			});
 		}),
 	}));
-
-	console.log(presets);
 
 	const width = Math.round(size?.width || 800);
 	const height = Math.round(width / ratio_16_9);
@@ -90,43 +103,42 @@ function App() {
 	}, [sheetOpen]);
 
 	const isTooVertical = tWidth / tHeight <= 3 / 4;
-	const classes = isTooVertical
-		? "w-[35vw]"
-		: "w-[85vw] lg:w-[70vw] 2xl:w-[60vw]";
+	let classes = "w-[85vw] lg:w-[70vw] 2xl:w-[60vw]";
+	if (isTooVertical) {
+		classes = "w-[25vw]";
+	}
+	if (aspectRatio === "9:16") {
+		classes = "w-[25vw]";
+	}
+	if (aspectRatio === "4:3") {
+		classes = "w-[55vw]";
+	}
+
+	const videoTracks = useMemo(() => {
+		return vmmlJson.template.tracks
+			.filter(({ type }) => type === 0 || type === 1)
+			.sort((a, b) => a.type - b.type);
+	}, [vmmlJson.template]);
+
+	const sourceUrl = useDeferredValue(
+		videoTracks[0]?.clips[0].videoClip?.sourceUrl,
+	);
+
+	const { poster: posterUrl } = usePoster(
+		auto_poster ? sourceUrl : undefined,
+	);
 
 	return (
 		<div className={classes}>
-			{/* <FloatButton
-				icon={<MdiCodeJson />}
-				type="primary"
-				style={{
-					right: 24,
-					bottom: 24,
-				}}
-				tooltip="Edit VMML"
-				onClick={() => {
-					setSheetOpen((p) => !p);
-				}}
-			/>
-			<FloatButton
-				icon={<MdiClosedCaptionOutline />}
-				type="primary"
-				style={{
-					right: 24,
-					bottom: 90,
-				}}
-				tooltip="Caption"
-				onClick={() => {
-					useTezignPlayerStore.setState((s) => {
-						return {
-							showCaptionEditor: !s.showCaptionEditor,
-						};
-					});
-				}}
-			/> */}
 			<div
 				ref={ref}
-				className="aspect-video flex w-full bg-black shadow-xl"
+				className="flex w-full bg-black shadow-xl"
+				style={{
+					aspectRatio:
+						aspect_ratio_mapping[
+							aspectRatio as keyof typeof aspect_ratio_mapping
+						],
+				}}
 				// style={{
 				// 	aspectRatio: 4 / 16,
 				// 	width: "50vw",
@@ -207,6 +219,10 @@ function App() {
 						// width={useDeferredValue(tWidth)}
 						// height={useDeferredValue(tHeight)}
 						vmml={vmmlJson.template as VMMLTemplateV4}
+						poster={{
+							url: posterUrl,
+							objectFit: "contain",
+						}}
 					/>
 				)}
 			</div>

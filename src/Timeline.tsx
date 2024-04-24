@@ -153,7 +153,9 @@ export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 			);
 			cancelAnimationFrame(this.#rafId);
 
-			this.app.ticker.stop();
+			try {
+				this.app.ticker.stop();
+			} catch (error) {}
 
 			this.#rafId = null;
 			this.emit("common-update");

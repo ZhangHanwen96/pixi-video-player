@@ -4,12 +4,7 @@ import { useTimelineStore } from "@/store";
 import { GlitchFilter } from "@pixi/filter-glitch";
 import { RadialBlurFilter } from "@pixi/filter-radial-blur";
 import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
-import {
-	useDeepCompareEffect,
-	useMemoizedFn,
-	useUnmountedRef,
-	useUpdateEffect,
-} from "ahooks";
+import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
 import * as PIXI from "pixi.js";
 import EventEmitter from "eventemitter3";
 import {
@@ -114,7 +109,7 @@ const Filters = withFilters(Container, {
 const videoCache = new Map<string, HTMLVideoElement>();
 const imageCache = new Map<string, HTMLImageElement>();
 
-const MAX_PRELOAD = 3;
+const MAX_PRELOAD = 5;
 
 const getCacheId = (url: string, clipId: string) => {
 	return `${url}-${clipId}`;
@@ -198,11 +193,18 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 			};
 			load();
 		}
+
+		// return () => {};
 	}, clipIds);
 
 	const createVideoSync = useCallback(
 		(metaData: VideoMeta, currentTime?: number) => {
-			const preloadNext = (num = 2) => {
+			// TODO: preload options:
+			// 1. numbers of clip
+			// 2. duration of clips
+
+			const preloadNext = (num = 3) => {
+				let cachedDuration = 0;
 				const clipIndex = mainTrack.clips.findIndex(
 					(c) => c.id === metaData.id,
 				);
@@ -210,7 +212,10 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				let cacheCount = num;
 				let nextClip = mainTrack.clips[nextClipIndex];
 				// cache next 2 video
-				while (nextClip && cacheCount > 0) {
+				while (
+					nextClip &&
+					(cacheCount > 0 || cachedDuration < 15_000_000)
+				) {
 					if (
 						videoCache.has(
 							getCacheId(
@@ -220,7 +225,9 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 						)
 					) {
 						nextClipIndex++;
+						cachedDuration += nextClip.duration;
 						nextClip = mainTrack.clips[nextClipIndex];
+
 						continue;
 					}
 					console.log(
@@ -247,6 +254,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					});
 					nextClipIndex++;
 					cacheCount--;
+					cachedDuration += nextClip.duration;
 					nextClip = mainTrack.clips[nextClipIndex];
 				}
 			};
@@ -260,7 +268,10 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				console.log(metaData.id);
 				const cachedVideo = videoCache.get(
 					getCacheId(metaData.videoClip.sourceUrl, metaData.id),
-				)!;
+				);
+				if (!cachedVideo) {
+					throw new Error("No cached video found");
+				}
 				cachedVideo.currentTime = isInteger(currentTime)
 					? (currentTime as number)
 					: metaData.start / 1_000_000;
@@ -433,7 +444,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		);
 	}, [video, timeline]);
 
-	const __reset = useCallback(() => {
+	const _reset = useCallback(() => {
 		pauseCurrentVideo();
 		setVideoMeta(undefined);
 		setVideo(undefined);
@@ -473,7 +484,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		const unsub2 = hooks.hook("seek", async ({ currentTime }) => {
 			videoMeta = seekVideo(currentTime, mainTrack);
 			if (!videoMeta) {
-				__reset();
+				_reset();
 				return;
 			}
 
@@ -568,7 +579,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 						);
 
 						if (!videoMeta) {
-							__reset();
+							_reset();
 							return;
 						}
 
@@ -995,7 +1006,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					x: rectMeta.width / 2,
 					y: rectMeta.height / 2,
 				}}
-				//
 				angle={transform.degree}
 				scale={{
 					x: rectMeta.scale.x * transform.scale.x * flipX,
@@ -1067,4 +1077,5 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 	return null;
 });
+
 export default memo(MainVideoTrack);

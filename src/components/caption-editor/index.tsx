@@ -90,9 +90,9 @@ const CaptionClip: FC<{
 
 				<span
 					className={classNames(
-						"text-black text-left break-all bg-black/10 px-1 rounded-sm",
+						"text-white text-left break-all bg-white/10 px-1 rounded-sm",
 						"cursor-pointer hover:bg-white/20",
-						active && "text-green-500 !bg-transparent",
+						active && "!text-green-500 !bg-transparent",
 					)}
 					onClick={() => {
 						if (active) return;
@@ -204,7 +204,7 @@ const CaptionEditor: FC<{
 					initial={{ scale: 0.9 }}
 					animate={{ scale: 1 }}
 					exit={{ scale: 0.9 }}
-					className="antialiased fixed z-10 top-12 right-8"
+					className="antialiased fixed z-10 top-12 right-8  rounded-md overflow-hidden"
 					dragControls={controls}
 					drag
 					dragListener={false}
@@ -218,7 +218,7 @@ const CaptionEditor: FC<{
 						onPointerDown={(e) => {
 							controls.start(e);
 						}}
-						className="handle justify-center  items-center flex relative w-full h-8 cursor-move bg-black/80 backdrop-blur text-3xl text-white hover:text-cyan-400 duration-150 ease-in-out transition-all"
+						className="handle justify-center items-center flex relative w-full h-10 cursor-grab bg-[#292D39] backdrop-blur text-3xl text-[#828385c4] hover:text-white delay-100 duration-150 ease-in-out transition-all"
 					>
 						<MdiDrag />
 						<MdiCloseThick
@@ -228,7 +228,7 @@ const CaptionEditor: FC<{
 					</div>
 					<div
 						ref={containerRef}
-						className="w-[500px] h-[400px] flex flex-col gap-4 resize-y bg-white/70  backdrop-blur-sm py-4 px-4 overflow-y-auto"
+						className="w-[500px] h-[400px] flex flex-col gap-4 resize-y bg-[#181C20] py-4 px-4 overflow-y-auto"
 					>
 						{captionTrack.clips.map((clip) => {
 							return (

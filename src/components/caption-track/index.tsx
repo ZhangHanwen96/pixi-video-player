@@ -17,7 +17,7 @@ interface CaptionTrackProps {
 }
 
 export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
-	const { timeline } = useTimelineStore();
+	const timeline = useTimelineStore.use.timeline?.();
 
 	const textRef = useRef<PIXI.Text | null>(null);
 	const graphicsRef = useRef<PIXI.Graphics | null>(null);
@@ -112,8 +112,9 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const customStyles = {
 		fontSize,
 		fontFamily,
-		fill: textColor,
+		fill: "#ec3211dd",
 		stroke: strokeColor,
+		// TODO:
 		strokeThickness: strokeWidth,
 		fontStyle: italic ? "italic" : "normal",
 		fontWeight: bold ? "bold" : "normal",
@@ -125,6 +126,12 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 			{/* background */}
 			<Graphics ref={graphicsRef} zIndex={100} />
 			<Text
+				onclick={(e) => {
+					e.stopPropagation();
+					window.alert(
+						`clicked ${captionClipRef.current?.textClip?.textContent}`,
+					);
+				}}
 				anchor={{
 					x: 0.5,
 					y: 0,
@@ -133,7 +140,6 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 				scale={stageRect.scale}
 				y={stageRect.height * centerY}
 				ref={textRef}
-				// text={text}
 				zIndex={100}
 				style={
 					new PIXI.TextStyle({
@@ -152,7 +158,8 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 						whiteSpace: "pre",
 						breakWords: true,
 						wordWrapWidth:
-							(stageRect.width / stageRect.scale) * 0.85,
+							// TODO: how much padding?
+							(stageRect.width / stageRect.scale) * 0.75,
 						...customStyles,
 					})
 				}

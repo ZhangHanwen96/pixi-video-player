@@ -29,8 +29,11 @@ import { usePoster } from "./usePoster";
 import { BasicTarget } from "ahooks/lib/utils/domTarget";
 import CaptionEditor from "../caption-editor";
 import { useDelayLoading } from "@/hooks/useDelayLoading";
+import styles from "./index.module.css";
+import classNames from "classnames";
+import { defaults } from "lodash-es";
 
-const SetUp: FC<{
+const SetUpHook: FC<{
 	duration: number;
 }> = ({ duration }) => {
 	const app = useApp();
@@ -40,7 +43,10 @@ const SetUp: FC<{
 	}, [app, duration]);
 
 	useUnmount(() => {
-		useTimelineStore.getState().timeline?.stop();
+		const timeline = useTimelineStore.getState().timeline;
+		if (timeline) {
+			timeline.stop();
+		}
 	});
 
 	return null;
@@ -91,7 +97,12 @@ type TezignPlayerProps = {
 	container?: BasicTarget;
 	poster?: {
 		url: string;
-		objectFit: CSSProperties["objectFit"];
+		objectFit?: CSSProperties["objectFit"];
+	};
+	backgroundColor?: string;
+	preloadStategy?: {
+		duration?: number;
+		numberOfFutureClips?: number;
 	};
 };
 
@@ -101,6 +112,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	width: pWidth,
 	container,
 	poster: _poster,
+	backgroundColor = "#000000f3",
 }) => {
 	if (!vmml) {
 		throw new Error("No vmml found");
@@ -124,6 +136,10 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 			height: pHeight,
 		};
 	}, [container, pWidth, pHeight, maybeContainerSize]);
+
+	useUnmount(() => {
+		useTimelineStore.getState().togglePoster(true);
+	});
 
 	useEffect(() => {
 		if (document.fullscreenElement) return;
@@ -184,10 +200,15 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		},
 	);
 
-	const sourceUrl = useDeferredValue(
-		videoTracks[0]?.clips[0].videoClip?.sourceUrl,
-	);
-	const { poster } = usePoster(_poster?.url ? undefined : sourceUrl);
+	// const sourceUrl = useDeferredValue(
+	// 	videoTracks[0]?.clips[0].videoClip?.sourceUrl,
+	// );
+
+	// const { poster } = usePoster(_poster?.url ? undefined : sourceUrl);
+
+	// const mergedPoster = useMemo(() => {
+	// 	return defaults({}, _poster, { url: poster, objectFit: "cover" });
+	// }, [_poster, poster]);
 
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
 
@@ -201,19 +222,15 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		if (_poster?.url) {
 			return (
 				<VideoPoster
-					style={
-						_poster.objectFit
-							? {
-									objectFit: _poster.objectFit,
-							  }
-							: undefined
-					}
+					className={styles["aniamte-fadein"]}
+					style={{
+						objectFit: _poster?.objectFit ?? "cover",
+					}}
 					url={_poster.url}
 				/>
 			);
 		}
-		if (!poster) return null;
-		return <VideoPoster url={poster} />;
+		return null;
 	};
 
 	if (!videoTracks.length) {
@@ -232,14 +249,20 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					style={{
 						width,
 						height,
-						backgroundColor: "#000000e2",
+						backgroundColor,
 					}}
-					className="group/container flex items-center justify-center overflow-hidden relative"
+					className={classNames(
+						"group/container flex items-center justify-center overflow-hidden relative",
+						styles["bg-rect-pattern"],
+					)}
 					id="player-container"
 				>
 					{/* <ScreenShot /> */}
 					{
 						<Stage
+							onClick={() => {
+								window.alert("stage clicked");
+							}}
 							width={useDeferredValue(transformedRect.width)}
 							height={useDeferredValue(transformedRect.height)}
 							options={{
@@ -247,7 +270,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 								autoStart: false,
 							}}
 						>
-							<SetUp duration={duration} />
+							<SetUpHook duration={duration} />
 							{videoTracks.map((track) => (
 								<MainVideoTrack
 									mainTrack={track as VideoTrack}
@@ -257,7 +280,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							{captionTrack && (
 								<CaptionTrackComponent
 									stageRect={transformedRect}
-									captionTrack={captionTrack as any}
+									captionTrack={captionTrack as CaptionTrack}
 								/>
 							)}
 							{audioTrack && (

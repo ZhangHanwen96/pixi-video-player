@@ -1,7 +1,11 @@
 {
 	"name": "@tezign/vmml-player",
-	"version": "0.0.1",
+	"version": "0.0.1-beta.1",
 	"type": "module",
+	"publishConfig": {
+		"access": "restricted",
+		"registry": "https://tech-npm.tezign.com"
+	},
 	"scripts": {
 		"dev": "vite",
 		"build:lib": "vite build --config vite.config.build.ts",
@@ -10,11 +14,12 @@
 		"lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
 		"preview": "vite preview",
 		"build:tsup": "tsup",
-		"bundle:tailwind": "npx tailwind"
+		"build:tailwind": "BUNDLE=true tailwind -c tailwind.config.js -o ./dist/tailwindcss.css",
+		"build-release": "rm -rf dist && pnpm run build:tsup && pnpm run build:tailwind",
+		"release": "pnpm run build-release && np"
 	},
 	"dependencies": {
 		"@mantine/hooks": "^7.2.2",
-		"@million/lint": "^0.0.73",
 		"@pixi/filter-adjustment": "^5.1.1",
 		"@pixi/filter-glitch": "^5.1.1",
 		"@pixi/filter-radial-blur": "^5.1.1",
@@ -31,12 +36,9 @@
 		"leva": "^0.9.35",
 		"lodash-es": "^4.17.21",
 		"rc-util": "^5.39.1",
-		"react-draggable": "^4.4.6",
-		"rollup-plugin-dts": "^6.1.0"
+		"react-draggable": "^4.4.6"
 	},
-	"files": [
-		"dist"
-	],
+	"files": ["dist", "package.json"],
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.js",
@@ -51,6 +53,8 @@
 		}
 	},
 	"devDependencies": {
+		"np": "*",
+		"@million/lint": "^0.0.73",
 		"@biomejs/biome": "1.5.1",
 		"@iconify-json/mdi": "^1.1.57",
 		"@monaco-editor/react": "^4.6.0",
@@ -68,6 +72,7 @@
 		"antd": "^5.11.5",
 		"autoprefixer": "^10.4.16",
 		"eslint": "^8.53.0",
+		"rollup-plugin-dts": "^6.1.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.4",
 		"postcss": "^8.4.31",

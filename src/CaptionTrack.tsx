@@ -60,7 +60,7 @@ export const Caption = ({ stageRect }) => {
 					lineHeight: 20,
 				})
 			}
-		></Text>
+		/>
 	);
 };
 

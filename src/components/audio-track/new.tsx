@@ -20,8 +20,6 @@ import { withPromise } from "@/utils/withPromise";
 import { isNumber } from "lodash-es";
 import EventEmitter from "eventemitter3";
 
-// TODO: sound instance per component
-
 interface SoundTrackProps {
 	audioTrack: AudioTrack;
 }
@@ -58,21 +56,22 @@ const useInitSpriteState = () => {
 					loaded: loadedPromiseMap.get(src),
 				};
 			}
-			const sprite = clips.reduce((acc, clip) => {
-				if (!clip.audioClip.sourceUrl) return acc;
+			const sprite = clips.reduce((_spriteObject, clip) => {
+				if (!clip.audioClip.sourceUrl) return _spriteObject;
 				const range = [
 					clip.start / 1_000,
-					(clip.start + clip.duration) / 1_000,
+					// (clip.start + clip.duration) / 1_000,
+					clip.duration,
 				] as [number, number];
-				acc[clip.id] = [...range, true];
-				return acc;
+				_spriteObject[clip.id] = [...range, true]; // [offset, duration, (loop)]
+				return _spriteObject;
 			}, {} as SoundSpriteDefinitions);
 
 			console.log(
 				"%cCreating Sprite",
+				sprite,
 				"color: green; font-weight: 600; font-size: 14px;",
 			);
-			console.log("sprite: ", sprite);
 
 			const { promise, reject, resolve } = withPromise<Howl>();
 			loadedPromiseMap.set(src, promise);
@@ -101,20 +100,21 @@ const useInitSpriteState = () => {
 		},
 	);
 
-	// useUnmount(() => {
-	// 	for (const [_, sprite] of spriteMap) {
-	// 		sprite.unload();
-	// 	}
-	// 	spriteMap.clear();
-	// });
+	/** unmount clean up */
+	useUnmount(() => {
+		for (const [_, sprite] of spriteMap) {
+			sprite.pause(); // pause all sounds in the sprite
+			sprite.unload();
+		}
+	});
 
 	return {
 		clipIdToSoundIDMap,
 		loadedPromiseMap,
 		spriteMap,
 		pauseAll: useCallback(() => {
-			for (const [, sound] of spriteMap) {
-				sound.pause();
+			for (const [, sprite] of spriteMap) {
+				sprite.pause(); // pause all sounds in the sprite
 			}
 		}, [spriteMap]),
 		createSoundSprite,
@@ -137,30 +137,36 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	useDeepCompareEffect(() => {
 		if (!audioTrack.clips.length) return;
 
-		const urlToClips = new Map<string, AudioTrack["clips"][number][]>();
+		const urlToClipsMap = new Map<string, AudioTrack["clips"][number][]>();
+
 		for (const clip of audioTrack.clips) {
-			if (!clip.audioClip.sourceUrl) continue;
-			if (!urlToClips.has(clip.audioClip.sourceUrl)) {
-				urlToClips.set(clip.audioClip.sourceUrl, []);
+			const sourceUrl = clip.audioClip.sourceUrl;
+			if (!sourceUrl) continue;
+			if (!urlToClipsMap.has(sourceUrl)) {
+				urlToClipsMap.set(sourceUrl, []);
 			}
-			urlToClips.get(clip.audioClip.sourceUrl)?.push(clip);
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			urlToClipsMap.get(sourceUrl)!.push(clip);
 		}
 
-		for (const [url, clips] of urlToClips) {
+		for (const [url, clips] of urlToClipsMap) {
 			createSoundSprite(url, clips);
 		}
 
-		console.log("------- spriteMap");
-		console.log(Array.from(spriteMap.entries()));
-
 		return () => {
-			for (const [_, sprite] of spriteMap) {
-				sprite.unload();
+			for (const [url, sprite] of spriteMap) {
+				if (
+					!audioTrack.clips.find(
+						(clip) => clip.audioClip.sourceUrl === url,
+					)
+				) {
+					sprite.unload();
+				}
 			}
-			spriteMap.clear();
 		};
 	}, [...deps]);
 
+	/** no need for hooks for now */
 	useMount(() => {
 		let audioMeta: ReturnType<typeof seekAudio>;
 		let id = 0;
@@ -241,7 +247,8 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 		if (!isNumber(soundId)) return;
 		const sprite = spriteMap.get(
 			currentMetaRef.current.audioClip.sourceUrl,
-		)!;
+		);
+		if (!sprite) return;
 		sprite.volume(v, soundId);
 	});
 
@@ -301,21 +308,23 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				pauseAll();
 				currentMetaRef.current = audioMeta;
 
-				let realStart =
-					(event.elapsedTime * 1_000 -
-						audioMeta.inPoint +
-						audioMeta.start) /
-					1_000_000;
-				realStart = parseFloat(realStart.toFixed(2));
+				const realStart = calcStart(
+					event.elapsedTime * 1_000,
+					audioMeta.inPoint,
+					audioMeta.start,
+				);
 
 				let soundId = clipIdToSoundIDMap.get(audioMeta.id);
-				const sprite = spriteMap.get(audioMeta.audioClip.sourceUrl)!;
-				const _state = { soundId } as { soundId: number };
+				const sprite = spriteMap.get(audioMeta.audioClip.sourceUrl);
+				if (!sprite) {
+					throw new Error("Sprite should exist but 'Not Found'");
+				}
+				const startRef = { soundId } as { soundId: number };
 				sprite.once("play", (id) => {
 					sprite.seek(realStart, id);
 				});
 				if (!isNumber(soundId)) {
-					_state.soundId = soundId = sprite.play(audioMeta.id);
+					startRef.soundId = soundId = sprite.play(audioMeta.id);
 					clipIdToSoundIDMap.set(audioMeta.id, soundId);
 				} else {
 					sprite.play(soundId);
@@ -345,7 +354,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				if (!isNumber(soundId)) return;
 				const sprite = spriteMap.get(
 					currentMetaRef.current.audioClip.sourceUrl,
-				)!;
+				);
+				if (!sprite) {
+					throw new Error("Sprite should exist but 'Not Found'");
+				}
 				sprite.rate(v, soundId);
 			},
 			timeline as EventEmitter<TimelineEventTypes>,
@@ -360,7 +372,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 			},
 			timeline as EventEmitter<TimelineEventTypes>,
 		);
-	}, [timeline]);
+	}, [timeline, pauseAll]);
 
 	useEffect(() => {
 		return $ons(
@@ -377,13 +389,19 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 						if (!isNumber(soundId)) return;
 						const sprite = spriteMap.get(
 							currentMetaRef.current.audioClip.sourceUrl,
-						)!;
+						);
+						if (!sprite) {
+							throw new Error(
+								"Sprite should exist but 'Not Found'",
+							);
+						}
 						sprite.play(soundId);
 					},
 				},
 				{
 					event: "complete",
 					handler: () => {
+						console.info("sound track complete");
 						currentMetaRef.current = undefined;
 						pauseAll();
 					},
@@ -403,7 +421,12 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 						if (!isNumber(soundId)) return;
 						const sprite = spriteMap.get(
 							currentMetaRef.current.audioClip.sourceUrl,
-						)!;
+						);
+						if (!sprite) {
+							throw new Error(
+								"Sprite should exist but 'Not Found'",
+							);
+						}
 						sprite.volume(v, soundId);
 					},
 				},
@@ -414,5 +437,10 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 
 	return null;
 };
+
+function calcStart(elapsed: number, inpoint: number, start: number) {
+	const realStart = elapsed - inpoint + start / 1000_000;
+	return parseFloat(realStart.toFixed(3));
+}
 
 export default memo(SoundTrack);

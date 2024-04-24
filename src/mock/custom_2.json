@@ -1,0 +1,2635 @@
+{
+	"template": {
+		"bgColor": "00000000",
+		"dimension": {
+			"height": 1280,
+			"width": 720
+		},
+		"thumbnailSourceUrl": "https://itg-tezign-files.tezign.com/t5/3e187d5ade0e42e098358a9887fc0bb0.jpg?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=13dLbvkdKnfXr0aRXhAwbMByjgU%3D&response-content-disposition=inline",
+		"tracks": [
+			{
+				"id": "29DBMX_VHhPr5Jw3rxEtj",
+				"type": 0,
+				"clips": [
+					{
+						"type": 101,
+						"id": "u8jubrMnyba-oESfVFl8k",
+						"start": 0,
+						"end": 2466000,
+						"inPoint": 0,
+						"duration": 2466000,
+						"originDuration": 41123000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "jewigHaZ26OJg_H_dYh_g",
+						"start": 3466060,
+						"end": 4765940,
+						"inPoint": 2466000,
+						"duration": 1299880,
+						"originDuration": 1300000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "YnJvIZvXkADzdQGWjSXtC",
+						"start": 48833060,
+						"end": 51565940,
+						"inPoint": 3765880,
+						"duration": 2732880,
+						"originDuration": 2733000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "aG70xncNjRytQOkO-uZB9",
+						"start": 8866060,
+						"end": 14332940,
+						"inPoint": 6498760,
+						"duration": 5466880,
+						"originDuration": 5467000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "IEKnNwRBiXfdn-StcJm0w",
+						"start": 2933060,
+						"end": 3999940,
+						"inPoint": 11965640,
+						"duration": 1066880,
+						"originDuration": 1067000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "OwELXDaJmqiRiZMtaLEUH",
+						"start": 10833060,
+						"end": 16032940,
+						"inPoint": 13032520,
+						"duration": 5199880,
+						"originDuration": 5200000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "FL9rPaUbln8DqAKFMGFah",
+						"start": 44200060,
+						"end": 48532940,
+						"inPoint": 18232400,
+						"duration": 4332880,
+						"originDuration": 4333000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "eCOz7AAqvy8AuWi99cwxO",
+						"start": 48566060,
+						"end": 51499940,
+						"inPoint": 22565280,
+						"duration": 2933880,
+						"originDuration": 2934000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "6KCu7NF2Y3wb47qKW0UZP",
+						"start": 30433060,
+						"end": 37165940,
+						"inPoint": 25499160,
+						"duration": 6732880,
+						"originDuration": 6733000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "eC5HAZ9X8dXQ2FtOFosUK",
+						"start": 19400060,
+						"end": 24932940,
+						"inPoint": 32232040,
+						"duration": 5532880,
+						"originDuration": 5533000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "cNMLJ1ZkBK2ezth6EtadD",
+						"start": 0,
+						"end": 2899940,
+						"inPoint": 37764920,
+						"duration": 2899940,
+						"originDuration": 2900000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "zPb7R1Q6SfX2koxACddA8",
+						"start": 31333060,
+						"end": 34765940,
+						"inPoint": 40664860,
+						"duration": 3432880,
+						"originDuration": 3433000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "NodEtf5UBk88D5ImPuFyu",
+						"start": 14233060,
+						"end": 15332940,
+						"inPoint": 44097740,
+						"duration": 1099880,
+						"originDuration": 1100000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "_ZMKGNYozjyDGVO5xPxwc",
+						"start": 26866060,
+						"end": 31299940,
+						"inPoint": 45197620,
+						"duration": 4433880,
+						"originDuration": 4434000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "NfuSGUDMzS9McFhyeoWEM",
+						"start": 6100060,
+						"end": 10799940,
+						"inPoint": 49631500,
+						"duration": 4699880,
+						"originDuration": 4700000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "4B8tjZ0DMl5MiovtEXTaK",
+						"start": 4033060,
+						"end": 7399940,
+						"inPoint": 54331380,
+						"duration": 3366880,
+						"originDuration": 3367000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "5fhZ6wEQZM1rydF99vGTo",
+						"start": 37466060,
+						"end": 40199940,
+						"inPoint": 57698260,
+						"duration": 2733880,
+						"originDuration": 2734000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "207UgpSBdim4VzLrbemEC",
+						"start": 33000060,
+						"end": 36199940,
+						"inPoint": 60432140,
+						"duration": 3199880,
+						"originDuration": 3200000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "rvftmudPnBwL_lN5lmNOb",
+						"start": 53200060,
+						"end": 54565940,
+						"inPoint": 63632020,
+						"duration": 1365880,
+						"originDuration": 1366000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "e7QvwXWmHsXCvh55c6Frt",
+						"start": 38633060,
+						"end": 41032940,
+						"inPoint": 64997900,
+						"duration": 2399880,
+						"originDuration": 2400000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "-ZrZoooExu6mI26fJO71H",
+						"start": 6466060,
+						"end": 8832940,
+						"inPoint": 67397780,
+						"duration": 2366880,
+						"originDuration": 2367000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "UoAWn5HmI5uPoXVQ_9mWO",
+						"start": 21333060,
+						"end": 26832940,
+						"inPoint": 69764660,
+						"duration": 5499880,
+						"originDuration": 5500000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "i_cWbRR0VWxXuOb09Saui",
+						"start": 7433060,
+						"end": 10599940,
+						"inPoint": 75264540,
+						"duration": 3166880,
+						"originDuration": 3167000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "4Rd1_DpOJpw2DiEQRVJ22",
+						"start": 40233060,
+						"end": 44265940,
+						"inPoint": 78431420,
+						"duration": 4032880,
+						"originDuration": 4033000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "4amyimdoZyjlJQfTClwCL",
+						"start": 10633060,
+						"end": 11832940,
+						"inPoint": 82464300,
+						"duration": 1199880,
+						"originDuration": 1200000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "nTvtRbaMjZbONWwoLoPmF",
+						"start": 29966060,
+						"end": 32965940,
+						"inPoint": 83664180,
+						"duration": 2999880,
+						"originDuration": 3000000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "oiSFVKhO-oXnZ7t9ekaDP",
+						"start": 40366060,
+						"end": 44165940,
+						"inPoint": 86664060,
+						"duration": 3799880,
+						"originDuration": 3800000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "VpPnpjYNhOP9vxXsfzBdU",
+						"start": 52933060,
+						"end": 55932940,
+						"inPoint": 90463940,
+						"duration": 2999880,
+						"originDuration": 3000000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "oBEYgE3gJv9BHnFxWpjuy",
+						"start": 25400060,
+						"end": 29932940,
+						"inPoint": 93463820,
+						"duration": 4532880,
+						"originDuration": 4533000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "1CZfdFO5NcF6b8BSs4FaT",
+						"start": 14366060,
+						"end": 17732940,
+						"inPoint": 97996700,
+						"duration": 3366880,
+						"originDuration": 3367000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "O1XDfWA1zHL8aChpssehU",
+						"start": 20200060,
+						"end": 25365940,
+						"inPoint": 101363580,
+						"duration": 5165880,
+						"originDuration": 5166000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "2Canc-PnxAdnmZWL9FGO8",
+						"start": 37200060,
+						"end": 40332940,
+						"inPoint": 106529460,
+						"duration": 3132880,
+						"originDuration": 3133000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "Fbk87sDc37swnZ4aF8Bx9",
+						"start": 51533060,
+						"end": 53165940,
+						"inPoint": 109662340,
+						"duration": 1632880,
+						"originDuration": 1633000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "Pe4eKLFLQDNY-s1qGsoZj",
+						"start": 34800060,
+						"end": 37432940,
+						"inPoint": 111295220,
+						"duration": 2632880,
+						"originDuration": 2633000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "M5VjeqO4vbFGGXaAcKZmh",
+						"start": 51600060,
+						"end": 52599940,
+						"inPoint": 113928100,
+						"duration": 999880,
+						"originDuration": 1000000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "Y71n0K7gRwVPPdWuv4QyH",
+						"start": 11866060,
+						"end": 14199940,
+						"inPoint": 114927980,
+						"duration": 2333880,
+						"originDuration": 2334000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "3qog5BTCoGiAVBcjgE-_r",
+						"start": 27600060,
+						"end": 30399940,
+						"inPoint": 117261860,
+						"duration": 2799880,
+						"originDuration": 2800000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "HssfYvYITzk22p8KDLExB",
+						"start": 36233060,
+						"end": 38599940,
+						"inPoint": 120061740,
+						"duration": 2366880,
+						"originDuration": 2367000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "bJUoivqiii0ooA68eQ_Iq",
+						"start": 15400060,
+						"end": 18032940,
+						"inPoint": 122428620,
+						"duration": 2632880,
+						"originDuration": 2633000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "viZALkTcvI96MihWcZF7J",
+						"start": 47233060,
+						"end": 48799940,
+						"inPoint": 125061500,
+						"duration": 1566880,
+						"originDuration": 1567000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "ncOLdnMPBAgU1Yp98MMCW",
+						"start": 16066060,
+						"end": 19365940,
+						"inPoint": 126628380,
+						"duration": 3299880,
+						"originDuration": 3300000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "dsOC3uHe4TzZolxFt_wH1",
+						"start": 17766060,
+						"end": 20165940,
+						"inPoint": 129928260,
+						"duration": 2399880,
+						"originDuration": 2400000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "1KflOsQIC89wprMob40JT",
+						"start": 18066060,
+						"end": 21299940,
+						"inPoint": 132328140,
+						"duration": 3233880,
+						"originDuration": 3234000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "PEV_NMJxO89DEdFT3B_Wy",
+						"start": 0,
+						"end": 2465940,
+						"inPoint": 135562020,
+						"duration": 2465940,
+						"originDuration": 2466000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "NKGqWifAuhwDrZzMr1B-6",
+						"start": 44300060,
+						"end": 47199940,
+						"inPoint": 138027960,
+						"duration": 2899880,
+						"originDuration": 2900000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "gA1IRq-4BFIkS-bBuNuFb",
+						"start": 24966060,
+						"end": 27565940,
+						"inPoint": 140927840,
+						"duration": 2599880,
+						"originDuration": 2600000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "IMAu2IJBcozSwT2MXYunM",
+						"start": 400060,
+						"end": 1566940,
+						"inPoint": 143527720,
+						"duration": 1166880,
+						"originDuration": 5666000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 960,
+								"width": 540
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					},
+					{
+						"type": 101,
+						"id": "j_ah1dOnBklKm67tUm0Y8",
+						"start": 3466000,
+						"end": 4766000,
+						"inPoint": 144694600,
+						"duration": 1300000,
+						"originDuration": 41123000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"dimension": {
+								"height": 1280,
+								"width": 720
+							},
+							"mimeType": "video/mp4",
+							"posParam": {
+								"centerX": 0.5,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"scaleX": 1,
+								"scaleY": 1
+							},
+							"volume": 0,
+							"filterParam": {
+								"filterCode": "bg_blur",
+								"filterValue": 100
+							}
+						}
+					}
+				]
+			},
+			{
+				"clips": [
+					{
+						"duration": 2466000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 41123000,
+						"inPoint": 0,
+						"start": 0,
+						"end": 2466000,
+						"id": "DrCYblA8V4xdOozxczjlV",
+						"type": 102
+					},
+					{
+						"duration": 1299880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 1300000,
+						"inPoint": 2466000,
+						"start": 3466060,
+						"end": 4765940,
+						"id": "kDdbt3-cFm5aTjPXjMjyH",
+						"type": 102
+					},
+					{
+						"duration": 2732880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2733000,
+						"inPoint": 3765880,
+						"start": 48833060,
+						"end": 51565940,
+						"id": "_IXn_tLvo58_x9exEJVGQ",
+						"type": 102
+					},
+					{
+						"duration": 5466880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 5467000,
+						"inPoint": 6498760,
+						"start": 8866060,
+						"end": 14332940,
+						"id": "9eMYfbHyZUVV4ovAIhDtz",
+						"type": 102
+					},
+					{
+						"duration": 1066880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1067000,
+						"inPoint": 11965640,
+						"start": 2933060,
+						"end": 3999940,
+						"id": "XEENYalJsAIRNjXi_xrnh",
+						"type": 102
+					},
+					{
+						"duration": 5199880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 5200000,
+						"inPoint": 13032520,
+						"start": 10833060,
+						"end": 16032940,
+						"id": "OFmzhklr9ujrkWyG9y0v3",
+						"type": 102
+					},
+					{
+						"duration": 4332880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 4333000,
+						"inPoint": 18232400,
+						"start": 44200060,
+						"end": 48532940,
+						"id": "614sHEZ6bETVOPR04p0RX",
+						"type": 102
+					},
+					{
+						"duration": 2933880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2934000,
+						"inPoint": 22565280,
+						"start": 48566060,
+						"end": 51499940,
+						"id": "n8QFrsFoSgXu3FO0sPX9a",
+						"type": 102
+					},
+					{
+						"duration": 6732880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 6733000,
+						"inPoint": 25499160,
+						"start": 30433060,
+						"end": 37165940,
+						"id": "F7Lx_bMf6Q8CF-7aKunUa",
+						"type": 102
+					},
+					{
+						"duration": 5532880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 5533000,
+						"inPoint": 32232040,
+						"start": 19400060,
+						"end": 24932940,
+						"id": "EtcARy0_qErjdgCr9KX9T",
+						"type": 102
+					},
+					{
+						"duration": 2899940,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2900000,
+						"inPoint": 37764920,
+						"start": 0,
+						"end": 2899940,
+						"id": "b1lmY9y7rMG6bjhRm3GiE",
+						"type": 102
+					},
+					{
+						"duration": 3432880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3433000,
+						"inPoint": 40664860,
+						"start": 31333060,
+						"end": 34765940,
+						"id": "GWfou2fgAsz7LoJ2SFj91",
+						"type": 102
+					},
+					{
+						"duration": 1099880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1100000,
+						"inPoint": 44097740,
+						"start": 14233060,
+						"end": 15332940,
+						"id": "7Q1b9EAIW8LZ32QXP5bPi",
+						"type": 102
+					},
+					{
+						"duration": 4433880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 4434000,
+						"inPoint": 45197620,
+						"start": 26866060,
+						"end": 31299940,
+						"id": "mTcbPQa4b39d-NGww2887",
+						"type": 102
+					},
+					{
+						"duration": 4699880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 4700000,
+						"inPoint": 49631500,
+						"start": 6100060,
+						"end": 10799940,
+						"id": "vjQ8whknXel_Cmp65jeX8",
+						"type": 102
+					},
+					{
+						"duration": 3366880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3367000,
+						"inPoint": 54331380,
+						"start": 4033060,
+						"end": 7399940,
+						"id": "76EmCIBzJrZa0eGkJVp_5",
+						"type": 102
+					},
+					{
+						"duration": 2733880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2734000,
+						"inPoint": 57698260,
+						"start": 37466060,
+						"end": 40199940,
+						"id": "QaCN7-fQBmqImViM6KQQx",
+						"type": 102
+					},
+					{
+						"duration": 3199880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 3200000,
+						"inPoint": 60432140,
+						"start": 33000060,
+						"end": 36199940,
+						"id": "N1t-6j3aYX4T2o_bJ7mg_",
+						"type": 102
+					},
+					{
+						"duration": 1365880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1366000,
+						"inPoint": 63632020,
+						"start": 53200060,
+						"end": 54565940,
+						"id": "jRQTZ6OFRfh4wGAaKWLkO",
+						"type": 102
+					},
+					{
+						"duration": 2399880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 2400000,
+						"inPoint": 64997900,
+						"start": 38633060,
+						"end": 41032940,
+						"id": "JUhgbBEd5cmUTJVQoGcF4",
+						"type": 102
+					},
+					{
+						"duration": 2366880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 2367000,
+						"inPoint": 67397780,
+						"start": 6466060,
+						"end": 8832940,
+						"id": "vTNIxmJXrw32KACHFEdTs",
+						"type": 102
+					},
+					{
+						"duration": 5499880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 5500000,
+						"inPoint": 69764660,
+						"start": 21333060,
+						"end": 26832940,
+						"id": "QcJYrLrZ1SXPpcV652v-R",
+						"type": 102
+					},
+					{
+						"duration": 3166880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3167000,
+						"inPoint": 75264540,
+						"start": 7433060,
+						"end": 10599940,
+						"id": "1hC1aolDoiyUEr6ANrXJ3",
+						"type": 102
+					},
+					{
+						"duration": 4032880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 4033000,
+						"inPoint": 78431420,
+						"start": 40233060,
+						"end": 44265940,
+						"id": "l2k2ivtexUmv-4l7L4RNl",
+						"type": 102
+					},
+					{
+						"duration": 1199880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1200000,
+						"inPoint": 82464300,
+						"start": 10633060,
+						"end": 11832940,
+						"id": "62-J-hM7m_HxxNehCNUPk",
+						"type": 102
+					},
+					{
+						"duration": 2999880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 3000000,
+						"inPoint": 83664180,
+						"start": 29966060,
+						"end": 32965940,
+						"id": "J-9rckIXXTNc463uWS8RP",
+						"type": 102
+					},
+					{
+						"duration": 3799880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3800000,
+						"inPoint": 86664060,
+						"start": 40366060,
+						"end": 44165940,
+						"id": "OY1y1M8oNghJj6LR4r-2-",
+						"type": 102
+					},
+					{
+						"duration": 2999880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3000000,
+						"inPoint": 90463940,
+						"start": 52933060,
+						"end": 55932940,
+						"id": "7GAv7CYBRSdH9WFwdLc5v",
+						"type": 102
+					},
+					{
+						"duration": 4532880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 4533000,
+						"inPoint": 93463820,
+						"start": 25400060,
+						"end": 29932940,
+						"id": "lYYKT84Yda2IIW-G-M_h4",
+						"type": 102
+					},
+					{
+						"duration": 3366880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 3367000,
+						"inPoint": 97996700,
+						"start": 14366060,
+						"end": 17732940,
+						"id": "dZxN74uydZVeh6HTkHu_S",
+						"type": 102
+					},
+					{
+						"duration": 5165880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 5166000,
+						"inPoint": 101363580,
+						"start": 20200060,
+						"end": 25365940,
+						"id": "KUJ_SXP0NKXoMzMcBzsmj",
+						"type": 102
+					},
+					{
+						"duration": 3132880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3133000,
+						"inPoint": 106529460,
+						"start": 37200060,
+						"end": 40332940,
+						"id": "Vosqyksjj5fAUub9MOOxH",
+						"type": 102
+					},
+					{
+						"duration": 1632880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1633000,
+						"inPoint": 109662340,
+						"start": 51533060,
+						"end": 53165940,
+						"id": "HiNN49E1LuHqDXnsJ1JaY",
+						"type": 102
+					},
+					{
+						"duration": 2632880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2633000,
+						"inPoint": 111295220,
+						"start": 34800060,
+						"end": 37432940,
+						"id": "titE4XbyzWRunWWghKXjQ",
+						"type": 102
+					},
+					{
+						"duration": 999880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1000000,
+						"inPoint": 113928100,
+						"start": 51600060,
+						"end": 52599940,
+						"id": "Myg9WrfEQRLw8h-UW4EPI",
+						"type": 102
+					},
+					{
+						"duration": 2333880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2334000,
+						"inPoint": 114927980,
+						"start": 11866060,
+						"end": 14199940,
+						"id": "IRPZsHg7vLSa2oMXBJNPz",
+						"type": 102
+					},
+					{
+						"duration": 2799880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2800000,
+						"inPoint": 117261860,
+						"start": 27600060,
+						"end": 30399940,
+						"id": "WGSXCXgSz8VneAEdOg8m4",
+						"type": 102
+					},
+					{
+						"duration": 2366880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 2367000,
+						"inPoint": 120061740,
+						"start": 36233060,
+						"end": 38599940,
+						"id": "v6hu6hPOCtapPRMA0ae-q",
+						"type": 102
+					},
+					{
+						"duration": 2632880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2633000,
+						"inPoint": 122428620,
+						"start": 15400060,
+						"end": 18032940,
+						"id": "ZM_HETYx2PNwj0A8c83BA",
+						"type": 102
+					},
+					{
+						"duration": 1566880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 1567000,
+						"inPoint": 125061500,
+						"start": 47233060,
+						"end": 48799940,
+						"id": "1P60ByNrotSLAQ-W-j7Lk",
+						"type": 102
+					},
+					{
+						"duration": 3299880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3300000,
+						"inPoint": 126628380,
+						"start": 16066060,
+						"end": 19365940,
+						"id": "oyqIc_8gFpqpaoLAtTQ-S",
+						"type": 102
+					},
+					{
+						"duration": 2399880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 2400000,
+						"inPoint": 129928260,
+						"start": 17766060,
+						"end": 20165940,
+						"id": "ca23tgLV2MGOGLlmBP2bw",
+						"type": 102
+					},
+					{
+						"duration": 3233880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 3234000,
+						"inPoint": 132328140,
+						"start": 18066060,
+						"end": 21299940,
+						"id": "UtlC5H6JobIgrp8y6qh2M",
+						"type": 102
+					},
+					{
+						"duration": 2465940,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 2466000,
+						"inPoint": 135562020,
+						"start": 0,
+						"end": 2465940,
+						"id": "cKGT0rKESAM4LK9UyI_5H",
+						"type": 102
+					},
+					{
+						"duration": 2899880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/c79dd2d04d9e3fb1ed749b9c1fafe3f8.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=AaR1Ww678QIyjTGX57K19oKW4qk%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2900000,
+						"inPoint": 138027960,
+						"start": 44300060,
+						"end": 47199940,
+						"id": "kyYePFas-4V52kFUbpgjF",
+						"type": 102
+					},
+					{
+						"duration": 2599880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 2600000,
+						"inPoint": 140927840,
+						"start": 24966060,
+						"end": 27565940,
+						"id": "SS70guz_CH9iI2ejodOUG",
+						"type": 102
+					},
+					{
+						"duration": 1166880,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/2aa1782aba2fd57ab3ebc91dcd4b6c36.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=zeipHlnzl%2FBLrZMe9oyApjqepLw%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1.3333333333333333,
+								"scaleY": 1.3333333333333333,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 540,
+								"height": 960
+							}
+						},
+						"originDuration": 5666000,
+						"inPoint": 143527720,
+						"start": 400060,
+						"end": 1566940,
+						"id": "IMvb8AiM1SVieu2gcSKPb",
+						"type": 102
+					},
+					{
+						"duration": 1300000,
+						"videoClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/t5/62d5f9f0e092be0e2b061eb467eb60c6.mp4?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=%2F4UzccScDiZgskJfRgFHu3ivmwY%3D&response-content-disposition=inline",
+							"posParam": {
+								"scaleX": 1,
+								"scaleY": 1,
+								"centerY": 0.5,
+								"centerZ": 0.5,
+								"centerX": 0.5
+							},
+							"volume": 0,
+							"mimeType": "video/mp4",
+							"dimension": {
+								"width": 720,
+								"height": 1280
+							}
+						},
+						"originDuration": 41123000,
+						"inPoint": 144694600,
+						"start": 3466000,
+						"end": 4766000,
+						"id": "OfxdPsklF7y13i95VizFV",
+						"type": 102
+					}
+				],
+				"id": "FTZLMWhhjBY0j01TD_gHv",
+				"type": 1
+			},
+			{
+				"id": "GQnZZPXiMFke_hGd_obBx",
+				"type": 3,
+				"clips": [
+					{
+						"type": 300,
+						"id": "2awPQyYF_ix6NC-HCg0fZ",
+						"start": 0,
+						"inPoint": 0,
+						"end": 30615011,
+						"duration": 145994600,
+						"originDuration": 30615011,
+						"audioClip": {
+							"sourceUrl": "https://itg-tezign-files.tezign.com/dy_msg/music/6570204804503571203.mp3?Expires=1714579199&OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Signature=GXzap1fpnS2GCYA6DuBJfoKKD5A%3D&response-content-disposition=inline",
+							"volume": 1
+						}
+					}
+				]
+			}
+		]
+	}
+}

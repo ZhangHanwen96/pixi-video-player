@@ -33,6 +33,7 @@ export default defineConfig({
 			},
 		}),
 	],
+	target: "esnext",
 	esbuildOptions(options, context) {
 		options.banner = {
 			js: "/* Create by @tezign Zhang Hanwen */",

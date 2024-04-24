@@ -31,6 +31,7 @@ import { applyTransition, isInTransition } from "@/animation";
 import { hooks } from "../Controller/hooks";
 import { withTimeLog } from "@/utils/withTimeLog";
 import { loadImage } from "@/utils/loadImage";
+import { useTezignPlayerStore } from "@/store/teizng-player";
 
 const graphics = new PIXI.Graphics();
 graphics.beginFill(0xffffff);
@@ -109,7 +110,7 @@ const Filters = withFilters(Container, {
 const videoCache = new Map<string, HTMLVideoElement>();
 const imageCache = new Map<string, HTMLImageElement>();
 
-const MAX_PRELOAD = 5;
+const MAX_PRELOAD = 4;
 
 const getCacheId = (url: string, clipId: string) => {
 	return `${url}-${clipId}`;
@@ -411,6 +412,20 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 	const [video, setVideo] = useState<HTMLVideoElement>();
 	const [image, setImage] = useState<HTMLImageElement>();
+
+	// useEffect(() => {
+	// 	if (video && timeline) {
+	// 		video.onwaiting = () => {
+	// 			console.log("onwaiting -----------------");
+	// 			useTezignPlayerStore.getState().startSeekLoading();
+	// 			timeline.stop();
+	// 		};
+	// 		video.onplaying = () => {
+	// 			useTezignPlayerStore.getState().finishSeekLoading();
+	// 			timeline.resume();
+	// 		};
+	// 	}
+	// }, [video, timeline]);
 
 	useEffect(() => {
 		return $ons(

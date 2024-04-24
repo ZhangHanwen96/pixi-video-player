@@ -6,7 +6,14 @@ import {
 } from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/VideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import { CSSProperties, FC, useDeferredValue, useEffect, useMemo } from "react";
+import {
+	CSSProperties,
+	FC,
+	ReactNode,
+	useDeferredValue,
+	useEffect,
+	useMemo,
+} from "react";
 import { useTimelineStore } from "@/store";
 
 import SoundTrackNew from "../audio-track/new";
@@ -56,6 +63,7 @@ type TezignPlayerProps = {
 		duration?: number;
 		numberOfFutureClips?: number;
 	};
+	spinner?: React.ReactNode | React.ReactElement;
 };
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
@@ -65,6 +73,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	container,
 	poster: _poster,
 	backgroundColor = "#000000f3",
+	spinner,
 }) => {
 	if (!vmml) {
 		throw new Error("No vmml found");
@@ -165,10 +174,10 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
 
 	// improve UX, normally seekLoading wouldn't last longer than 250ms
-	const isLoading = useDelayLoading({
-		loading: seekLoading,
-		delay: 250,
-	});
+	// const isLoading = useDelayLoading({
+	// 	loading: seekLoading,
+	// 	delay: 250,
+	// });
 
 	const renderPoster = () => {
 		if (_poster?.url) {
@@ -183,6 +192,11 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 			);
 		}
 		return null;
+	};
+
+	const renderSpinner = () => {
+		if (!seekLoading || !spinner) return null;
+		return spinner;
 	};
 
 	if (!videoTracks.length) {
@@ -244,16 +258,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					}
 					{renderPoster()}
 					<TimeControlV2 />
-					{isLoading && (
-						<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
-							<Spin
-								className="text-teal-500"
-								spinning
-								tip={"加载中..."}
-								size="large"
-							/>
-						</div>
-					)}
+					{renderSpinner()}
 				</div>
 			</div>
 			{captionTrack && (

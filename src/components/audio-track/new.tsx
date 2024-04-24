@@ -20,6 +20,8 @@ import { withPromise } from "@/utils/withPromise";
 import { isNumber } from "lodash-es";
 import EventEmitter from "eventemitter3";
 
+// TODO: loop short audio
+
 interface SoundTrackProps {
 	audioTrack: AudioTrack;
 }
@@ -61,7 +63,7 @@ const useInitSpriteState = () => {
 				const range = [
 					clip.start / 1_000,
 					// (clip.start + clip.duration) / 1_000,
-					clip.duration,
+					clip.duration / 1_000,
 				] as [number, number];
 				_spriteObject[clip.id] = [...range, true]; // [offset, duration, (loop)]
 				return _spriteObject;

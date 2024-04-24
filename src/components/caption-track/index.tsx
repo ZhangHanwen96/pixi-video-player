@@ -10,6 +10,7 @@ import { argb2Rgba } from "./utils";
 import { StageRect } from "@/interface/app";
 import { useDeepCompareEffect } from "ahooks";
 import EventEmitter from "eventemitter3";
+import { useForceUpdate } from "@mantine/hooks";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
@@ -22,6 +23,7 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const textRef = useRef<PIXI.Text | null>(null);
 	const graphicsRef = useRef<PIXI.Graphics | null>(null);
 	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
+	const forceUpdate = useForceUpdate();
 
 	const timerRef = useRef<any>();
 
@@ -54,6 +56,8 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 					const text =
 						captionClipRef.current?.textClip.textContent ?? "";
 					textRef.current.text = text;
+
+					forceUpdate();
 
 					clearTimeout(timerRef.current);
 					if (!text) {
@@ -110,9 +114,10 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const letterSpacing = captionClipRef.current?.textClip.letterSpacing ?? 0;
 
 	const customStyles = {
-		fontSize,
+		//  TODO: fontsize <-> size
+		fontSize: fontSize,
 		fontFamily,
-		fill: "#ec3211dd",
+		fill: textColor,
 		stroke: strokeColor,
 		// TODO:
 		strokeThickness: strokeWidth,

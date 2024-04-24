@@ -1,22 +1,18 @@
 import { useThrottle, useUpdateEffect } from "ahooks";
 import { TezignPlayer } from "./components/TezignPlayer";
-import { Button, Drawer, FloatButton, Space, message } from "antd";
+import { Button, Drawer, FloatButton, Space, Spin, message } from "antd";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useSize } from "ahooks";
 import defaultVMML from "@/mock/debugvmml.json";
 import custom_1 from "@/mock/custom_1.json";
 import custom_2 from "@/mock/custom_2.json";
 import custom_3 from "@/mock/custom_3.json";
-import githubTheme from "./github.theme.json";
-import MdiCodeJson from "~icons/mdi/code-json";
-import MdiClosedCaptionOutline from "~icons/mdi/closed-caption-outline";
+import buggy from "@/mock/buggy.json";
 import "./App.css";
 import { VMMLTemplateV4 } from "@/interface/vmml";
 import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import CaptionEditor from "./components/caption-editor";
 import { useTezignPlayerStore } from "./store/teizng-player";
 import { useControls, folder, button } from "leva";
-import { flushSync } from "react-dom";
 import { usePoster } from "./components/TezignPlayer/usePoster";
 
 const ratio_16_9 = 16 / 9;
@@ -27,6 +23,7 @@ const defaultPreset = {
 	"自定义-1": custom_1,
 	"自定义-2": custom_2,
 	"自定义-3": custom_3,
+	buggy,
 };
 
 const aspect_ratio_mapping = {
@@ -223,6 +220,15 @@ function App() {
 							url: posterUrl,
 							objectFit: "contain",
 						}}
+						spinner={
+							<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
+								<Spin
+									className="text-teal-500"
+									spinning
+									size="large"
+								/>
+							</div>
+						}
 					/>
 				)}
 			</div>

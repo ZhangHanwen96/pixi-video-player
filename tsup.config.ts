@@ -10,6 +10,15 @@ export default defineConfig({
 		index: "./src/lib-entry.ts",
 	},
 	format: ["cjs", "esm"],
+	outExtension({ format }) {
+		const ext = {
+			cjs: "cjs",
+			esm: "mjs",
+		};
+		return {
+			js: `.${ext[format]}`,
+		};
+	},
 	outDir: "dist",
 	dts: true,
 	external: [...dependencies, ...peerDependencies, "react/jsx-runtime"],

@@ -1,8 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { memo, useContext, useEffect, useRef, useState } from "react";
-import { useApp, Text, Container } from "@pixi/react";
+import React, { memo, useEffect, useRef, useState } from "react";
+import { Text } from "@pixi/react";
 import * as PIXI from "pixi.js";
-import { useCreation } from "ahooks";
 import { EVENT_UPDATE } from "./Timeline";
 import { useTimelineStore } from "./store";
 import { $on } from "./event-utils";

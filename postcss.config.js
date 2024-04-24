@@ -4,8 +4,5 @@ export default {
 		autoprefixer: {},
 		"postcss-import": {},
 		"tailwindcss/nesting": "postcss-nested",
-		// "postcss-prefixer": {
-		// 	prefix: "vmml",
-		// },
 	},
 };

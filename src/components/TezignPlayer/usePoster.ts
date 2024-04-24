@@ -12,7 +12,7 @@ export const usePoster = (url?: string) => {
 		let dirty = false;
 
 		const generatePoster = async () => {
-			const src = await extractFrame(url, 3);
+			const src = await extractFrame(url as string, 3);
 			if (dirty) return;
 			setPoster(src);
 		};

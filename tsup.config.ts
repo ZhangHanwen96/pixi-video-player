@@ -38,5 +38,6 @@ export default defineConfig({
 			js: "/* Create by @tezign Zhang Hanwen */",
 		};
 	},
+
 	clean: true,
 });

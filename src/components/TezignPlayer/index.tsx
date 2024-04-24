@@ -6,18 +6,10 @@ import {
 } from "@/interface/vmml";
 import MainVideoTrack from "../video-tracks/VideoTrack";
 import { Stage, useApp } from "@pixi/react";
-import {
-	CSSProperties,
-	FC,
-	useDeferredValue,
-	useEffect,
-	useMemo,
-	useTransition,
-} from "react";
+import { CSSProperties, FC, useDeferredValue, useEffect, useMemo } from "react";
 import { useTimelineStore } from "@/store";
 
 import SoundTrackNew from "../audio-track/new";
-import * as PIXI from "pixi.js";
 import TimeControlV2 from "@/components/Controller/index-2";
 import { calculatRectByObjectFit } from "@/util";
 import { useTezignPlayerStore } from "@/store/teizng-player";
@@ -25,13 +17,11 @@ import { useEventListener, useSize, useUnmount } from "ahooks";
 import CaptionTrackComponent from "../caption-track";
 import VideoPoster from "@/VideoPoster";
 import { FloatButton, Spin, message } from "antd";
-import { usePoster } from "./usePoster";
 import { BasicTarget } from "ahooks/lib/utils/domTarget";
 import CaptionEditor from "../caption-editor";
 import { useDelayLoading } from "@/hooks/useDelayLoading";
-import styles from "./index.module.css";
+import "./index.css";
 import classNames from "classnames";
-import { defaults } from "lodash-es";
 
 const SetUpHook: FC<{
 	duration: number;
@@ -50,44 +40,6 @@ const SetUpHook: FC<{
 	});
 
 	return null;
-};
-
-const ScreenShot = () => {
-	const timeline = useTimelineStore.use.timeline?.(true);
-
-	return (
-		<FloatButton
-			onClick={async () => {
-				if (!timeline || !timeline.app.view.toBlob) {
-					message.error("something went wrong...");
-					return;
-				}
-				const { stage, screen } = timeline.app;
-				const visibleArea = new PIXI.Rectangle(
-					screen.x,
-					screen.y,
-					screen.width,
-					screen.height,
-				);
-				const url = await timeline.app.renderer.extract.base64(
-					stage,
-					"image/png",
-					1,
-					visibleArea,
-				);
-
-				const a = document.createElement("a");
-				a.href = url;
-				a.download = "screen-shot.png";
-				a.click();
-				a.remove();
-			}}
-			style={{
-				top: 24,
-				right: 24,
-			}}
-		/>
-	);
 };
 
 type TezignPlayerProps = {
@@ -222,7 +174,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		if (_poster?.url) {
 			return (
 				<VideoPoster
-					className={styles["aniamte-fadein"]}
+					className={"aniamte-fadein"}
 					style={{
 						objectFit: _poster?.objectFit ?? "cover",
 					}}
@@ -253,7 +205,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					}}
 					className={classNames(
 						"group/container flex items-center justify-center overflow-hidden relative",
-						styles["bg-rect-pattern"],
+						"bg-rect-pattern",
 					)}
 					id="player-container"
 				>

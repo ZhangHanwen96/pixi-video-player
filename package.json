@@ -1,6 +1,6 @@
 {
 	"name": "@tezign/vmml-player",
-	"version": "0.0.1-beta.3",
+	"version": "0.0.1-beta.4",
 	"type": "module",
 	"publishConfig": {
 		"access": "restricted",
@@ -37,7 +37,10 @@
 		"lodash-es": "^4.17.21",
 		"react-draggable": "^4.4.6"
 	},
-	"files": ["dist", "package.json"],
+	"files": [
+		"dist",
+		"package.json"
+	],
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",

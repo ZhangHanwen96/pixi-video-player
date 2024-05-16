@@ -1,28 +1,28 @@
+import { EVENT_UPDATE, FRAME_RATE, TimeLineContoller } from "@/Timeline";
+import { $on } from "@/event-utils";
+import { useTimelineStore } from "@/store";
+import { useTezignPlayerStore } from "@/store/tezignPlayer";
+import {
+	mergeRefs,
+	useMouse,
+	useMove,
+	useResizeObserver,
+} from "@mantine/hooks";
+import { useMemoizedFn, useResponsive, useSize, useUpdate } from "ahooks";
+import { Dropdown, Popover, Slider, Switch } from "antd";
+import classNames from "classnames";
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { memo, useEffect, useRef, useState } from "react";
-import {
-	useMove,
-	useMouse,
-	useResizeObserver,
-	mergeRefs,
-} from "@mantine/hooks";
-import { EVENT_UPDATE, FRAME_RATE, TimeLineContoller } from "@/Timeline";
-import { useMemoizedFn, useUpdate, useResponsive, useSize } from "ahooks";
-import { useTimelineStore } from "@/store";
-import MdiFullscreenExit from "~icons/mdi/fullscreen-exit";
-import MdiPlay from "~icons/mdi/play";
 import MdiFullscreen from "~icons/mdi/fullscreen";
+import MdiFullscreenExit from "~icons/mdi/fullscreen-exit";
+import MdiPauseCircleOutline from "~icons/mdi/pause-circle-outline";
+import MdiPlay from "~icons/mdi/play";
+import MdiPlayCircleOutline from "~icons/mdi/play-circle-outline";
+import MdiRestart from "~icons/mdi/restart";
 import MdiSpeedometerSlow from "~icons/mdi/speedometer-slow";
 import MdiVolume from "~icons/mdi/volume";
 import MdiVolumeOff from "~icons/mdi/volume-off";
-import MdiPlayCircleOutline from "~icons/mdi/play-circle-outline";
-import MdiPauseCircleOutline from "~icons/mdi/pause-circle-outline";
-import MdiRestart from "~icons/mdi/restart";
-import { $on } from "@/event-utils";
-import { Dropdown, Slider, Popover, Switch } from "antd";
-import { useTezignPlayerStore } from "@/store/tezignPlayer";
-import classNames from "classnames";
 
 type Status = "pending" | "start" | "stop" | "resume" | "restart";
 
@@ -43,7 +43,7 @@ const getStatus = (timeline?: TimeLineContoller): Status => {
 			  : "start";
 };
 
-const TimeControl = () => {
+const TimeControl = ({ featureOn = false }) => {
 	const { timeline } = useTimelineStore();
 	const isSeeking = useTezignPlayerStore.use.seekLoading(true);
 	const showCaptionEditor = useTezignPlayerStore.use.showCaptionEditor(true);
@@ -309,89 +309,93 @@ const TimeControl = () => {
 								data-time-fallback="00:00 / 00:00"
 								className="display-time text-white pr-2"
 							/>
-							<Popover
-								arrow={false}
-								trigger={["hover"]}
-								overlayInnerStyle={{
-									padding: "8px 6px",
-								}}
-								content={
-									<div className="h-32">
-										<Slider
-											vertical
-											onChange={(v: number) => {
-												setVolume(v);
-												if (timeline) {
-													timeline.audioVolume =
-														v / 100;
+							{featureOn && (
+								<>
+									<Popover
+										arrow={false}
+										trigger={["hover"]}
+										overlayInnerStyle={{
+											padding: "8px 6px",
+										}}
+										content={
+											<div className="h-32">
+												<Slider
+													vertical
+													onChange={(v: number) => {
+														setVolume(v);
+														if (timeline) {
+															timeline.audioVolume =
+																v / 100;
+														}
+													}}
+													value={volume}
+													defaultValue={volume}
+													min={0}
+													max={100}
+													step={1}
+												/>
+											</div>
+										}
+									>
+										<span
+											className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer"
+											onClick={() => {
+												if (volume !== 0) {
+													volumeRef.current = volume;
+													setVolume(0);
+													if (timeline) {
+														timeline.audioVolume = 0;
+													}
+												} else {
+													const nextVolume =
+														volumeRef.current || 50;
+													if (timeline) {
+														timeline.audioVolume =
+															nextVolume / 100;
+													}
+													setVolume(nextVolume);
 												}
 											}}
-											value={volume}
-											defaultValue={volume}
-											min={0}
-											max={100}
-											step={1}
-										/>
-									</div>
-								}
-							>
-								<span
-									className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer"
-									onClick={() => {
-										if (volume !== 0) {
-											volumeRef.current = volume;
-											setVolume(0);
-											if (timeline) {
-												timeline.audioVolume = 0;
-											}
-										} else {
-											const nextVolume =
-												volumeRef.current || 50;
-											if (timeline) {
-												timeline.audioVolume =
-													nextVolume / 100;
-											}
-											setVolume(nextVolume);
-										}
-									}}
-								>
-									{volume === 0 ? (
-										<MdiVolumeOff />
-									) : (
-										<MdiVolume />
-									)}
-								</span>
-							</Popover>
-							<Dropdown
-								menu={{
-									items: [
-										{
-											label: "1X",
-											key: 1,
-										},
-										{
-											label: "1.5X",
-											key: 1.5,
-										},
-										{
-											label: "2X",
-											key: 2,
-										},
-									],
-									onClick: (item) => {
-										const speed = parseFloat(item.key);
+										>
+											{volume === 0 ? (
+												<MdiVolumeOff />
+											) : (
+												<MdiVolume />
+											)}
+										</span>
+									</Popover>
+									<Dropdown
+										menu={{
+											items: [
+												{
+													label: "1X",
+													key: 1,
+												},
+												{
+													label: "1.5X",
+													key: 1.5,
+												},
+												{
+													label: "2X",
+													key: 2,
+												},
+											],
+											onClick: (item) => {
+												const speed = parseFloat(
+													item.key,
+												);
 
-										if (timeline) {
-											timeline.speed = speed;
-										}
-									},
-								}}
-							>
-								<span className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer">
-									<MdiSpeedometerSlow />
-								</span>
-							</Dropdown>
-							{/* <Dropdown
+												if (timeline) {
+													timeline.speed = speed;
+												}
+											},
+										}}
+									>
+										<span className="text-2xl inline-flex hover:text-white text-slate-200 cursor-pointer">
+											<MdiSpeedometerSlow />
+										</span>
+									</Dropdown>
+									{/* <Dropdown
                                 menu={{
                                     items: [
                                         // must be divided by 60
@@ -419,29 +423,34 @@ const TimeControl = () => {
                                     <MdiSpeedometerSlow />
                                 </span>
                             </Dropdown> */}
-							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-							<span
-								onClick={() => {
-									if (window.document.fullscreenElement) {
-										useTezignPlayerStore
-											.getState()
-											.exitFullScreen();
-									} else {
-										useTezignPlayerStore
-											.getState()
-											.requestFullScreen();
-									}
+									{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+									<span
+										onClick={() => {
+											if (
+												window.document
+													.fullscreenElement
+											) {
+												useTezignPlayerStore
+													.getState()
+													.exitFullScreen();
+											} else {
+												useTezignPlayerStore
+													.getState()
+													.requestFullScreen();
+											}
 
-									forceUpdate();
-								}}
-								className="text-2xl hover:text-white inline-flex text-slate-200 cursor-pointer ant-icon"
-							>
-								{window.document.fullscreenElement ? (
-									<MdiFullscreenExit />
-								) : (
-									<MdiFullscreen />
-								)}
-							</span>
+											forceUpdate();
+										}}
+										className="text-2xl hover:text-white inline-flex text-slate-200 cursor-pointer ant-icon"
+									>
+										{window.document.fullscreenElement ? (
+											<MdiFullscreenExit />
+										) : (
+											<MdiFullscreen />
+										)}
+									</span>
+								</>
+							)}
 						</div>
 					</div>
 				</div>

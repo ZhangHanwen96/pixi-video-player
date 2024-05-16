@@ -2,12 +2,12 @@ import { extractFrame } from "@/utils/extractVideoFrame";
 import { useEffect, useState } from "react";
 
 export const usePoster = (url?: string) => {
-	const [poster, setPoster] = useState("");
+	const [poster, setPoster] = useState<string>();
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
 		if (!url) {
-			setPoster("");
+			setPoster(undefined);
 		}
 		let dirty = false;
 

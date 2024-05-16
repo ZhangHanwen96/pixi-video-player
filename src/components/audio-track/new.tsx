@@ -20,7 +20,7 @@ import { withPromise } from "@/utils/withPromise";
 import { isNumber } from "lodash-es";
 import EventEmitter from "eventemitter3";
 
-// TODO: loop short audio
+// TODO: [ ] loop short audio (should be done in pre-processing vmml)
 
 interface SoundTrackProps {
 	audioTrack: AudioTrack;
@@ -198,12 +198,12 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				currentMetaRef.current = audioMeta;
 
 				const { currentTime } = args[0];
-				let realStart =
-					(currentTime * 1_000 -
-						audioMeta.inPoint +
-						audioMeta.start) /
-					1000_000;
-				realStart = parseFloat(realStart.toFixed(2));
+				const realStart = calcStart(
+					currentTime * 1_000,
+					audioMeta.inPoint,
+					audioMeta.start,
+					audioMeta.duration,
+				);
 
 				if (!audioMeta.audioClip.sourceUrl) return;
 
@@ -314,6 +314,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 					event.elapsedTime * 1_000,
 					audioMeta.inPoint,
 					audioMeta.start,
+					audioMeta.duration,
 				);
 
 				let soundId = clipIdToSoundIDMap.get(audioMeta.id);
@@ -440,8 +441,15 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 	return null;
 };
 
-function calcStart(elapsed: number, inpoint: number, start: number) {
-	const realStart = elapsed - inpoint + start / 1000_000;
+function calcStart(
+	elapsed: number,
+	inpoint: number,
+	start: number,
+	duration: number,
+) {
+	// const durationS = duration / 1_000_000;
+	const realStart = (elapsed - inpoint + start) / 1_000_000;
+	// const loopStart = realStart % durationS;
 	return parseFloat(realStart.toFixed(3));
 }
 

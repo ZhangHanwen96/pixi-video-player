@@ -17,7 +17,9 @@
 		"test": "echo \"Skip test\" && exit 0",
 		"build:tailwind": "BUNDLE=true tailwind -c tailwind.config.js -o ./dist/tailwindcss.css",
 		"build-release": "rm -rf dist && pnpm run build:tsup",
-		"release": "pnpm run build-release && np"
+		"release": "pnpm run build-release && np",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"dependencies": {
 		"@mantine/hooks": "^7.2.2",
@@ -25,14 +27,17 @@
 		"@pixi/filter-glitch": "^5.1.1",
 		"@pixi/filter-radial-blur": "^5.1.1",
 		"@react-spring/web": "^9.7.3",
+		"@types/json-stable-stringify": "^1.0.36",
 		"ahooks": "^3.7.8",
 		"classnames": "^2.3.2",
 		"eventemitter3": "^5.0.1",
+		"fast-json-stable-stringify": "^2.1.0",
 		"fontfaceobserver": "^2.3.0",
 		"framer-motion": "^11.0.24",
 		"hookable": "^5.5.3",
 		"howler": "^2.2.4",
 		"immer": "^10.0.4",
+		"json-stable-stringify": "^1.1.1",
 		"leva": "^0.9.35",
 		"lodash-es": "^4.17.21",
 		"react-draggable": "^4.4.6"
@@ -56,9 +61,19 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.5.1",
+		"@chromatic-com/storybook": "^1.3.3",
 		"@iconify-json/mdi": "^1.1.57",
 		"@million/lint": "^0.0.73",
 		"@monaco-editor/react": "^4.6.0",
+		"@storybook/addon-essentials": "^8.0.9",
+		"@storybook/addon-interactions": "^8.0.9",
+		"@storybook/addon-links": "^8.0.9",
+		"@storybook/addon-onboarding": "^8.0.9",
+		"@storybook/addon-storysource": "^8.0.9",
+		"@storybook/blocks": "^8.0.9",
+		"@storybook/react": "^8.0.9",
+		"@storybook/react-vite": "^8.0.9",
+		"@storybook/test": "^8.0.9",
 		"@tailwindcss/container-queries": "^0.1.1",
 		"@types/fontfaceobserver": "^2.1.3",
 		"@types/howler": "^2.2.11",
@@ -77,6 +92,7 @@
 		"eslint": "^8.53.0",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.4",
+		"eslint-plugin-storybook": "^0.8.0",
 		"np": "*",
 		"postcss": "^8.4.31",
 		"postcss-class-prefix": "^0.3.0",
@@ -90,6 +106,7 @@
 		"rollup-plugin-dts": "^6.1.0",
 		"rollup-plugin-peer-deps-external": "^2.2.4",
 		"sound": "link:@types/@pixi/sound",
+		"storybook": "^8.0.9",
 		"tailwindcss": "^3.3.5",
 		"tsup": "^8.0.2",
 		"typescript": "^5.2.2",
@@ -108,5 +125,10 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"zustand": "^4.4.7"
+	},
+	"eslintConfig": {
+		"extends": [
+			"plugin:storybook/recommended"
+		]
 	}
 }

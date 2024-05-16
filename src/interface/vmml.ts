@@ -1,3 +1,4 @@
+import type { Root } from "hast";
 import { TransitionParam } from "./animation";
 
 /**
@@ -43,14 +44,15 @@ export interface AudioTrack extends Track {
 }
 
 export interface CaptionTrack extends Track {
-	clips: (Clip & { textClip: TextClip })[];
+	clips: (Clip & { textClip: TextClip | TextClip210 })[];
 }
 
 interface Clip {
 	/**
 	 * @description clip类型
 	 * 视频类型：100， 101：主轨，102：画中画，
-	 * 文字类型：200， 201：贴纸，202：普通文字，203：识别字幕，
+	 * 文字类型：200， 201：贴纸，202：普通文字，203：识别字幕, 2
+	 * 210: 支持html的文字
 	 * 音频类型：300， 301：提取音频，302：音乐，303：录音，304：音效
 	 * 特效类型：400：特效
 	 */
@@ -84,7 +86,7 @@ interface Clip {
 
 	audioClip?: AudioClip;
 	videoClip?: VideoClip;
-	textClip?: TextClip;
+	textClip?: TextClip | TextClip210;
 }
 
 interface AudioClip {
@@ -143,4 +145,23 @@ interface TextClip {
 	italic?: boolean;
 	alignType?: number;
 	backgroundColor?: string;
+}
+
+export type Font = {
+	fontSourceUrl: string;
+	fontFamily: string;
+};
+
+/**
+ * @description 支持html的文字
+ */
+export interface TextClip210 {
+	htmlContent: string;
+	fonts?: Font[];
+	posParam: PositionParam;
+	dimension?: Dimension;
+	/**
+	 * @type {import("hast").Root}
+	 */
+	hastRoot: Root;
 }

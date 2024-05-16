@@ -3,50 +3,61 @@ import { create } from "zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { createSelectors } from "./createSelectors";
 import { VMMLTemplateV4 } from "@/interface/vmml";
-import { useTimelineStore } from ".";
 
 interface State {
 	vmml?: VMMLTemplateV4;
+	containerRect: {
+		width: number;
+		height: number;
+	};
+	loading: boolean;
+	seekLoading: boolean;
+	showCaptionEditor: boolean;
 }
 
 interface Actions {
 	setVmml: (vmml: VMMLTemplateV4) => void;
 	requestFullScreen: () => void;
 	exitFullScreen: () => void;
-	containerRect: {
-		width: number;
-		height: number;
-	};
+
 	setRect: (width: number, height: number) => void;
-	loading: boolean;
+
 	finishPreloading: () => void;
 	startPreloading: () => void;
 	startSeekLoading: () => void;
 	finishSeekLoading: () => void;
-	seekLoading: boolean;
-	showCaptionEditor: boolean;
+	reset: () => void;
 }
+
+const defaultState: State = {
+	vmml: undefined,
+	showCaptionEditor: false,
+	loading: false,
+	seekLoading: false,
+	containerRect: {
+		width: 800,
+		height: 450,
+	},
+};
 
 export const tezignPlayerStore = create(
 	subscribeWithSelector<State & Actions>((set, get) => {
 		return {
-			vmml: undefined,
+			...defaultState,
+			reset: () => {
+				set(() => defaultState);
+			},
 			setVmml(vmml) {
 				set(() => ({ vmml }));
 			},
-			showCaptionEditor: false,
-			loading: false,
-			seekLoading: false,
+
 			startSeekLoading: () => {
 				set(() => ({ seekLoading: true }));
 			},
 			finishSeekLoading: () => {
 				set(() => ({ seekLoading: false }));
 			},
-			containerRect: {
-				width: 800,
-				height: 450,
-			},
+
 			setRect(width, height) {
 				set(() => ({
 					containerRect: {
@@ -56,7 +67,9 @@ export const tezignPlayerStore = create(
 				}));
 			},
 			requestFullScreen: () => {
-				const container = document.getElementById("player-container");
+				const container = document.getElementById(
+					"tz-player-container",
+				);
 				if (!container) return;
 				// @ts-ignore
 				if (container.requestFullscreen) {

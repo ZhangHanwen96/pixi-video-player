@@ -11,7 +11,7 @@ export const extractFrame = async (url: string, frame: number) => {
 	canvas.style.display = "none";
 	const context = canvas.getContext("2d")!;
 	setTimeout(() => {
-		reject(new Error("poster timeout"));
+		reject(new Error("Extract Frame Timeout"));
 	}, 3000);
 	video.addEventListener("loadeddata", () => {
 		// Set the canvas size to match the video

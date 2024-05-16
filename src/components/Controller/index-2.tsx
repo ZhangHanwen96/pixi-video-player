@@ -21,7 +21,7 @@ import MdiPauseCircleOutline from "~icons/mdi/pause-circle-outline";
 import MdiRestart from "~icons/mdi/restart";
 import { $on } from "@/event-utils";
 import { Dropdown, Slider, Popover, Switch } from "antd";
-import { useTezignPlayerStore } from "@/store/teizng-player";
+import { useTezignPlayerStore } from "@/store/tezignPlayer";
 import classNames from "classnames";
 
 type Status = "pending" | "start" | "stop" | "resume" | "restart";
@@ -106,8 +106,8 @@ const TimeControl = () => {
 	useEffect(() => {
 		let handler = () => {};
 
-		if (timeline) {
-			durationDisplayRef.current!.setAttribute(
+		if (timeline && durationDisplayRef.current) {
+			durationDisplayRef.current.setAttribute(
 				"data-time",
 				`${format(
 					timeline.timeMetadata.elapsedTime / 1_000,
@@ -116,21 +116,24 @@ const TimeControl = () => {
 			timeline.on(
 				"common-update",
 				// @ts-ignore
-				(handler = () => {
-					forceUpdate();
-					const { elapsedTime, totalDuration } =
-						timeline.timeMetadata;
-					// format to mm:ss / mm:ss
+				() => {
+					handler = () => {
+						if (!durationDisplayRef.current) return;
+						forceUpdate();
+						const { elapsedTime, totalDuration } =
+							timeline.timeMetadata;
+						// format to mm:ss / mm:ss
 
-					const formattedTime = `${format(
-						elapsedTime / 1_000,
-					)} / ${format(totalDuration / 1_000)}`;
+						const formattedTime = `${format(
+							elapsedTime / 1_000,
+						)} / ${format(totalDuration / 1_000)}`;
 
-					durationDisplayRef.current!.setAttribute(
-						"data-time",
-						formattedTime,
-					);
-				}),
+						durationDisplayRef.current.setAttribute(
+							"data-time",
+							formattedTime,
+						);
+					};
+				},
 			);
 		}
 
@@ -253,6 +256,7 @@ const TimeControl = () => {
 	return (
 		<>
 			<div
+				id="tz-player-controller"
 				className="absolute group/container inset-0 cursor-default flex items-center justify-center"
 				ref={wrapperRef}
 				onClick={() => {
@@ -260,7 +264,10 @@ const TimeControl = () => {
 				}}
 			>
 				{showIcon && !isSeeking && (
-					<div className="w-16 h-16 hover:scale-110 transition-all duration-100 ease-in flex items-center justify-center cursor-pointer z-10 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black">
+					<div
+						id="tz-player-controller_status"
+						className="w-16 h-16 hover:scale-110 transition-all duration-100 ease-in flex items-center justify-center cursor-pointer z-10 rounded-[50%] bg-white/60 backdrop-blur text-2xl text-black"
+					>
 						<span className="text-5xl grid place-items-center">
 							{statusIcon()}
 						</span>

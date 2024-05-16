@@ -1,19 +1,25 @@
-import { useThrottle, useUpdateEffect } from "ahooks";
-import { TezignPlayer } from "./components/TezignPlayer";
-import { Button, Drawer, FloatButton, Space, Spin, message } from "antd";
-import Editor, { useMonaco } from "@monaco-editor/react";
-import { useSize } from "ahooks";
-import defaultVMML from "@/mock/debugvmml.json";
+import { VMMLTemplateV4 } from "@/interface/vmml";
+import buggy from "@/mock/buggy.json";
 import custom_1 from "@/mock/custom_1.json";
 import custom_2 from "@/mock/custom_2.json";
 import custom_3 from "@/mock/custom_3.json";
-import buggy from "@/mock/buggy.json";
+import defaultVMML from "@/mock/debugvmml.json";
+import Editor, { useMonaco } from "@monaco-editor/react";
+import { useThrottle, useUpdateEffect } from "ahooks";
+import { useSize } from "ahooks";
+import { Button, Drawer, FloatButton, Space, Spin, message } from "antd";
+import { button, folder, useControls } from "leva";
+import React, {
+	useDeferredValue,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import "./App.css";
-import { VMMLTemplateV4 } from "@/interface/vmml";
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
-import { useTezignPlayerStore } from "./store/teizng-player";
-import { useControls, folder, button } from "leva";
+import { TezignPlayer } from "./components/TezignPlayer";
 import { usePoster } from "./components/TezignPlayer/usePoster";
+import { useTezignPlayerStore } from "./store/tezignPlayer";
 
 const ratio_16_9 = 16 / 9;
 const ratio_9_16 = 9 / 16;
@@ -31,6 +37,10 @@ const aspect_ratio_mapping = {
 	"9:16": 9 / 16,
 	"4:3": 4 / 3,
 };
+
+const Comp = React.forwardRef(() => {
+	return <div>asd</div>;
+});
 
 function App() {
 	const ref = useRef<HTMLDivElement>(null);
@@ -211,6 +221,12 @@ function App() {
 				</Drawer>
 				{vmmlJson && (
 					<TezignPlayer
+						disabledFeatures={[
+							"audioTrack",
+							"captionTrack",
+							"controller-options",
+							"poster",
+						]}
 						key={vmmlJson.template.tracks[0].id}
 						container={() => ref.current as HTMLDivElement}
 						// width={useDeferredValue(tWidth)}
@@ -221,9 +237,9 @@ function App() {
 							objectFit: "contain",
 						}}
 						spinner={
-							<div className="absolute z-[9999] inset-0 bg-black/50 flex items-center justify-center">
+							<div className="h-full w-full bg-black/50 flex items-center justify-center">
 								<Spin
-									className="text-teal-500"
+									style={{ color: "green" }}
 									spinning
 									size="large"
 								/>

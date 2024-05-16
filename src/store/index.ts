@@ -19,17 +19,22 @@ interface Actions {
 	setApp: (app: PIXI.Application, duration: number) => void;
 	setTimeline: (timeline: TimeLineContoller) => void;
 	togglePoster: (show?: boolean) => void;
+	reset: () => void;
 }
 
 let $timeline: TimeLineContoller | undefined;
 
+const defaultState: Partial<State> = {
+	timeline: undefined,
+	app: undefined,
+	pausedByController: false,
+	showPoster: true,
+};
+
 export const timelineStore = create(
 	subscribeWithSelector<State & Actions>((set, get) => {
 		return {
-			timeline: undefined,
-			app: undefined,
-			pausedByController: false,
-			showPoster: true,
+			...defaultState,
 			setApp(app, duration) {
 				const createTimeline = () => {
 					if (!app) return undefined;
@@ -58,6 +63,9 @@ export const timelineStore = create(
 				} else {
 					set((state) => ({ showPoster: !state.showPoster }));
 				}
+			},
+			reset: () => {
+				set(defaultState);
 			},
 		};
 	}),

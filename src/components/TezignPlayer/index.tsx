@@ -4,7 +4,7 @@ import {
 	VMMLTemplateV4,
 	VideoTrack,
 } from "@/interface/vmml";
-import MainVideoTrack from "../video-tracks/VideoTrack";
+import { useTimelineStore } from "@/store";
 import { Stage, useApp } from "@pixi/react";
 import {
 	CSSProperties,
@@ -14,21 +14,22 @@ import {
 	useEffect,
 	useMemo,
 } from "react";
-import { useTimelineStore } from "@/store";
+import MainVideoTrack from "../video-tracks/VideoTrack";
 
-import SoundTrackNew from "../audio-track/new";
-import TimeControlV2 from "@/components/Controller/index-2";
-import { calculatRectByObjectFit } from "@/util";
-import { useTezignPlayerStore } from "@/store/teizng-player";
-import { useEventListener, useSize, useUnmount } from "ahooks";
-import CaptionTrackComponent from "../caption-track";
 import VideoPoster from "@/VideoPoster";
-import { FloatButton, Spin, message } from "antd";
-import { BasicTarget } from "ahooks/lib/utils/domTarget";
-import CaptionEditor from "../caption-editor";
+import TimeControlV2 from "@/components/Controller/index-2";
 import { useDelayLoading } from "@/hooks/useDelayLoading";
-import "./index.css";
+import { tezignPlayerStore, useTezignPlayerStore } from "@/store/tezignPlayer";
+import { calculatRectByObjectFit } from "@/util";
+import { useEventListener, useSize, useUnmount } from "ahooks";
+import { BasicTarget } from "ahooks/lib/utils/domTarget";
+import { FloatButton, Spin, message } from "antd";
 import classNames from "classnames";
+import SoundTrackNew from "../audio-track/new";
+import CaptionEditor from "../caption-editor";
+import CaptionTrackComponent from "../caption-track";
+import CaptionTrackComponentDom from "../caption-track/dom";
+import "./index.css";
 
 const SetUpHook: FC<{
 	duration: number;
@@ -39,12 +40,12 @@ const SetUpHook: FC<{
 		useTimelineStore.getState().setApp(app, duration);
 	}, [app, duration]);
 
-	useUnmount(() => {
-		const timeline = useTimelineStore.getState().timeline;
-		if (timeline) {
-			timeline.stop();
-		}
-	});
+	// useUnmount(() => {
+	// 	const timeline = useTimelineStore.getState().timeline;
+	// 	if (timeline) {
+	// 		timeline.stop();
+	// 	}
+	// });
 
 	return null;
 };
@@ -63,7 +64,11 @@ type TezignPlayerProps = {
 		duration?: number;
 		numberOfFutureClips?: number;
 	};
-	spinner?: React.ReactNode | React.ReactElement;
+	spinner?: React.ReactNode | React.ComponentType;
+	//
+	features: Array<
+		"audioTrack" | "controller-options" | "captionTrack" | "poster"
+	>;
 };
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
@@ -73,11 +78,16 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	container,
 	poster: _poster,
 	backgroundColor = "#000000f3",
-	spinner,
+	spinner: Spinner,
+	features,
 }) => {
 	if (!vmml) {
 		throw new Error("No vmml found");
 	}
+
+	useEffect(() => {
+		tezignPlayerStore.getState().setVmml(vmml);
+	}, [vmml]);
 
 	const {
 		containerRect: { height, width },
@@ -157,7 +167,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 			}
 		},
 		{
-			target: document.querySelector("#player-container"),
+			target: document.querySelector("#tz-player-container"),
 		},
 	);
 
@@ -180,6 +190,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	// });
 
 	const renderPoster = () => {
+		if (!features.includes("poster")) return null;
 		if (_poster?.url) {
 			return (
 				<VideoPoster
@@ -195,9 +206,19 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	};
 
 	const renderSpinner = () => {
-		if (!seekLoading || !spinner) return null;
-		return spinner;
+		if (!seekLoading || !Spinner) return null;
+		const spinner = typeof Spinner === "function" ? <Spinner /> : Spinner;
+		return <div className="absolute z-[9999] inset-0">{spinner}</div>;
 	};
+
+	useUnmount(() => {
+		const timeline = useTimelineStore.getState().timeline;
+		if (timeline) {
+			timeline.stop();
+		}
+		useTimelineStore.getState().reset();
+		tezignPlayerStore.getState().reset();
+	});
 
 	if (!videoTracks.length) {
 		throw new Error("No video track found");
@@ -221,7 +242,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 						"group/container flex items-center justify-center overflow-hidden relative",
 						"bg-rect-pattern",
 					)}
-					id="player-container"
+					id="tz-player-container"
 				>
 					{/* <ScreenShot /> */}
 					{
@@ -243,25 +264,34 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 									stageRect={transformedRect}
 								/>
 							))}
-							{captionTrack && (
-								<CaptionTrackComponent
-									stageRect={transformedRect}
-									captionTrack={captionTrack as CaptionTrack}
-								/>
-							)}
-							{audioTrack && (
+							{captionTrack &&
+								features.includes("captionTrack") && (
+									<CaptionTrackComponent
+										stageRect={transformedRect}
+										captionTrack={
+											captionTrack as CaptionTrack
+										}
+									/>
+								)}
+							{audioTrack && features.includes("audioTrack") && (
 								<SoundTrackNew
 									audioTrack={audioTrack as AudioTrack}
 								/>
 							)}
 						</Stage>
 					}
+					{/* {captionTrack && (
+						<CaptionTrackComponentDom
+							stageRect={transformedRect}
+							captionTrack={captionTrack as CaptionTrack}
+						/>
+					)} */}
 					{renderPoster()}
 					<TimeControlV2 />
 					{renderSpinner()}
 				</div>
 			</div>
-			{captionTrack && (
+			{captionTrack && features.includes("captionTrack") && (
 				<CaptionEditor
 					onClose={() => {
 						useTezignPlayerStore.setState({

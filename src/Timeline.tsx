@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import { clamp } from "lodash-es";
 import { hooks } from "./components/Controller/hooks";
 import { sleep } from "./utils/delay";
-import { useTezignPlayerStore } from "./store/teizng-player";
+import { useTezignPlayerStore } from "./store/tezignPlayer";
 
 const FPS_60 = 60;
 const FPS_30 = 30;

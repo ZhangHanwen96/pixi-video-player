@@ -1,16 +1,26 @@
-/* eslint-disable react-refresh/only-export-components */
-import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
-import { Container, Graphics, Text } from "@pixi/react";
-import * as PIXI from "pixi.js";
 import { EVENT_UPDATE, TimelineEventTypes } from "@/Timeline";
-import { useTimelineStore } from "@/store";
 import { $on } from "@/event-utils";
-import { CaptionTrack } from "@/interface/vmml";
-import { argb2Rgba } from "./utils";
+import useLoadFont from "@/hooks/useLoadFont";
 import { StageRect } from "@/interface/app";
+import { CaptionTrack, Font, TextClip210 } from "@/interface/vmml";
+import { useTimelineStore } from "@/store";
+import { useForceUpdate } from "@mantine/hooks";
+import { Container, Graphics, Text } from "@pixi/react";
 import { useDeepCompareEffect } from "ahooks";
 import EventEmitter from "eventemitter3";
-import { useForceUpdate } from "@mantine/hooks";
+import uniqBy from "lodash/uniqBy";
+import * as PIXI from "pixi.js";
+/* eslint-disable react-refresh/only-export-components */
+import {
+	FC,
+	memo,
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
+import { argb2Rgba } from "./utils";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
@@ -26,6 +36,29 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const forceUpdate = useForceUpdate();
 
 	const timerRef = useRef<any>();
+
+	const fonts = useMemo(() => {
+		const clips210 = captionTrack.clips.filter(({ type }) => type === 210);
+		const fonts = clips210.map(
+			({ textClip }) => (textClip as TextClip210).fonts,
+		);
+		if (Array.isArray(fonts)) {
+			const flatFonts = fonts.flat() as Font[];
+			const dedupedFonts = uniqBy(flatFonts, "fontFamily");
+			return dedupedFonts;
+		}
+		return [];
+	}, [captionTrack.clips]);
+
+	useLoadFont({
+		fonts: [
+			{
+				fontFamily: "customFont",
+				fontSourceUrl:
+					"https://static-common.tezign.com/fonts/xinyi.ttf",
+			},
+		],
+	});
 
 	useDeepCompareEffect(() => {
 		if (!timeline) {
@@ -131,12 +164,6 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 			{/* background */}
 			<Graphics ref={graphicsRef} zIndex={100} />
 			<Text
-				onclick={(e) => {
-					e.stopPropagation();
-					window.alert(
-						`clicked ${captionClipRef.current?.textClip?.textContent}`,
-					);
-				}}
 				anchor={{
 					x: 0.5,
 					y: 0,

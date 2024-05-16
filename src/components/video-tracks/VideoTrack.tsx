@@ -1,12 +1,23 @@
+import { TimelineEventTypes } from "@/Timeline";
+import { applyTransition, isInTransition } from "@/animation";
+import { easings } from "@/easing";
 import { $on, $ons } from "@/event-utils";
 import { VideoTrack } from "@/interface/vmml";
+import preloadUtils, {
+	waitForCanPlay2,
+	waitForLoadedMetadata2,
+} from "@/preload";
 import { useTimelineStore } from "@/store";
+import { loadImage } from "@/utils/loadImage";
+import { withTimeLog } from "@/utils/withTimeLog";
+import { mergeRefs } from "@mantine/hooks";
 import { GlitchFilter } from "@pixi/filter-glitch";
 import { RadialBlurFilter } from "@pixi/filter-radial-blur";
-import { Container, Sprite, withFilters, Graphics } from "@pixi/react";
+import { Container, Sprite, withFilters } from "@pixi/react";
 import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
-import * as PIXI from "pixi.js";
 import EventEmitter from "eventemitter3";
+import { isInteger, isNumber, set } from "lodash-es";
+import * as PIXI from "pixi.js";
 import {
 	forwardRef,
 	memo,
@@ -17,21 +28,9 @@ import {
 	useRef,
 	useState,
 } from "react";
-import { seekVideo } from "./utils";
 import { flushSync } from "react-dom";
-import { TimelineEventTypes } from "@/Timeline";
-import { isInteger, isNumber, set } from "lodash-es";
-import preloadUtils, {
-	waitForCanPlay2,
-	waitForLoadedMetadata2,
-} from "@/preload";
-import { mergeRefs } from "@mantine/hooks";
-import { easings } from "@/easing";
-import { applyTransition, isInTransition } from "@/animation";
 import { hooks } from "../Controller/hooks";
-import { withTimeLog } from "@/utils/withTimeLog";
-import { loadImage } from "@/utils/loadImage";
-import { useTezignPlayerStore } from "@/store/teizng-player";
+import { seekVideo } from "./utils";
 
 const graphics = new PIXI.Graphics();
 graphics.beginFill(0xffffff);
@@ -318,21 +317,25 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		/** pre-calculated -> object-fit: contain */
 		const scaleX = videoClip.posParam.scaleX ?? 1;
 		const scaleY = videoClip.posParam.scaleY ?? 1;
+
 		flushSync(() => {
+			const ajustedScale = {
+				x: scaleX * stageRect.scale,
+				y: scaleY * stageRect.scale,
+			};
+
 			setRectMeta({
 				height: videoDimension.height,
 				width: videoDimension.width,
 				scale: {
-					x: scaleX * stageRect.scale,
-					y: scaleY * stageRect.scale,
+					...ajustedScale,
 				},
 				x:
-					(stageRect.width -
-						videoDimension.width * scaleX * stageRect.scale) /
+					(stageRect.width - videoDimension.width * ajustedScale.x) /
 					2,
 				y:
 					(stageRect.height -
-						videoDimension.height * scaleY * stageRect.scale) /
+						videoDimension.height * ajustedScale.y) /
 					2,
 			});
 		});
@@ -491,89 +494,101 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		let videoMeta: VideoMeta | undefined;
 		let id = 0;
 		let currentId = id;
-		const unsub = hooks.beforeEach(({ name, context }) => {
-			if (name === "seek") {
-				currentId = context.currentVideoId = ++id;
-			}
-		});
-		const unsub2 = hooks.hook("seek", async ({ currentTime }) => {
-			videoMeta = seekVideo(currentTime, mainTrack);
-			if (!videoMeta) {
-				_reset();
-				return;
-			}
-
-			const isDiff = videoMeta.id !== videoMetaRef.current?.id;
-			if (!isDiff) {
-				return;
-			}
-
-			pauseCurrentVideo();
-
-			const isImage = videoMeta.videoClip.mimeType.startsWith("image");
-			if (isImage) {
-				if (!imageCache.has(videoMeta.videoClip.sourceUrl)) {
-					const img = await withTimeLog(
-						async () => loadImage(videoMeta!.videoClip.sourceUrl),
-						"Load Image",
-					);
-					imageCache.set(videoMeta.videoClip.sourceUrl, img);
+		const unsubCallbacks: Array<() => void> = [];
+		unsubCallbacks.push(
+			hooks.beforeEach(({ name, context }) => {
+				if (name === "seek") {
+					currentId = context.currentVideoId = ++id;
 				}
-				return;
-			}
-			const start =
-				currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
+			}),
+		);
+		unsubCallbacks.push(
+			hooks.hook("seek", async ({ currentTime }) => {
+				videoMeta = seekVideo(currentTime, mainTrack);
+				if (!videoMeta) {
+					_reset();
+					return;
+				}
 
-			await withTimeLog(
-				() => waitForCachePlayable(videoMeta!, start / 1_000_000),
-				"[seek video] wait for can play",
-			);
-		});
-		const unsub3 = hooks.afterEach(async ({ name, args, context }) => {
-			if (name !== "seek" || !videoMeta) return;
-			if (currentId !== context.currentId) return;
-			const { currentTime } = args[0];
-			const isDiff = videoMeta.id !== videoMetaRef.current?.id;
+				const isDiff = videoMeta.id !== videoMetaRef.current?.id;
+				if (!isDiff) {
+					return;
+				}
 
-			videoMetaRef.current = videoMeta;
-			const start =
-				currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
-			const isImage = videoMeta.videoClip.mimeType.startsWith("image");
+				pauseCurrentVideo();
 
-			if (isImage) {
+				const isImage =
+					videoMeta.videoClip.mimeType.startsWith("image");
+				if (isImage) {
+					if (!imageCache.has(videoMeta.videoClip.sourceUrl)) {
+						const img = await withTimeLog(
+							async () =>
+								loadImage(videoMeta!.videoClip.sourceUrl),
+							"Load Image",
+						);
+						imageCache.set(videoMeta.videoClip.sourceUrl, img);
+					}
+					return;
+				}
+				const start =
+					currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
+
+				await withTimeLog(
+					() => waitForCachePlayable(videoMeta!, start / 1_000_000),
+					"[seek video] wait for can play",
+				);
+			}),
+		);
+		unsubCallbacks.push(
+			hooks.afterEach(async ({ name, args, context }) => {
+				if (name !== "seek" || !videoMeta) return;
+				if (currentId !== context.currentId) return;
+				const { currentTime } = args[0];
+				const isDiff = videoMeta.id !== videoMetaRef.current?.id;
+
+				videoMetaRef.current = videoMeta;
+				const start =
+					currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
+				const isImage =
+					videoMeta.videoClip.mimeType.startsWith("image");
+
+				if (isImage) {
+					syncRectMeta(videoMeta);
+					flushSync(() => {
+						setVideoMeta(videoMeta);
+						setVideo(undefined);
+						setImage(
+							imageCache.get(videoMeta!.videoClip.sourceUrl),
+						);
+					});
+					return;
+				}
+
+				console.log(
+					`%cseek applied: ${start / 1000000}`,
+					"color: blue; font-size: 24px;",
+				);
+				if (!isDiff) {
+					changeVideoCurrentTime(start / 1_000_000);
+					return;
+				}
+
+				const cachedVideo = videoCache.get(
+					getCacheId(videoMeta.videoClip.sourceUrl, videoMeta.id),
+				);
+				if (!cachedVideo) throw new Error("No cached video found");
+				// cachedVideo.currentTime = start / 1_000_000;
+
 				syncRectMeta(videoMeta);
 				flushSync(() => {
 					setVideoMeta(videoMeta);
-					setVideo(undefined);
-					setImage(imageCache.get(videoMeta!.videoClip.sourceUrl));
+					setVideo(cachedVideo);
+					cachedVideo.volume = videoMeta!.videoClip.volume ?? 1;
+					cachedVideo.play();
+					// cachedVideo.autoplay = true;
 				});
-				return;
-			}
-
-			console.log(
-				`%cseek applied: ${start / 1000000}`,
-				"color: blue; font-size: 24px;",
-			);
-			if (!isDiff) {
-				changeVideoCurrentTime(start / 1_000_000);
-				return;
-			}
-
-			const cachedVideo = videoCache.get(
-				getCacheId(videoMeta.videoClip.sourceUrl, videoMeta.id),
-			);
-			if (!cachedVideo) throw new Error("No cached video found");
-			// cachedVideo.currentTime = start / 1_000_000;
-
-			syncRectMeta(videoMeta);
-			flushSync(() => {
-				setVideoMeta(videoMeta);
-				setVideo(cachedVideo);
-				cachedVideo.volume = videoMeta!.videoClip.volume ?? 1;
-				cachedVideo.play();
-				// cachedVideo.autoplay = true;
-			});
-		});
+			}),
+		);
 		return () => {
 			hooks.removeAllHooks();
 		};
@@ -998,14 +1013,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				ref={cContainerRef}
 				// HACK: I maybe only have a title bit idea why this works 🥹
 				key={containerKey}
-				glitch={{
-					fillMode: GlitchFilter.LOOP,
-					seed: 0.3,
-					...glitchParams,
-				}}
-				radialBlur={{
-					...radialBlurParams,
-				}}
 				// position related
 				x={
 					rectMeta.x +
@@ -1028,7 +1035,15 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				}}
 				blur={filterParams}
 				alpha={transform.alpha}
-				mask={mask}
+				// mask={mask}
+				glitch={{
+					fillMode: GlitchFilter.LOOP,
+					seed: 0.3,
+					...glitchParams,
+				}}
+				radialBlur={{
+					...radialBlurParams,
+				}}
 			>
 				<Sprite
 					key={spriteKey}

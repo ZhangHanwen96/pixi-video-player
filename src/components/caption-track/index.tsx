@@ -8,7 +8,7 @@ import { useForceUpdate } from "@mantine/hooks";
 import { Container, Graphics, Text } from "@pixi/react";
 import { useDeepCompareEffect } from "ahooks";
 import EventEmitter from "eventemitter3";
-import { uniqBy } from "lodash";
+import { uniqBy } from "lodash-es";
 import * as PIXI from "pixi.js";
 /* eslint-disable react-refresh/only-export-components */
 import {

@@ -1,9 +1,8 @@
 import { VMMLTemplateV4 } from "@/interface/vmml";
-import buggy from "@/mock/buggy.json";
 import custom_1 from "@/mock/custom_1.json";
-import custom_2 from "@/mock/custom_2.json";
-import custom_3 from "@/mock/custom_3.json";
+import custom_2 from "@/mock/custom_3.json";
 import defaultVMML from "@/mock/debugvmml.json";
+import htmlVmml from "@/mock/html_vmml.json";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useThrottle, useUpdateEffect } from "ahooks";
 import { useSize } from "ahooks";
@@ -26,10 +25,9 @@ const ratio_9_16 = 9 / 16;
 
 const defaultPreset = {
 	default: defaultVMML,
+	HTML字幕: htmlVmml,
 	"自定义-1": custom_1,
 	"自定义-2": custom_2,
-	"自定义-3": custom_3,
-	buggy,
 };
 
 const aspect_ratio_mapping = {
@@ -59,7 +57,6 @@ function App() {
 				setVmml(presets[v as keyof typeof presets]);
 			},
 		},
-
 		auto_poster: true,
 		aspectRatio: {
 			value: "16:9",
@@ -112,10 +109,10 @@ function App() {
 	const isTooVertical = tWidth / tHeight <= 3 / 4;
 	let classes = "w-[85vw] lg:w-[70vw] 2xl:w-[60vw]";
 	if (isTooVertical) {
-		classes = "w-[25vw]";
+		classes = "w-[clamp(400px,30vw,800px)]";
 	}
 	if (aspectRatio === "9:16") {
-		classes = "w-[25vw]";
+		classes = "w-[clamp(400px,30vw,800px)]";
 	}
 	if (aspectRatio === "4:3") {
 		classes = "w-[55vw]";
@@ -124,7 +121,9 @@ function App() {
 	const videoTracks = useMemo(() => {
 		return vmmlJson.template.tracks
 			.filter(({ type }) => type === 0 || type === 1)
-			.sort((a, b) => a.type - b.type);
+			.sort(
+				(a: { type: number }, b: { type: number }) => a.type - b.type,
+			);
 	}, [vmmlJson.template]);
 
 	const sourceUrl = useDeferredValue(
@@ -221,7 +220,12 @@ function App() {
 				</Drawer>
 				{vmmlJson && (
 					<TezignPlayer
-						features={[]}
+						features={[
+							"audioTrack",
+							"captionTrack",
+							"controller-options",
+							"poster",
+						]}
 						key={vmmlJson.template.tracks[0].id}
 						container={() => ref.current as HTMLDivElement}
 						// width={useDeferredValue(tWidth)}

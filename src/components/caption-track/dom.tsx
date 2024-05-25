@@ -1,11 +1,19 @@
 import { EVENT_UPDATE, TimelineEventTypes } from "@/Timeline";
 import { $on } from "@/event-utils";
+import useLoadFont from "@/hooks/useLoadFont";
 import { StageRect } from "@/interface/app";
-import { CaptionTrack } from "@/interface/vmml";
+import {
+	CaptionTrack,
+	Clip,
+	Font,
+	TextClip,
+	TextClip210,
+} from "@/interface/vmml";
 import { useTimelineStore } from "@/store";
 import { useForceUpdate } from "@mantine/hooks";
 import { useDeepCompareEffect } from "ahooks";
 import EventEmitter from "eventemitter3";
+import { uniqBy } from "lodash-es";
 import * as PIXI from "pixi.js";
 /* eslint-disable react-refresh/only-export-components */
 import {
@@ -14,11 +22,12 @@ import {
 	memo,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
-import TextClip210 from "./text-clip_210";
-import { argb2Rgba } from "./utils";
+import TextClip210Component from "./text-clip_210";
+import { argb2Rgba, mergeWithDefaultStyles } from "./utils";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
@@ -31,6 +40,23 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const textRef = useRef<string>("");
 	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
 	const forceUpdate = useForceUpdate();
+
+	const fonts = useMemo(() => {
+		const clips210 = captionTrack.clips.filter(({ type }) => type === 210);
+		const fonts = clips210.map(
+			({ textClip }) => (textClip as TextClip210).fonts,
+		);
+		if (Array.isArray(fonts)) {
+			const flatFonts = fonts.flat() as Font[];
+			const dedupedFonts = uniqBy(flatFonts, "fontFamily");
+			return dedupedFonts;
+		}
+		return [];
+	}, [captionTrack.clips]);
+
+	useLoadFont({
+		fonts,
+	});
 
 	useDeepCompareEffect(() => {
 		if (!timeline) {
@@ -66,56 +92,38 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 		);
 	}, [timeline, ...captionTrack.clips.map((c) => c.id)]);
 
-	/** properties */
-	const centerY = captionClipRef.current?.textClip.posParam.centerY ?? 0.5;
-	const centerX = captionClipRef.current?.textClip.posParam.centerX ?? 0.5;
-	const fontSize = captionClipRef.current?.textClip.dimension?.height ?? 24;
-
-	const fontFamily =
-		captionClipRef.current?.textClip.fontFamily ||
-		"Arial, Helvetica, sans-serif";
-	const textColor = captionClipRef.current?.textClip.textColor
-		? argb2Rgba(captionClipRef.current?.textClip.textColor)
-		: undefined;
-	const strokeColor = captionClipRef.current?.textClip.strokeColor
-		? argb2Rgba(captionClipRef.current?.textClip.strokeColor)
-		: undefined;
-	const strokeWidth = captionClipRef.current?.textClip.strokeWidth;
-	const italic = captionClipRef.current?.textClip.italic;
-	const bold = captionClipRef.current?.textClip.bold;
-	const letterSpacing = captionClipRef.current?.textClip.letterSpacing;
-	const backgroundColor = captionClipRef.current?.textClip.backgroundColor
-		? argb2Rgba(captionClipRef.current?.textClip.backgroundColor)
-		: undefined;
-
-	const customStyles = {
-		//  TODO: fontsize <-> size
-		fontSize,
-		fontFamily,
-		color: textColor,
-		stroke: strokeColor,
-		strokeWidth,
-		WebkitTextStrokeColor: strokeColor,
-		WebkitTextStrokeWidth: strokeWidth,
-		WebkitTextFillColor: strokeColor ? textColor : undefined,
-		fontStyle: italic ? "italic" : "normal",
-		fontWeight: bold ? "bold" : "normal",
-		letterSpacing,
-		backgroundColor,
-	} satisfies Partial<CSSProperties>;
-
 	if (!textRef.current) {
 		return null;
 	}
+
 	if (captionClipRef.current?.type === 210) {
 		return (
-			<TextClip210
+			<TextClip210Component
 				clip={captionClipRef.current as any}
 				stageRect={stageRect}
 			/>
 		);
 	}
 
+	return (
+		<TextClipComponent
+			clip={captionClipRef.current as unknown as any}
+			stageRect={stageRect}
+		/>
+	);
+};
+
+function TextClipComponent({
+	clip,
+	stageRect,
+}: {
+	stageRect: StageRect;
+	clip: Clip & { textClip: TextClip };
+}) {
+	const customStyles = mergeWithDefaultStyles(clip);
+	/** properties */
+	const centerY = clip.textClip.posParam.centerY ?? 0.5;
+	const centerX = clip.textClip.posParam.centerX ?? 0.5;
 	return (
 		// stage size container
 		<div
@@ -148,11 +156,11 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 						transformOrigin: "left top",
 					}}
 				>
-					<span>{textRef.current}</span>
+					<span>{clip.textClip.textContent}</span>
 				</div>
 			</div>
 		</div>
 	);
-};
+}
 
 export default memo(Caption);

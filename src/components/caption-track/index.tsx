@@ -51,13 +51,7 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	}, [captionTrack.clips]);
 
 	useLoadFont({
-		fonts: [
-			{
-				fontFamily: "customFont",
-				fontSourceUrl:
-					"https://static-common.tezign.com/fonts/xinyi.ttf",
-			},
-		],
+		fonts,
 	});
 
 	useDeepCompareEffect(() => {

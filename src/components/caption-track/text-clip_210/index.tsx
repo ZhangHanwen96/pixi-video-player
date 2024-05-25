@@ -23,7 +23,7 @@ const TextClip = (props: TextClip210Props) => {
 		clip: { textClip },
 		stageRect,
 	} = props;
-	const { htmlContent, fonts } = textClip;
+	const { htmlContent } = textClip;
 
 	/** properties */
 	const centerY = textClip.posParam.centerY ?? 0.5;
@@ -50,7 +50,7 @@ const TextClip = (props: TextClip210Props) => {
 					left: `${centerX * 100}%`,
 					top: `${centerY * 100}%`,
 					position: "absolute",
-					//
+					// TODO:
 					width: "80%",
 				}}
 			>

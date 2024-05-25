@@ -27,3 +27,4 @@ dist-ssr
 *.mp3
 
 *storybook.log
+*storybook-static

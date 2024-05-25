@@ -47,7 +47,7 @@ export interface CaptionTrack extends Track {
 	clips: (Clip & { textClip: TextClip | TextClip210 })[];
 }
 
-interface Clip {
+export interface Clip {
 	/**
 	 * @description clip类型
 	 * 视频类型：100， 101：主轨，102：画中画，
@@ -126,7 +126,7 @@ interface PositionParam {
 	scaleY: number;
 }
 
-interface TextClip {
+export interface TextClip {
 	/** 文字内容（不应为空字串） */
 	textContent: string;
 	posParam: PositionParam;

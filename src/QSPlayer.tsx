@@ -28,7 +28,6 @@ import { Caption } from "./CaptionTrack";
 import SoundTrack from "./SoundTrack";
 import { EVENT_UPDATE } from "./Timeline";
 import posterUrl from "./assets/poster.jpeg";
-import testMp3 from "./assets/test.mp3";
 import { useTimelineStore } from "./store";
 import { calculatRectByObjectFit } from "./util";
 

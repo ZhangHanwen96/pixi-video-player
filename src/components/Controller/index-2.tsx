@@ -65,7 +65,7 @@ const TimeControl = ({ featureOn = false }) => {
 		}
 		const timeToSeek = totalDuration * x;
 		// TODO: seek and update when active
-		timeline?.seek(timeToSeek, "control");
+		timeline?.seek(timeToSeek);
 	});
 
 	const sliderContainerRef = mergeRefs(
@@ -133,6 +133,7 @@ const TimeControl = ({ featureOn = false }) => {
 							formattedTime,
 						);
 					};
+					handler();
 				},
 			);
 		}
@@ -166,6 +167,7 @@ const TimeControl = ({ featureOn = false }) => {
 	const handleButtonClick = useMemoizedFn(() => {
 		if (timeline) {
 			if (timeline.completed) {
+				// Restart
 				timeline.seek(0);
 				return;
 			}

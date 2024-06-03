@@ -62,7 +62,7 @@ const TextClip = (props: TextClip210Props) => {
 						transformOrigin: "left top",
 					}}
 				>
-					<span
+					<div
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
 							__html: htmlContent,

@@ -239,6 +239,7 @@ function App() {
 							<div className="h-full w-full bg-black/50 flex items-center justify-center">
 								<Spin
 									style={{ color: "green" }}
+									className="text-green-300"
 									spinning
 									size="large"
 								/>

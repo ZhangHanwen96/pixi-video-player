@@ -1,9 +1,9 @@
 import EventEmitter from "eventemitter3";
-import * as PIXI from "pixi.js";
 import { clamp } from "lodash-es";
+import * as PIXI from "pixi.js";
 import { hooks } from "./components/Controller/hooks";
-import { sleep } from "./utils/delay";
 import { useTezignPlayerStore } from "./store/tezignPlayer";
+import { sleep } from "./utils/delay";
 
 const FPS_60 = 60;
 const FPS_30 = 30;
@@ -217,8 +217,6 @@ export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 			this.update();
 			frameCount++;
 		}
-
-		this.emit("interal_animation");
 	}
 
 	start() {
@@ -227,13 +225,13 @@ export class TimeLineContoller extends EventEmitter<TimelineEventTypes> {
 				"%cstart",
 				"color: rgb(157, 255, 0); font-size: 30px; font-weight: bold;",
 			);
-
-			this.#elapsedTime = 0;
-			this.#remaningTime = this.#totalDuration;
-			lastStartTime = Date.now();
-			this.animate();
-			this.emit("start");
-			this.emit("common-update");
+			this.seek(0);
+			// this.#elapsedTime = 0;
+			// this.#remaningTime = this.#totalDuration;
+			// lastStartTime = Date.now();
+			// this.animate();
+			// this.emit("start");
+			// this.emit("common-update");
 		}
 	}
 

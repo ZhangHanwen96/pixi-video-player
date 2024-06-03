@@ -14,7 +14,12 @@ import { mergeRefs } from "@mantine/hooks";
 import { GlitchFilter } from "@pixi/filter-glitch";
 import { RadialBlurFilter } from "@pixi/filter-radial-blur";
 import { Container, Sprite, withFilters } from "@pixi/react";
-import { useDeepCompareEffect, useMemoizedFn, useUpdateEffect } from "ahooks";
+import {
+	useDeepCompareEffect,
+	useMemoizedFn,
+	useUnmount,
+	useUpdateEffect,
+} from "ahooks";
 import EventEmitter from "eventemitter3";
 import { isInteger, isNumber, set } from "lodash-es";
 import * as PIXI from "pixi.js";
@@ -157,6 +162,15 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	const pauseCurrentVideo = useMemoizedFn(() => {
 		if (!video) return;
 		video.pause();
+	});
+
+	useUnmount(() => {
+		for (const video of videoCache.values()) {
+			video.pause();
+			video.src = "";
+			video.load();
+		}
+		videoCache.clear();
 	});
 
 	/** initial video preload */
@@ -498,7 +512,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		unsubCallbacks.push(
 			hooks.beforeEach(({ name, context }) => {
 				if (name === "seek") {
-					currentId = context.currentVideoId = ++id;
+					currentId = context.currentId = ++id;
 				}
 			}),
 		);
@@ -510,6 +524,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					return;
 				}
 
+				console.log("in seek", videoMeta);
 				const isDiff = videoMeta.id !== videoMetaRef.current?.id;
 				if (!isDiff) {
 					return;
@@ -541,6 +556,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 		);
 		unsubCallbacks.push(
 			hooks.afterEach(async ({ name, args, context }) => {
+				console.log("after seek");
+				console.log(name, videoMeta, currentId, context.currentId);
 				if (name !== "seek" || !videoMeta) return;
 				if (currentId !== context.currentId) return;
 				const { currentTime } = args[0];
@@ -551,6 +568,8 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					currentTime * 1_000 - videoMeta.inPoint + videoMeta.start;
 				const isImage =
 					videoMeta.videoClip.mimeType.startsWith("image");
+
+				console.log("post seek", videoMeta, isDiff);
 
 				if (isImage) {
 					syncRectMeta(videoMeta);
@@ -570,6 +589,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				);
 				if (!isDiff) {
 					changeVideoCurrentTime(start / 1_000_000);
+					console.log("same video", start / 1000000);
 					return;
 				}
 

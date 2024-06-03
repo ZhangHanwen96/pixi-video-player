@@ -1,13 +1,11 @@
+import { EVENT_SEEK, TimelineEventTypes } from "@/Timeline";
+import { applyAudioTransition } from "@/animation/audio";
 /* eslint-disable react-refresh/only-export-components */
 import { $on, $ons } from "@/event-utils";
-import { useTimelineStore } from "@/store";
-import { AudioTrack } from "@/interface/vmml";
-import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
-import { EVENT_SEEK, TimelineEventTypes } from "@/Timeline";
-import { seekAudio } from "./utils";
-import { applyAudioTransition } from "@/animation/audio";
 import { AudioTransitionCode } from "@/interface/animation";
-import { Howl, Howler, SoundSpriteDefinitions } from "howler";
+import { AudioTrack } from "@/interface/vmml";
+import { useTimelineStore } from "@/store";
+import { withPromise } from "@/utils/withPromise";
 import {
 	useCreation,
 	useDeepCompareEffect,
@@ -15,10 +13,12 @@ import {
 	useMount,
 	useUnmount,
 } from "ahooks";
-import { hooks } from "../Controller/hooks";
-import { withPromise } from "@/utils/withPromise";
-import { isNumber } from "lodash-es";
 import EventEmitter from "eventemitter3";
+import { Howl, Howler, SoundSpriteDefinitions } from "howler";
+import { isNumber } from "lodash-es";
+import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
+import { hooks } from "../Controller/hooks";
+import { seekAudio } from "./utils";
 
 // TODO: [ ] loop short audio (should be done in pre-processing vmml)
 
@@ -65,7 +65,8 @@ const useInitSpriteState = () => {
 					// (clip.start + clip.duration) / 1_000,
 					clip.duration / 1_000,
 				] as [number, number];
-				_spriteObject[clip.id] = [...range, true]; // [offset, duration, (loop)]
+				// [offset, duration, (loop)]
+				_spriteObject[clip.id] = [...range, false];
 				return _spriteObject;
 			}, {} as SoundSpriteDefinitions);
 
@@ -114,11 +115,11 @@ const useInitSpriteState = () => {
 		clipIdToSoundIDMap,
 		loadedPromiseMap,
 		spriteMap,
-		pauseAll: useCallback(() => {
+		pauseAll: useMemoizedFn(() => {
 			for (const [, sprite] of spriteMap) {
 				sprite.pause(); // pause all sounds in the sprite
 			}
-		}, [spriteMap]),
+		}),
 		createSoundSprite,
 	};
 };
@@ -404,7 +405,7 @@ const SoundTrack: FC<SoundTrackProps> = ({ audioTrack }) => {
 				{
 					event: "complete",
 					handler: () => {
-						console.info("sound track complete");
+						console.info("Sound track complete");
 						currentMetaRef.current = undefined;
 						pauseAll();
 					},

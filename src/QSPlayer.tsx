@@ -1,40 +1,40 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as PIXI from "pixi.js";
-import { useCreation, useMemoizedFn } from "ahooks";
-import posterUrl from "./assets/poster.jpeg";
-import { Spin, Timeline } from "antd";
-import testMp3 from "./assets/test.mp3";
-import "./App.css";
+import TimeControlV2 from "@/components/Controller/index-2";
 import {
-	Stage,
 	Container,
 	Sprite,
-	withFilters,
+	Stage,
 	Text,
 	useApp,
+	withFilters,
 } from "@pixi/react";
+import { useCreation, useMemoizedFn } from "ahooks";
+import { Spin, Timeline } from "antd";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import * as PIXI from "pixi.js";
 import {
+	FC,
+	useCallback,
 	useContext,
 	useEffect,
+	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
-	useCallback,
-	FC,
-	useLayoutEffect,
 } from "react";
-import { calculatRectByObjectFit, calculateScale } from "./util";
-import { Caption } from "./CaptionTrack";
-import TimeControlV2 from "@/components/Controller/index-2";
-import { EVENT_UPDATE } from "./Timeline";
 // import mockVideo from "./mockVideo";
 import { flushSync } from "react-dom";
-import { useTimelineStore } from "./store";
+import "./App.css";
+import { Caption } from "./CaptionTrack";
 import SoundTrack from "./SoundTrack";
+import { EVENT_UPDATE } from "./Timeline";
+import posterUrl from "./assets/poster.jpeg";
+import testMp3 from "./assets/test.mp3";
+import { useTimelineStore } from "./store";
+import { calculatRectByObjectFit } from "./util";
 
-import { withPromise } from "./utils/withPromise";
-import { $on, $ons } from "./event-utils";
 import VideoPoster from "./VideoPoster";
+import { $on, $ons } from "./event-utils";
+import { withPromise } from "./utils/withPromise";
 
 const mockVideo = [];
 

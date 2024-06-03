@@ -287,7 +287,9 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 						/>
 					)} */}
 					{renderPoster()}
-					<TimeControlV2 featureOn />
+					<TimeControlV2
+						featureOn={features.includes("controller-options")}
+					/>
 					{renderSpinner()}
 				</div>
 			</div>

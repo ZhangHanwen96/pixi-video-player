@@ -2,6 +2,7 @@ import { VMMLTemplateV4 } from "@/interface/vmml";
 import custom_1 from "@/mock/custom_1.json";
 import custom_2 from "@/mock/custom_3.json";
 import defaultVMML from "@/mock/debugvmml.json";
+import fontvmml from "@/mock/font-debug.json";
 import htmlVmml from "@/mock/html_vmml.json";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useThrottle, useUpdateEffect } from "ahooks";
@@ -18,6 +19,7 @@ import React, {
 import "./App.css";
 import { TezignPlayer } from "./components/TezignPlayer";
 import { usePoster } from "./components/TezignPlayer/usePoster";
+import { getFontCssCodeBySourceUrl } from "./fonts";
 import { useTezignPlayerStore } from "./store/tezignPlayer";
 
 const ratio_16_9 = 16 / 9;
@@ -28,6 +30,7 @@ const defaultPreset = {
 	HTML字幕: htmlVmml,
 	"自定义-1": custom_1,
 	"自定义-2": custom_2,
+	fontvmml,
 };
 
 const aspect_ratio_mapping = {
@@ -235,6 +238,7 @@ function App() {
 							url: posterUrl,
 							objectFit: "contain",
 						}}
+						resolveFontFamily={getFontCssCodeBySourceUrl}
 						spinner={
 							<div className="h-full w-full bg-black/50 flex items-center justify-center">
 								<Spin

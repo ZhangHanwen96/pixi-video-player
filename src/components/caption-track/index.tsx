@@ -25,9 +25,14 @@ import { argb2Rgba } from "./utils";
 interface CaptionTrackProps {
 	stageRect: StageRect;
 	captionTrack: CaptionTrack;
+	resolveFontFamily?: (url: string) => string | undefined;
 }
 
-export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
+export const Caption: FC<CaptionTrackProps> = ({
+	stageRect,
+	captionTrack,
+	resolveFontFamily,
+}) => {
 	const timeline = useTimelineStore.use.timeline?.();
 
 	const textRef = useRef<PIXI.Text | null>(null);
@@ -108,10 +113,10 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 						const bound = textRef.current.getBounds();
 						graphicsRef.current.beginFill(argb2Rgba(bgColor), 1);
 						graphicsRef.current.drawRoundedRect(
-							bound.x - 10,
-							bound.y - 10,
-							bound.width + 20,
-							bound.height + 20,
+							bound.x - 8,
+							bound.y - 4,
+							bound.width + 16,
+							bound.height + 8,
 							5,
 						);
 					});
@@ -126,9 +131,14 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	const centerX = captionClipRef.current?.textClip.posParam.centerX ?? 0.5;
 	const fontSize = captionClipRef.current?.textClip.dimension?.height ?? 24;
 
+	const fontSourceUrl = captionClipRef.current?.textClip?.fontSourceUrl;
+
 	const fontFamily =
 		captionClipRef.current?.textClip.fontFamily ||
-		"Arial, Helvetica, sans-serif";
+		(fontSourceUrl && resolveFontFamily
+			? resolveFontFamily(fontSourceUrl)
+			: "Arial, Helvetica, sans-serif");
+
 	const textColor = captionClipRef.current?.textClip.textColor
 		? argb2Rgba(captionClipRef.current?.textClip.textColor)
 		: "#ffffff";

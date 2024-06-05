@@ -69,6 +69,7 @@ type TezignPlayerProps = {
 	features: Array<
 		"audioTrack" | "controller-options" | "captionTrack" | "poster"
 	>;
+	resolveFontFamily?: (url: string) => string | undefined;
 };
 
 export const TezignPlayer: FC<TezignPlayerProps> = ({
@@ -80,6 +81,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	backgroundColor = "#000000f3",
 	spinner: Spinner,
 	features,
+	resolveFontFamily,
 }) => {
 	if (!vmml) {
 		throw new Error("No vmml found");
@@ -267,6 +269,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							{captionTrack &&
 								features.includes("captionTrack") && (
 									<CaptionTrackComponent
+										resolveFontFamily={resolveFontFamily}
 										stageRect={transformedRect}
 										captionTrack={
 											captionTrack as CaptionTrack

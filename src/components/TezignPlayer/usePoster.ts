@@ -1,7 +1,7 @@
 import { extractFrame } from "@/utils/extractVideoFrame";
 import { useEffect, useState } from "react";
 
-export const usePoster = (url?: string) => {
+export const usePoster = (url: string | undefined, frame = 3) => {
 	const [poster, setPoster] = useState<string>();
 	const [loading, setLoading] = useState(false);
 
@@ -12,7 +12,7 @@ export const usePoster = (url?: string) => {
 		let dirty = false;
 
 		const generatePoster = async () => {
-			const src = await extractFrame(url as string, 3);
+			const src = await extractFrame(url as string, frame);
 			if (dirty) return;
 			setPoster(src);
 		};

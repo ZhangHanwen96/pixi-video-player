@@ -6,6 +6,7 @@ export const loadImage = async (url: string) => {
 	img.onload = () => resolve(img);
 	img.onerror = reject;
 
+	img.crossOrigin = "anonymous";
 	img.src = url;
 	return promise;
 };

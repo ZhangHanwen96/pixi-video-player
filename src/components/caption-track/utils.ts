@@ -6,13 +6,26 @@ export const argb2Rgba = (argb: string) => {
 
 	return `#${argb.slice(3)}${a}`;
 };
+// -webkit-text-stroke: {{stroke-width}}px transparent;
+// background: linear-gradient(90deg, {{stroke-color}}, {{stroke-color}}, {{stroke-color}}, {{stroke-color}}, {{stroke-color}}, {{stroke-color}}, {{stroke-color}}) left top / 100% 100% text;
+const getTextStrokeStyle = (strokeColor: string, strokeWitdth: number) => {
+	return {
+		WebkitTextStroke: `${strokeWitdth}px transparent`,
+		strokeWidth: strokeWitdth,
+		stroke: "transparent",
+		background: `linear-gradient(90deg, ${strokeColor}, ${strokeColor}, ${strokeColor}, ${strokeColor}, ${strokeColor}, ${strokeColor}, ${strokeColor}) left top / 100% 100% text`,
+	} as CSSProperties;
+};
 
 export const mergeWithDefaultStyles = (
 	captionClip: Clip & { textClip: TextClip },
+	resolveFontFamily?: (url: string) => string | undefined,
 ) => {
 	const fontSize = captionClip.textClip.dimension?.height ?? 24;
 	const fontFamily =
-		captionClip.textClip.fontFamily || "Arial, Helvetica, sans-serif";
+		resolveFontFamily && captionClip.textClip.fontSourceUrl
+			? resolveFontFamily(captionClip.textClip.fontSourceUrl)
+			: captionClip.textClip.fontFamily || "Arial, Helvetica, sans-serif";
 	const textColor = captionClip.textClip.textColor
 		? argb2Rgba(captionClip.textClip.textColor)
 		: undefined;
@@ -28,20 +41,28 @@ export const mergeWithDefaultStyles = (
 		: undefined;
 
 	const customStyles = {
-		//  TODO: fontsize <-> size
 		fontSize,
 		fontFamily,
 		color: textColor,
-		stroke: strokeColor,
-		strokeWidth,
-		WebkitTextStrokeColor: strokeColor,
-		WebkitTextStrokeWidth: strokeWidth,
-		WebkitTextFillColor: strokeColor ? textColor : undefined,
+		// stroke
+		// stroke: "black",
+		// strokeWidth: 1,
+		// WebkitTextStrokeColor: "black",
+		// WebkitTextStrokeWidth: 1,
+		// WebkitTextFillColor: "white",
 		fontStyle: italic ? "italic" : "normal",
 		fontWeight: bold ? "bold" : "normal",
 		letterSpacing,
 		backgroundColor,
 	} satisfies Partial<CSSProperties>;
 
-	return customStyles;
+	let strokeStyle: CSSProperties | undefined;
+	if (typeof strokeColor === "string" && typeof strokeWidth === "number") {
+		strokeStyle = getTextStrokeStyle(strokeColor, strokeWidth);
+	}
+
+	return {
+		style: customStyles,
+		strokeStyle,
+	};
 };

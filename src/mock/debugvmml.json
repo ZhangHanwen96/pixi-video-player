@@ -3,6 +3,12 @@
 		"bgColor": "00000000",
 		"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/72c4e2963e4cfaceb6927d5c5102a24d.mp4?x-oss-process=video/snapshot,t_7410,f_jpg,w_400,h_0",
 		"dimension": { "height": 1280, "width": 720 },
+		"watermark": {
+			"content": "Tezign Tezign",
+			"color": "#000000",
+			"fontSize": 48,
+			"opacity": 0.6
+		},
 		"tracks": [
 			{
 				"id": "d35b6f7c-6aab-4d15-b1ad-afb49e76110f",
@@ -34,7 +40,7 @@
 								"filterValue": 100
 							},
 							"transitionParam": {
-								"transitionCode": "glitch",
+								"transitionCode": "slide_in",
 								"duration": 1000000
 							}
 						}
@@ -318,7 +324,7 @@
 							},
 							"volume": 0,
 							"transitionParam": {
-								"transitionCode": "glitch",
+								"transitionCode": "slide_in",
 								"duration": 1000000
 							}
 						}
@@ -541,6 +547,56 @@
 				]
 			},
 			{
+				"id": "asdasdasdsa",
+				"type": 1,
+				"clips": [
+					{
+						"type": 102,
+						"id": "P2fOqG0A7-u5PF6il2Sp-3",
+						"inPoint": 0,
+						"duration": 3000000,
+						"start": 0,
+						"end": 59832000,
+						"originDuration": 21766667,
+						"videoClip": {
+							"sourceUrl": "https://www.aimatech.us/cdn/shop/files/WechatIMG1049.png?v=1688105588&width=2636",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 367, "height": 127 },
+							"mimeType": "image/png",
+							"posParam": {
+								"centerX": 0.3,
+								"centerY": 0.08,
+								"centerZ": 0.5,
+								"scaleX": 1.0,
+								"scaleY": 1.0
+							}
+						}
+					},
+					{
+						"type": 102,
+						"id": "P2fOqG0A7-u5PF6il2Sp-4",
+						"inPoint": 5000000,
+						"duration": 10000000,
+						"start": 0,
+						"end": 59832000,
+						"originDuration": 10000000,
+						"videoClip": {
+							"sourceUrl": "https://www.aimatech.us/cdn/shop/files/WechatIMG1049.png?v=1688105588&width=2636",
+							"thumbnailSourceUrl": "https://videomixer-files.tezign.com/t15/b055c0ebf2eda0e34e5b17e93f6f7b5e.mp4?x-oss-process=video/snapshot,t_40,f_jpg,w_120,m_fast",
+							"dimension": { "width": 367, "height": 127 },
+							"mimeType": "image/png",
+							"posParam": {
+								"centerX": 0.6,
+								"centerY": 0.38,
+								"centerZ": 0.5,
+								"scaleX": 1.0,
+								"scaleY": 1.0
+							}
+						}
+					}
+				]
+			},
+			{
 				"id": "d39b03bc-e48e-4ec8-8f29-a1b9af4d8453",
 				"type": 2,
 				"clips": [
@@ -687,8 +743,20 @@
 						"id": "QqC2_-zQUwl9voha36Sv-",
 						"start": 0,
 						"inPoint": 0,
-						"end": 23831995,
-						"duration": 23831995,
+						"end": 13831995,
+						"duration": 13831995,
+						"originDuration": 23831995,
+						"audioClip": {
+							"sourceUrl": "https://tezign-videomixer.oss-cn-beijing.aliyuncs.com/fd6ea25a-6067-45cc-a66d-67c0267748a5.wav"
+						}
+					},
+					{
+						"type": 300,
+						"id": "QqC2_-zQUwl9voha36Sv2",
+						"start": 0,
+						"inPoint": 13831995,
+						"end": 10000000,
+						"duration": 10000000,
 						"originDuration": 23831995,
 						"audioClip": {
 							"sourceUrl": "https://tezign-videomixer.oss-cn-beijing.aliyuncs.com/fd6ea25a-6067-45cc-a66d-67c0267748a5.wav"

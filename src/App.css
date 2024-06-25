@@ -63,3 +63,10 @@ body {
     min-height: 100vh;
     background-color: #ffffff;
 }
+
+/* @font-face {
+    font-family: CustomFontXinyi;
+    src: url('https://static-common.tezign.com/fonts/xinyi.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  } */

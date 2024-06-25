@@ -32,7 +32,7 @@ export const usePoster = (url: string | undefined, frame = 3) => {
 		return () => {
 			dirty = true;
 		};
-	}, [url]);
+	}, [url, frame]);
 
 	return { poster, loading } as const;
 };

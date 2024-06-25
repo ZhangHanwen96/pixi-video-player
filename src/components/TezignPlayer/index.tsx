@@ -249,9 +249,6 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					{/* <ScreenShot /> */}
 					{
 						<Stage
-							onClick={() => {
-								window.alert("stage clicked");
-							}}
 							width={useDeferredValue(transformedRect.width)}
 							height={useDeferredValue(transformedRect.height)}
 							options={{
@@ -266,7 +263,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 									stageRect={transformedRect}
 								/>
 							))}
-							{captionTrack &&
+							{/* {captionTrack &&
 								features.includes("captionTrack") && (
 									<CaptionTrackComponent
 										resolveFontFamily={resolveFontFamily}
@@ -275,7 +272,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 											captionTrack as CaptionTrack
 										}
 									/>
-								)}
+								)} */}
 							{audioTrack && features.includes("audioTrack") && (
 								<SoundTrackNew
 									audioTrack={audioTrack as AudioTrack}
@@ -283,12 +280,12 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							)}
 						</Stage>
 					}
-					{/* {captionTrack && features.includes("captionTrack") && (
+					{captionTrack && features.includes("captionTrack") && (
 						<CaptionTrackComponentDom
 							stageRect={transformedRect}
 							captionTrack={captionTrack as CaptionTrack}
 						/>
-					)} */}
+					)}
 					{renderPoster()}
 					<TimeControlV2
 						featureOn={features.includes("controller-options")}

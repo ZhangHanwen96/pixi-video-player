@@ -36,6 +36,7 @@ export const Caption: FC<CaptionTrackProps> = ({
 	const timeline = useTimelineStore.use.timeline?.();
 
 	const textRef = useRef<PIXI.Text | null>(null);
+
 	const graphicsRef = useRef<PIXI.Graphics | null>(null);
 	const captionClipRef = useRef<CaptionTrack["clips"][number]>();
 	const forceUpdate = useForceUpdate();

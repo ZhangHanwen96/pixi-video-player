@@ -13,25 +13,16 @@ import { useTimelineStore } from "@/store";
 import { useForceUpdate } from "@mantine/hooks";
 import { useDeepCompareEffect } from "ahooks";
 import EventEmitter from "eventemitter3";
-import { uniqBy } from "lodash-es";
-import * as PIXI from "pixi.js";
+import { omit, uniqBy } from "lodash-es";
 /* eslint-disable react-refresh/only-export-components */
-import {
-	CSSProperties,
-	FC,
-	memo,
-	useCallback,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from "react";
+import { FC, memo, useMemo, useRef } from "react";
 import TextClip210Component from "./text-clip_210";
-import { argb2Rgba, mergeWithDefaultStyles } from "./utils";
+import { mergeWithDefaultStyles } from "./utils";
 
 interface CaptionTrackProps {
 	stageRect: StageRect;
 	captionTrack: CaptionTrack;
+	resolveFontFamily?: (url: string) => string | undefined;
 }
 
 export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
@@ -97,12 +88,13 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	}
 
 	if (captionClipRef.current?.type === 210) {
-		return (
-			<TextClip210Component
-				clip={captionClipRef.current as any}
-				stageRect={stageRect}
-			/>
-		);
+		return null;
+		// return (
+		// 	<TextClip210Component
+		// 		clip={captionClipRef.current as any}
+		// 		stageRect={stageRect}
+		// 	/>
+		// );
 	}
 
 	return (
@@ -116,11 +108,13 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 function TextClipComponent({
 	clip,
 	stageRect,
+	resolveFontFamily,
 }: {
 	stageRect: StageRect;
 	clip: Clip & { textClip: TextClip };
+	resolveFontFamily?: (url: string) => string | undefined;
 }) {
-	const customStyles = mergeWithDefaultStyles(clip);
+	const $customStyle = mergeWithDefaultStyles(clip, resolveFontFamily);
 	/** properties */
 	const centerY = clip.textClip.posParam.centerY ?? 0.5;
 	const centerX = clip.textClip.posParam.centerX ?? 0.5;
@@ -144,8 +138,9 @@ function TextClipComponent({
 					left: `${centerX * 100}%`,
 					top: `${centerY * 100}%`,
 					position: "absolute",
-					...customStyles,
-					width: "80%",
+					...omit($customStyle.style, ["backgroundColor"]),
+					width: "75%",
+					// fontSize: customStyles.fontSize * stageRect.scale,
 				}}
 			>
 				{/* adjust scale container */}
@@ -154,9 +149,18 @@ function TextClipComponent({
 						width: `calc(100% / ${stageRect.scale})`,
 						transform: `scale(${stageRect.scale})`,
 						transformOrigin: "left top",
+						backgroundColor: $customStyle.style.backgroundColor,
+						borderRadius: "6px",
+						padding: "6px 8px",
 					}}
 				>
-					<span>{clip.textClip.textContent}</span>
+					<span
+						style={{
+							...($customStyle.strokeStyle ?? {}),
+						}}
+					>
+						{clip.textClip.textContent}
+					</span>
 				</div>
 			</div>
 		</div>

@@ -21,7 +21,7 @@ import {
 	useUpdateEffect,
 } from "ahooks";
 import EventEmitter from "eventemitter3";
-import { get, isInteger, isNumber, set } from "lodash-es";
+import { isInteger, isNumber, set } from "lodash-es";
 import * as PIXI from "pixi.js";
 import {
 	forwardRef,
@@ -128,6 +128,10 @@ const initialRectMeta = {
 	scale: {
 		x: 1,
 		y: 1,
+	},
+	extra: {
+		x: 0,
+		y: 0,
 	},
 };
 
@@ -353,16 +357,25 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					...ajustedScale,
 				},
 				x:
-					(centerX -
-						0.5 +
-						(1 - adjustedDimension.width / stageRect.width) / 2) *
-					stageRect.width,
+					(stageRect.width - videoDimension.width * ajustedScale.x) /
+					2,
 				y:
-					(centerY -
+					(stageRect.height -
+						videoDimension.height * ajustedScale.y) /
+					2,
+				extra: {
+					x:
+						centerX -
 						0.5 +
-						(1 - adjustedDimension.height / stageRect.height) / 2) *
-					stageRect.height,
+						(1 - adjustedDimension.width / stageRect.width) / 2,
+					y:
+						centerY -
+						0.5 +
+						(1 - adjustedDimension.height / stageRect.height) / 2,
+				},
 			};
+
+			console.log(centerX, centerY, meta);
 
 			setRectMeta(meta);
 		});
@@ -424,7 +437,6 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 						img = new Image();
 						img.crossOrigin = "anonymous";
 						img.src = videoMeta.videoClip.sourceUrl;
-						imageCache.set(videoMeta.videoClip.sourceUrl, img);
 					}
 					setImage(img);
 					setVideo(undefined);
@@ -663,343 +675,309 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 							resetMask();
 							// reset glitch
 							resetGlitch();
+						} else if (videoMeta.videoClip?.transitionParam) {
+							/** animation | transform */
+							const tp = videoMeta.videoClip.transitionParam;
+
+							const newTransform = getDefaultTransform();
+
+							const rectMeta = rectMetaRef.current;
+
+							switch (tp.transitionCode) {
+								// case "radial_blur_in": {
+								// 	const value = applyTransition({
+								// 		clip: videoMeta,
+								// 		elapsedTime: event.elapsedTime,
+								// 		outputMin: 0,
+								// 		outputMax: 1,
+								// 		transitionParam: tp,
+								// 	});
+								// 	console.log("radial_blur_in", value);
+								// 	const angle = (1 - value) * -180;
+								// 	const cx =
+								// 		rectMeta.x +
+								// 		(rectMeta.width * rectMeta.scale.x) / 2;
+								// 	const cy =
+								// 		rectMeta.y +
+								// 		(rectMeta.height * rectMeta.scale.y) /
+								// 			2;
+								// 	const radius = Math.sqrt(
+								// 		rectMeta.width ** 2 +
+								// 			rectMeta.height ** 2,
+								// 	);
+								// 	const params = {
+								// 		center: {
+								// 			x: rectMeta.x,
+								// 			y: rectMeta.y,
+								// 		},
+								// 		radius: 100,
+								// 		angle: 180,
+								// 		kernelSize: 15,
+								// 		enabled: true,
+								// 	};
+								// 	setRadialBlurParams(params);
+								// 	break;
+								// }
+
+								case "glitch": {
+									const isIn = isInTransition(
+										videoMeta,
+										tp,
+										event.elapsedTime,
+									);
+									if (isIn) {
+										const isOn = Math.random() > 0.5;
+										const getRandomDir = () =>
+											Math.random() > 0.5 ? 1 : -1;
+										const getRand = (
+											from: number,
+											to: number,
+										) =>
+											Math.random() * (to - from) +
+											from * getRandomDir();
+
+										if (!glitchAppliedTime.current) {
+											glitchAppliedTime.current =
+												performance.now();
+
+											setGlitchParams({
+												enabled: isOn,
+												slices:
+													Math.round(
+														Math.random() * 10,
+													) + 2,
+												blue: {
+													x:
+														Math.random() *
+														50 *
+														getRandomDir(),
+													y:
+														Math.random() *
+														50 *
+														getRandomDir(),
+												},
+												green: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												red: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+											});
+										} else if (
+											performance.now() -
+												glitchAppliedTime.current >
+											48
+										) {
+											glitchAppliedTime.current =
+												performance.now();
+											setGlitchParams({
+												enabled: isOn,
+												slices:
+													Math.round(
+														Math.random() * 10,
+													) + 2,
+												blue: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												green: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+												red: {
+													x:
+														getRand(0, 10) *
+														getRandomDir(),
+													y:
+														getRand(0, 10) *
+														getRandomDir(),
+												},
+											});
+										}
+									} else {
+										resetGlitch();
+									}
+									break;
+								}
+								case "circle_in": {
+									if (
+										maskRef.current !== circleGraphicsMask
+									) {
+										setMask(circleGraphicsMask);
+									}
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMax: 1,
+										outputMin: 0,
+										transitionParam: tp,
+									});
+
+									circleGraphicsMask.clear();
+									const radius = Math.sqrt(
+										rectMeta.width ** 2 +
+											rectMeta.height ** 2,
+									);
+									const startRadius = 0;
+									const cx =
+										rectMeta.x +
+										(rectMeta.width * rectMeta.scale.x) / 2;
+									const cy =
+										rectMeta.y +
+										(rectMeta.height * rectMeta.scale.y) /
+											2;
+									circleGraphicsMask.pivot.set(cx, cy);
+									circleGraphicsMask.beginFill(0xffffff);
+									circleGraphicsMask.drawCircle(
+										cx,
+										cy,
+										startRadius + value * radius,
+									);
+									circleGraphicsMask.endFill();
+									break;
+								}
+								case "circle_out": {
+									if (
+										maskRef.current !== circleGraphicsMask
+									) {
+										setMask(circleGraphicsMask);
+									}
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+									circleGraphicsMask.clear();
+									const radius = Math.sqrt(
+										rectMeta.width ** 2 +
+											rectMeta.height ** 2,
+									);
+									const startRadius = 50;
+									const cx =
+										rectMeta.x +
+										(rectMeta.width * rectMeta.scale.x) / 2;
+									const cy =
+										rectMeta.y +
+										(rectMeta.height * rectMeta.scale.y) /
+											2;
+									circleGraphicsMask.pivot.set(cx, cy);
+									circleGraphicsMask.beginFill(0xffffff);
+									circleGraphicsMask.drawCircle(
+										cx,
+										cy,
+										value * radius,
+									);
+									circleGraphicsMask.endFill();
+									break;
+								}
+								case "crossfadein": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMax: 1,
+										outputMin: 0,
+										transitionParam: tp,
+									});
+									newTransform.alpha = value;
+									break;
+								}
+								case "crossfadeout": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+									newTransform.alpha = value;
+									break;
+								}
+								case "slide_in": {
+									const rectMeta = rectMetaRef.current;
+									const right =
+										rectMeta.x +
+										rectMeta.width * rectMeta.scale.x;
+									// slide_in
+									const offsetDistanceIn = right;
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: -offsetDistanceIn,
+										outputMax: 0,
+										transitionParam: tp,
+									});
+
+									newTransform.translate.x = value;
+									break;
+								}
+								case "scale_in": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 0.4,
+										outputMax: 1,
+										transitionParam: tp,
+									});
+
+									newTransform.scale.x = value;
+									newTransform.scale.y = value;
+
+									break;
+								}
+								case "scale_out": {
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 1,
+										outputMax: 0.3,
+										transitionParam: tp,
+										easing: easings.easeOutBounce,
+									});
+
+									newTransform.scale.x = value;
+									newTransform.scale.y = value;
+									break;
+								}
+								case "slide_out": {
+									const rectMeta = rectMetaRef.current;
+									const left = rectMeta.x;
+									// slide_out
+									const width = stageRect.width;
+									const offsetDistanceOut = width - left;
+									const value = applyTransition({
+										clip: videoMeta,
+										elapsedTime: event.elapsedTime,
+										outputMin: 0,
+										outputMax: offsetDistanceOut,
+										transitionParam: tp,
+									});
+									newTransform.translate.x = value;
+									break;
+								}
+								default:
+							}
+							setTransform(newTransform);
 						}
-						// else if (videoMeta.videoClip?.transitionParam) {
-						// 	/** animation | transform */
-						// 	const tp = videoMeta.videoClip.transitionParam;
-
-						// 	const newTransform = getDefaultTransform();
-
-						// 	const rectMeta = rectMetaRef.current;
-
-						// 	switch (tp.transitionCode) {
-						// 		// case "radial_blur_in": {
-						// 		// 	const value = applyTransition({
-						// 		// 		clip: videoMeta,
-						// 		// 		elapsedTime: event.elapsedTime,
-						// 		// 		outputMin: 0,
-						// 		// 		outputMax: 1,
-						// 		// 		transitionParam: tp,
-						// 		// 	});
-						// 		// 	console.log("radial_blur_in", value);
-						// 		// 	const angle = (1 - value) * -180;
-						// 		// 	const cx =
-						// 		// 		rectMeta.x +
-						// 		// 		(rectMeta.width * rectMeta.scale.x) / 2;
-						// 		// 	const cy =
-						// 		// 		rectMeta.y +
-						// 		// 		(rectMeta.height * rectMeta.scale.y) /
-						// 		// 			2;
-						// 		// 	const radius = Math.sqrt(
-						// 		// 		rectMeta.width ** 2 +
-						// 		// 			rectMeta.height ** 2,
-						// 		// 	);
-						// 		// 	const params = {
-						// 		// 		center: {
-						// 		// 			x: rectMeta.x,
-						// 		// 			y: rectMeta.y,
-						// 		// 		},
-						// 		// 		radius: 100,
-						// 		// 		angle: 180,
-						// 		// 		kernelSize: 15,
-						// 		// 		enabled: true,
-						// 		// 	};
-						// 		// 	setRadialBlurParams(params);
-						// 		// 	break;
-						// 		// }
-
-						// 		case "glitch": {
-						// 			const isIn = isInTransition(
-						// 				videoMeta,
-						// 				tp,
-						// 				event.elapsedTime,
-						// 			);
-						// 			if (isIn) {
-						// 				const isOn = Math.random() > 0.5;
-						// 				const getRandomDir = () =>
-						// 					Math.random() > 0.5 ? 1 : -1;
-						// 				const getRand = (
-						// 					from: number,
-						// 					to: number,
-						// 				) =>
-						// 					Math.random() * (to - from) +
-						// 					from * getRandomDir();
-
-						// 				if (!glitchAppliedTime.current) {
-						// 					glitchAppliedTime.current =
-						// 						performance.now();
-
-						// 					setGlitchParams({
-						// 						enabled: isOn,
-						// 						slices:
-						// 							Math.round(
-						// 								Math.random() * 10,
-						// 							) + 2,
-						// 						blue: {
-						// 							x:
-						// 								Math.random() *
-						// 								50 *
-						// 								getRandomDir(),
-						// 							y:
-						// 								Math.random() *
-						// 								50 *
-						// 								getRandomDir(),
-						// 						},
-						// 						green: {
-						// 							x:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 							y:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 						},
-						// 						red: {
-						// 							x:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 							y:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 						},
-						// 					});
-						// 				} else if (
-						// 					performance.now() -
-						// 						glitchAppliedTime.current >
-						// 					48
-						// 				) {
-						// 					glitchAppliedTime.current =
-						// 						performance.now();
-						// 					setGlitchParams({
-						// 						enabled: isOn,
-						// 						slices:
-						// 							Math.round(
-						// 								Math.random() * 10,
-						// 							) + 2,
-						// 						blue: {
-						// 							x:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 							y:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 						},
-						// 						green: {
-						// 							x:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 							y:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 						},
-						// 						red: {
-						// 							x:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 							y:
-						// 								getRand(0, 10) *
-						// 								getRandomDir(),
-						// 						},
-						// 					});
-						// 				}
-						// 			} else {
-						// 				resetGlitch();
-						// 			}
-						// 			break;
-						// 		}
-						// 		case "circle_in": {
-						// 			if (
-						// 				maskRef.current !== circleGraphicsMask
-						// 			) {
-						// 				setMask(circleGraphicsMask);
-						// 			}
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMax: 1,
-						// 				outputMin: 0,
-						// 				transitionParam: tp,
-						// 			});
-
-						// 			circleGraphicsMask.clear();
-						// 			const radius = Math.sqrt(
-						// 				rectMeta.width ** 2 +
-						// 					rectMeta.height ** 2,
-						// 			);
-						// 			const startRadius = 0;
-						// 			const cx =
-						// 				rectMeta.x +
-						// 				(rectMeta.width * rectMeta.scale.x) / 2;
-						// 			const cy =
-						// 				rectMeta.y +
-						// 				(rectMeta.height * rectMeta.scale.y) /
-						// 					2;
-						// 			circleGraphicsMask.pivot.set(cx, cy);
-						// 			circleGraphicsMask.beginFill(0xffffff);
-						// 			circleGraphicsMask.drawCircle(
-						// 				cx,
-						// 				cy,
-						// 				startRadius + value * radius,
-						// 			);
-						// 			circleGraphicsMask.endFill();
-						// 			break;
-						// 		}
-						// 		case "circle_out": {
-						// 			if (
-						// 				maskRef.current !== circleGraphicsMask
-						// 			) {
-						// 				setMask(circleGraphicsMask);
-						// 			}
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: 1,
-						// 				outputMax: 0,
-						// 				transitionParam: tp,
-						// 			});
-						// 			circleGraphicsMask.clear();
-						// 			const radius = Math.sqrt(
-						// 				rectMeta.width ** 2 +
-						// 					rectMeta.height ** 2,
-						// 			);
-						// 			const startRadius = 50;
-						// 			const cx =
-						// 				rectMeta.x +
-						// 				(rectMeta.width * rectMeta.scale.x) / 2;
-						// 			const cy =
-						// 				rectMeta.y +
-						// 				(rectMeta.height * rectMeta.scale.y) /
-						// 					2;
-						// 			circleGraphicsMask.pivot.set(cx, cy);
-						// 			circleGraphicsMask.beginFill(0xffffff);
-						// 			circleGraphicsMask.drawCircle(
-						// 				cx,
-						// 				cy,
-						// 				value * radius,
-						// 			);
-						// 			circleGraphicsMask.endFill();
-						// 			break;
-						// 		}
-						// 		case "crossfadein": {
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMax: 1,
-						// 				outputMin: 0,
-						// 				transitionParam: tp,
-						// 			});
-						// 			newTransform.alpha = value;
-						// 			break;
-						// 		}
-						// 		case "crossfadeout": {
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: 1,
-						// 				outputMax: 0,
-						// 				transitionParam: tp,
-						// 			});
-						// 			newTransform.alpha = value;
-						// 			break;
-						// 		}
-
-						// 		case "scale_in": {
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: 0.4,
-						// 				outputMax: 1,
-						// 				transitionParam: tp,
-						// 			});
-
-						// 			newTransform.scale.x = value;
-						// 			newTransform.scale.y = value;
-
-						// 			break;
-						// 		}
-						// 		case "scale_out": {
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: 1,
-						// 				outputMax: 0.3,
-						// 				transitionParam: tp,
-						// 				easing: easings.easeOutBounce,
-						// 			});
-
-						// 			newTransform.scale.x = value;
-						// 			newTransform.scale.y = value;
-						// 			break;
-						// 		}
-
-						// 		/** Slide transition */
-						// 		case "slide_in": {
-						// 			const rectMeta = rectMetaRef.current;
-						// 			const right =
-						// 				rectMeta.x +
-						// 				rectMeta.width * rectMeta.scale.x;
-						// 			// slide_in
-						// 			const offsetDistanceIn = right;
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: -offsetDistanceIn,
-						// 				outputMax: 0,
-						// 				transitionParam: tp,
-						// 			});
-
-						// 			const adjustedW =
-						// 				rectMetaRef.current.width *
-						// 				rectMetaRef.current.scale.x;
-						// 			const speedFactor =
-						// 				1 / (adjustedW / stageRect.width);
-
-						// 			newTransform.translate.x =
-						// 				value * speedFactor;
-						// 			break;
-						// 		}
-						// 		case "slide_out": {
-						// 			const rectMeta = rectMetaRef.current;
-						// 			const left = rectMeta.x;
-						// 			// slide_out
-						// 			const width = stageRect.width;
-						// 			const offsetDistanceOut = width - left;
-						// 			const value = applyTransition({
-						// 				clip: videoMeta,
-						// 				elapsedTime: event.elapsedTime,
-						// 				outputMin: 0,
-						// 				outputMax: offsetDistanceOut,
-						// 				transitionParam: tp,
-						// 			});
-						// 			const adjustedW =
-						// 				rectMetaRef.current.width *
-						// 				rectMetaRef.current.scale.x;
-						// 			const speedFactor =
-						// 				1 / (adjustedW / stageRect.width);
-						// 			newTransform.translate.x =
-						// 				value * speedFactor;
-						// 			break;
-						// 		}
-						// 		default:
-						// 			console.error(
-						// 				"unknown transitionParam",
-						// 				tp,
-						// 			);
-						// 	}
-						// 	setTransform(newTransform);
-						// }
-
-						const opacity = get(
-							videoMeta,
-							"videoClip.adjustParam.opacity",
-							1,
-						);
-
-						setTransform((t) => {
-							return {
-								...t,
-								alpha: opacity,
-							};
-						});
 					},
 				},
 			],
@@ -1064,6 +1042,14 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 	const flipX = 1;
 	const flipY = 1;
 
+	console.log(stageRect);
+	console.log(
+		{
+			x: rectMeta.extra.x * stageRect.width,
+			y: rectMeta.extra.y * stageRect.height,
+		},
+		"extra",
+	);
 	if (video) {
 		return (
 			<Filters
@@ -1071,28 +1057,33 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				// HACK: I maybe only have a title bit idea why this works 🥹
 				key={`${containerKey}_video`}
 				// position related
-				x={
-					rectMeta.x +
-					(rectMeta.width * rectMeta.scale.x) / 2 +
-					transform.translate.x
-				}
-				y={
-					rectMeta.y +
-					(rectMeta.height * rectMeta.scale.y) / 2 +
-					transform.translate.y
-				}
+				// x={
+				// 	rectMeta.x +
+				// 	(rectMeta.width * rectMeta.scale.x) / 2 +
+				// 	transform.translate.x
+				// }
+				// y={
+				// 	rectMeta.y +
+				// 	(rectMeta.height * rectMeta.scale.y) / 2 +
+				// 	transform.translate.y
+				// }
+				// pivot={{
+				// 	x: rectMeta.width / 2,
+				// 	y: rectMeta.height / 2,
+				// }}
+				// scale={{
+				// 	x: rectMeta.scale.x * transform.scale.x * flipX,
+				// 	y: rectMeta.scale.y * transform.scale.y * flipY,
+				// }}
+
 				pivot={{
-					x: rectMeta.width / 2,
-					y: rectMeta.height / 2,
+					x: -rectMeta.extra.x * stageRect.width,
+					y: -rectMeta.extra.y * stageRect.height,
 				}}
-				scale={{
-					x: rectMeta.scale.x * transform.scale.x * flipX,
-					y: rectMeta.scale.y * transform.scale.y * flipY,
-				}}
-				angle={transform.degree}
+				// angle={transform.degree}
 				blur={filterParams}
 				alpha={transform.alpha}
-				mask={mask}
+				// mask={mask}
 				// glitch={{
 				// 	fillMode: GlitchFilter.LOOP,
 				// 	seed: 0.3,
@@ -1106,12 +1097,12 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					key={spriteKey}
 					height={
 						isNumber(rectMeta.height)
-							? rectMeta.height
+							? rectMeta.height * rectMeta.scale.y
 							: video?.videoHeight ?? 0
 					}
 					width={
 						isNumber(rectMeta.width)
-							? rectMeta.width
+							? rectMeta.width * rectMeta.scale.x
 							: video?.videoWidth ?? 0
 					}
 					ref={cSpriteRef}
@@ -1138,7 +1129,7 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					(rectMeta.height * rectMeta.scale.y) / 2 +
 					transform.translate.y
 				}
-				angle={transform.degree}
+				// angle={transform.degree}
 				scale={{
 					x: rectMeta.scale.x * transform.scale.x * flipX,
 					y: rectMeta.scale.y * transform.scale.y * flipY,
@@ -1148,10 +1139,20 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 					y: rectMeta.height / 2,
 				}}
 				blur={filterParams}
-				mask={mask}
 				alpha={transform.alpha}
+				mask={mask}
+				// x={rectMeta.extra.x * stageRect.width}
+				// y={rectMeta.extra.y * stageRect.height}
+				// scale={{
+				// 	x: rectMeta.scale.x * transform.scale.x * flipX,
+				// 	y: rectMeta.scale.y * transform.scale.y * flipY,
+				// }}
+				angle={90}
 			>
 				<Sprite
+					// anchor={0.5}
+					// x={rectMeta.width / 2}
+					// y={rectMeta.height / 2}
 					key={`${spriteKey}`}
 					ref={cSpriteRef}
 					image={image}

@@ -157,6 +157,7 @@ function TextClipComponent({
 					<span
 						style={{
 							...($customStyle.strokeStyle ?? {}),
+							textAlign: "center",
 						}}
 					>
 						{clip.textClip.textContent}

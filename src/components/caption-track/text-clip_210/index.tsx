@@ -1,6 +1,6 @@
 import { StageRect } from "@/interface/app";
 import { CaptionTrack, TextClip210 } from "@/interface/vmml";
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 
 interface TextClip210Props {
 	clip: Omit<CaptionTrack["clips"][number], "textClip"> & {
@@ -18,17 +18,45 @@ const stroke =
 
 const htmlContentTex = `你好呀 <span style="color: #000000; font-size: 39px; font-weight: 700; ${webkitMask}">世界</span>,我是 <span style="color: blue; font-size: 32px;">小明</span>`;
 
+/**
+ *
+ * @description TextClip component for 210 type
+ * 210 is custom defined type for text clip to render html content directly
+ *
+ */
 const TextClip = (props: TextClip210Props) => {
 	const {
 		clip: { textClip },
 		stageRect,
 	} = props;
-	const { htmlContent } = textClip;
+	const { htmlContent = "" } = textClip;
+
+	const unsafeModifiedHtml = useMemo(() => {
+		if (!htmlContent) return "";
+		try {
+			const hiddenDiv = document.createElement("div");
+			hiddenDiv.style.display = "none";
+			hiddenDiv.innerHTML = htmlContent;
+
+			const container = hiddenDiv.children[0]
+				.children[0] as HTMLDivElement;
+			container.style.position = "unset";
+			container.style.transform = "none";
+			// container.style.lineHeight = "14px";
+			const outerHTML = container.outerHTML;
+			container.remove();
+			return outerHTML;
+		} catch (error) {
+			console.error("TextClip210: error in parsing html content", error);
+			return "";
+		}
+	}, [htmlContent]);
 
 	/** properties */
 	const centerY = textClip.posParam.centerY ?? 0.5;
 	const centerX = textClip.posParam.centerX ?? 0.5;
-	// const fontSize = textClip.dimension?.height ?? 24;
+
+	if (!unsafeModifiedHtml) return null;
 
 	return (
 		// stage size container
@@ -41,7 +69,9 @@ const TextClip = (props: TextClip210Props) => {
 				width: stageRect.width,
 				height: stageRect.height,
 				zIndex: 99,
+				fontFamily: "CustomFontXinyi",
 			}}
+			className="tezign-player-caption_container"
 		>
 			{/* position container */}
 			<div
@@ -50,22 +80,21 @@ const TextClip = (props: TextClip210Props) => {
 					left: `${centerX * 100}%`,
 					top: `${centerY * 100}%`,
 					position: "absolute",
-					// TODO:
-					width: "80%",
+					width: "100%",
 				}}
 			>
 				{/* adjust scale container */}
 				<div
 					style={{
 						width: `calc(100% / ${stageRect.scale})`,
-						transform: `scale(${stageRect.scale})`,
+						transform: `scale(${stageRect.scale}) translate(0%, -50%)`,
 						transformOrigin: "left top",
 					}}
 				>
 					<div
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
-							__html: htmlContent,
+							__html: unsafeModifiedHtml,
 						}}
 					/>
 				</div>

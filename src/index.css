@@ -9,7 +9,10 @@
     }
 }
 
+.tezign-player-caption_container p {
+    margin-bottom: 0 !important;
+}
+
 * {
   font-smooth: antialiased;
-  
 }

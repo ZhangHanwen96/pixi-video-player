@@ -1,0 +1,733 @@
+{
+    "version": 0.4,
+    "template": {
+        "tracks": [
+            {
+                "id": "83670a0a-a086-4b4c-b6e4-f991401de873",
+                "type": 0,
+                "clips": [
+                    {
+                        "id": "2417a81a-717e-4f27-ba81-0f161fda4b78",
+                        "end": 1848000.0,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 0,
+                        "duration": 1848000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3NTU0NmM3YmE3OTExLTEwZWQtNDBjYy05Njgw.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=UG%2Bg0xJM%2B8%2Fd%2BvQsjbGZiurGE9c%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 3840000
+                    },
+                    {
+                        "id": "965cbf19-3bb6-4157-a1fd-cc6040e7da88",
+                        "end": 3192000.0,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 1848000.0,
+                        "duration": 3192000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ2ODIyNzk4NWZhYTQ0LTU4MWYtNGQ4NC1iZDYy.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=VLJttfJrQWMIJMU5AK23RUHyQvQ%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 5760000
+                    },
+                    {
+                        "id": "6b1a3374-e6d4-4a30-9d93-f25282976255",
+                        "end": 2694000,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 5040000.0,
+                        "duration": 2592000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ1NjU3MDMyZTkyYWQxLWMyYmYtNGI4Ny04ZGJi.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=vLWrjqocN3H7lmB3%2FdCcUcm9gTk%3D&response-content-disposition=inline",
+                            "constantSpeed": 1.039352,
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 2633000
+                    },
+                    {
+                        "id": "78e1d5c9-52de-4dcb-9653-b6c83bbbf7a4",
+                        "end": 1231000,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 7632000.0,
+                        "duration": 1231000,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjM3NDU3MTM4YzI5YWVlLTFlMmYtNDMxOC04MTYz.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=NedffJK5b147o0GkV3gVuxikZXQ%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 1200000
+                    },
+                    {
+                        "id": "fe4e6b82-d522-40a6-ad50-e4691aeeaf46",
+                        "end": 1040000,
+                        "type": 101,
+                        "start": 120000,
+                        "inPoint": 8863000.0,
+                        "duration": 1721000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjM3NDU3MDNkY2ZkNDAxLWRlMjctNDYyMy04OTFm.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=zf2mcA4CbyhBEP9kAsNVPZuzfws%3D&response-content-disposition=inline",
+                            "constantSpeed": 0.534573,
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 2900000
+                    },
+                    {
+                        "id": "9600aa43-9ac3-4a1b-b790-dcc49a7e0990",
+                        "end": 2712000.0,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 10584000.0,
+                        "duration": 2712000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjM3NDU3MDBlODgwYzQ2LTAwZTctNDEzMy04NjI4.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=fIkOfLYy16%2FaXXupHplHhvdkCUI%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 5633000
+                    },
+                    {
+                        "id": "4cd56559-7235-40e6-ae1d-65787eb6be77",
+                        "end": 2664000.0,
+                        "type": 101,
+                        "start": 0,
+                        "inPoint": 13296000.0,
+                        "duration": 2664000.0,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3MTM1MzUwYjE5Nzc5LTQyY2YtNDUyMC05OGRl.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=slm6Y7YRWyYf34TcPP5jp3XznoE%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 6160000
+                    }
+                ]
+            },
+            {
+                "id": "83670a0a-a086-4b4c-b6e4-f991401de873",
+                "type": 1,
+                "clips": [
+                    {
+                        "id": "Kh0xWo08XVP1AYt4X3XJz",
+                        "end": 1848000,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 0,
+                        "duration": 1848000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3MTM1MzUwYjE5Nzc5LTQyY2YtNDUyMC05OGRl.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=slm6Y7YRWyYf34TcPP5jp3XznoE%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 6160000
+                    },
+                    {
+                        "id": "VYmLKetFX_2szSV7bOItk",
+                        "end": 2633000,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 1848000,
+                        "duration": 3192000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ1NjU3MDMyZTkyYWQxLWMyYmYtNGI4Ny04ZGJi.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=vLWrjqocN3H7lmB3%2FdCcUcm9gTk%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "constantSpeed": 1.039352,
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 2633000
+                    },
+                    {
+                        "id": "U6WBGW7RAGjIU8-1xNVaG",
+                        "end": 2712000,
+                        "type": 102,
+                        "start": 120000,
+                        "inPoint": 5040000,
+                        "duration": 2592000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjM3NDU3MDNkY2ZkNDAxLWRlMjctNDYyMy04OTFm.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=zf2mcA4CbyhBEP9kAsNVPZuzfws%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "constantSpeed": 0.534573,
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 2900000
+                    },
+                    {
+                        "id": "UU7h2hc0szLgTAmjXLYDv",
+                        "end": 1351000,
+                        "type": 102,
+                        "start": 120000,
+                        "inPoint": 7632000,
+                        "duration": 1231000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 1.25,
+                                "scaleY": 1.25,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 576,
+                                "height": 1024,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjM3NDU3MDNkY2ZkNDAxLWRlMjctNDYyMy04OTFm.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=zf2mcA4CbyhBEP9kAsNVPZuzfws%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "constantSpeed": 0.534573,
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 2900000
+                    },
+                    {
+                        "id": "o_3bUy-1G3xFJgnu54BeI",
+                        "end": 1721000,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 8863000,
+                        "duration": 1721000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3MTM1MzUwYjE5Nzc5LTQyY2YtNDUyMC05OGRl.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=slm6Y7YRWyYf34TcPP5jp3XznoE%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 6160000
+                    },
+                    {
+                        "id": "jFGo0mlLrmDHJb2LiOTWa",
+                        "end": 2712000,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 10584000,
+                        "duration": 2712000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3MTM1MzUwYjE5Nzc5LTQyY2YtNDUyMC05OGRl.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=slm6Y7YRWyYf34TcPP5jp3XznoE%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 6160000
+                    },
+                    {
+                        "id": "wOzcVvPEl20rDdRzt6MxW",
+                        "end": 2664000,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 13296000,
+                        "duration": 2664000,
+                        "videoClip": {
+                            "volume": 0,
+                            "mimeType": "video/mp4",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "centerX": 0.5,
+                                "centerY": 0.5,
+                                "centerZ": 0.5
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 1920,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxMzQxMjQ3NTU0NmM3YmE3OTExLTEwZWQtNDBjYy05Njgw.mp4?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=UG%2Bg0xJM%2B8%2Fd%2BvQsjbGZiurGE9c%3D&response-content-disposition=inline",
+                            "adjustParam": {
+                                "opacity": 0.03
+                            },
+                            "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+                        },
+                        "originDuration": 3840000
+                    }
+                ]
+            },
+            {
+                "id": "112d4034-80a9-4325-bc6d-cc45bb3840f6",
+                "type": 2,
+                "clips": [
+                    {
+                        "id": "eca6506f-1a14-41f3-9144-638077d6ca1f",
+                        "end": 1848000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 0,
+                        "duration": 1848000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">爱玛电动车<span style=\"margin: 0 .3rem;font-size: 51px;line-height: 59px;color: #ffffff;background: linear-gradient(90deg, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920) left top / 100% 100% text;\">卫士</span>型号</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "爱玛电动车，卫士型号",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 1848000.0
+                    },
+                    {
+                        "id": "15ac9958-d954-4edc-81ac-1ead8bfaed71",
+                        "end": 3192000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 1848000.0,
+                        "duration": 3192000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\"><span style=\"margin: 0 .3rem;font-size: 51px;line-height: 59px;color: #ffffff;background: linear-gradient(90deg, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920) left top / 100% 100% text;\">430</span>mm大档距</p><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">舒展你的腿部空间</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "430mm大档距，舒展你的腿部空间",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 3192000.0
+                    },
+                    {
+                        "id": "fa74a3d1-75be-4d6c-ae8c-bc4440931afe",
+                        "end": 2592000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 5040000.0,
+                        "duration": 2592000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">出行时刻享受悠然自得的乐趣</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "出行时刻，享受悠然自得的乐趣",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 2592000.0
+                    },
+                    {
+                        "id": "029cc98a-88d5-47a1-b077-908316a794a9",
+                        "end": 2952000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 7632000.0,
+                        "duration": 2952000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">五喷三烤</p><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">无尘喷涂流露精湛工艺</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "五喷三烤，无尘喷涂流露精湛工艺",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 2952000.0
+                    },
+                    {
+                        "id": "b2980202-c1ae-46d0-9d95-29cb88c3663b",
+                        "end": 2712000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 10584000.0,
+                        "duration": 2712000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">每一次接触</p><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">都能感受到高级质感</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "每一次接触，都能感受到高级质感",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 2712000.0
+                    },
+                    {
+                        "id": "cf0b7df6-c872-43f2-b4ab-de3763d940b6",
+                        "end": 2664000.0,
+                        "type": 210,
+                        "start": 0,
+                        "inPoint": 13296000.0,
+                        "duration": 2664000.0,
+                        "textClip": {
+                            "fonts": [
+                                {
+                                    "fontFamily": "CustomFontYouSeBiaoTiHei",
+                                    "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                                }
+                            ],
+                            "posParam": {
+                                "scaleX": 1.0,
+                                "scaleY": 1.0,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.73,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 0,
+                                "height": 43,
+                                "lineWordCount": 28
+                            },
+                            "textColor": "#ff000000",
+                            "htmlContent": "<div style=\"font-family:'DefaultSubtitleFont';position: relative; width: 100%; height: 100vh;line-height: 14px;\"><div style=\"position: absolute;transform: translate(0px, -50%);width:100%;letter-spacing: .25rem;font-size: 43px;text-align: center;color: #000000;top:73.0%;font-family: 'CustomFontYouSeBiaoTiHei';-webkit-text-stroke: 6px transparent;background: linear-gradient(90deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff) left top / 100% 100% text;\"><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">这是爱玛这是<span style=\"margin: 0 .3rem;font-size: 51px;line-height: 59px;color: #ffffff;background: linear-gradient(90deg, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920, #FF8920) left top / 100% 100% text;\">卫士</span></p><p style=\"display: flex;align-items: center;justify-items: center;justify-content: center;\">这是你的选择</p></div></div>",
+                            "strokeColor": "#ffffffff",
+                            "strokeWidth": 2,
+                            "textContent": "这是爱玛，这是卫士，这是你的选择",
+                            "fontSourceUrl": "https://static-common.tezign.com/fonts/CustomFontYouSeBiaoTiHei.ttf"
+                        },
+                        "originDuration": 2664000.0
+                    }
+                ]
+            },
+            {
+                "id": "FuOPrwqIHoDxEzIvRqjCr",
+                "type": 3,
+                "clips": [
+                    {
+                        "id": "vtzdfKherMVUjUKb8ZSyK",
+                        "end": 15960000,
+                        "type": 300,
+                        "start": 0,
+                        "inPoint": 0,
+                        "duration": 15960000,
+                        "audioClip": {
+                            "volume": 1.0,
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/64c047c6-fa25-4a06-805e-60510acd7834.wav?OSSAccessKeyId=LTAI5tDubGKMRMroG8MuTLZo&Expires=2350085468&Signature=HeIA3hEkGoJ4Mc18DGiALH4MxPI%3D"
+                        },
+                        "originDuration": 15960000
+                    }
+                ]
+            },
+            {
+                "id": "xmuNnIzxaHGDnC_335rOu",
+                "type": 1,
+                "clips": [
+                    {
+                        "id": "FxFbk8bxX1jIRl0uL5aGZ",
+                        "end": 0,
+                        "type": 102,
+                        "start": 0,
+                        "inPoint": 0,
+                        "duration": 15960000,
+                        "videoClip": {
+                            "volume": 0.0,
+                            "mimeType": "image/png",
+                            "posParam": {
+                                "scaleX": 0.6666666666666666,
+                                "scaleY": 0.6666666666666666,
+                                "scaleZ": 1.0,
+                                "centerX": 0.5,
+                                "centerY": 0.16666666666666666,
+                                "centerZ": 0.5,
+                                "rotationX": 0.0,
+                                "rotationY": 0.0,
+                                "rotationZ": 0.0
+                            },
+                            "dimension": {
+                                "width": 1080,
+                                "height": 250,
+                                "lineWordCount": 28
+                            },
+                            "sourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxNzY2MzI5NDA2OTkwYjExN2IxLWRhMjMtNDdjNS05YzZk.png?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=3Gj9Bxsu5DZbjmUUH3fz9gj68pI%3D&response-content-disposition=inline",
+                            "thumbnailSourceUrl": "https://tezign-assets-test.tezign.com/t15/MTcxNzY2MzI5NDA2OTkwYjExN2IxLWRhMjMtNDdjNS05YzZk.png?Expires=2351001599&OSSAccessKeyId=LTAI5tJ7vaiaV4Gp7DtcFzSm&Signature=3Gj9Bxsu5DZbjmUUH3fz9gj68pI%3D&response-content-disposition=inline"
+                        },
+                        "originDuration": 0
+                    }
+                ]
+            }
+        ],
+        "bgColor": "00000000",
+        "dimension": {
+            "width": 720,
+            "height": 1280,
+            "lineWordCount": 13
+        },
+        "watermark": {
+            "color": "#ffffff",
+            "content": "卫士",
+            "opacity": 0.2,
+            "fontSize": 43
+        },
+        "thumbnailSourceUrl": "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+    },
+    "suggestParseMinVersion": 0.4
+}

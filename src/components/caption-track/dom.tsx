@@ -88,13 +88,12 @@ export const Caption: FC<CaptionTrackProps> = ({ stageRect, captionTrack }) => {
 	}
 
 	if (captionClipRef.current?.type === 210) {
-		return null;
-		// return (
-		// 	<TextClip210Component
-		// 		clip={captionClipRef.current as any}
-		// 		stageRect={stageRect}
-		// 	/>
-		// );
+		return (
+			<TextClip210Component
+				clip={captionClipRef.current as any}
+				stageRect={stageRect}
+			/>
+		);
 	}
 
 	return (
@@ -147,7 +146,7 @@ function TextClipComponent({
 				<div
 					style={{
 						width: `calc(100% / ${stageRect.scale})`,
-						transform: `scale(${stageRect.scale})`,
+						transform: `scale(${stageRect.scale}) translate(0%, -50%)`,
 						transformOrigin: "left top",
 						backgroundColor: $customStyle.style.backgroundColor,
 						borderRadius: "6px",

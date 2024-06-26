@@ -3,7 +3,7 @@ import custom_1 from "@/mock/custom_1.json";
 import custom_2 from "@/mock/custom_3.json";
 import defaultVMML from "@/mock/debugvmml.json";
 import fontvmml from "@/mock/font-debug.json";
-import htmlVmml from "@/mock/html_vmml.json";
+import html_caption_vmml from "@/mock/html_caption_vmml.json";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { useThrottle, useUpdateEffect } from "ahooks";
 import { useSize } from "ahooks";
@@ -27,7 +27,7 @@ const ratio_9_16 = 9 / 16;
 
 const defaultPreset = {
 	default: defaultVMML,
-	HTML字幕: htmlVmml,
+	HTML字幕: html_caption_vmml,
 	"自定义-1": custom_1,
 	"自定义-2": custom_2,
 	fontvmml,

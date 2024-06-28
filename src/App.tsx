@@ -223,12 +223,6 @@ function App() {
 				</Drawer>
 				{vmmlJson && (
 					<TezignPlayer
-						features={[
-							"audioTrack",
-							"captionTrack",
-							"controller-options",
-							"poster",
-						]}
 						key={vmmlJson.template.tracks[0].id}
 						container={() => ref.current as HTMLDivElement}
 						// width={useDeferredValue(tWidth)}

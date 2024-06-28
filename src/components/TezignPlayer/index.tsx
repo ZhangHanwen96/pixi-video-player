@@ -65,10 +65,6 @@ type TezignPlayerProps = {
 		numberOfFutureClips?: number;
 	};
 	spinner?: React.ReactNode | React.ComponentType;
-	//
-	features: Array<
-		"audioTrack" | "controller-options" | "captionTrack" | "poster"
-	>;
 	resolveFontFamily?: (url: string) => string | undefined;
 };
 
@@ -80,7 +76,6 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	poster: _poster,
 	backgroundColor = "#000000f3",
 	spinner: Spinner,
-	features,
 	resolveFontFamily,
 }) => {
 	if (!vmml) {
@@ -173,16 +168,6 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 		},
 	);
 
-	// const sourceUrl = useDeferredValue(
-	// 	videoTracks[0]?.clips[0].videoClip?.sourceUrl,
-	// );
-
-	// const { poster } = usePoster(_poster?.url ? undefined : sourceUrl);
-
-	// const mergedPoster = useMemo(() => {
-	// 	return defaults({}, _poster, { url: poster, objectFit: "cover" });
-	// }, [_poster, poster]);
-
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
 
 	// improve UX, normally seekLoading wouldn't last longer than 250ms
@@ -192,7 +177,6 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	// });
 
 	const renderPoster = () => {
-		if (!features.includes("poster")) return null;
 		if (_poster?.url) {
 			return (
 				<VideoPoster
@@ -246,7 +230,6 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					)}
 					id="tz-player-container"
 				>
-					{/* <ScreenShot /> */}
 					{
 						<Stage
 							width={useDeferredValue(transformedRect.width)}
@@ -264,7 +247,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 								/>
 							))}
 							{/* {captionTrack &&
-								features.includes("captionTrack") && (
+								(
 									<CaptionTrackComponent
 										resolveFontFamily={resolveFontFamily}
 										stageRect={transformedRect}
@@ -273,27 +256,26 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 										}
 									/>
 								)} */}
-							{audioTrack && features.includes("audioTrack") && (
+							{audioTrack && (
 								<SoundTrackNew
 									audioTrack={audioTrack as AudioTrack}
 								/>
 							)}
 						</Stage>
 					}
-					{captionTrack && features.includes("captionTrack") && (
+					{captionTrack && (
 						<CaptionTrackComponentDom
 							stageRect={transformedRect}
 							captionTrack={captionTrack as CaptionTrack}
+							resolveFontFamily={resolveFontFamily}
 						/>
 					)}
 					{renderPoster()}
-					<TimeControlV2
-						featureOn={features.includes("controller-options")}
-					/>
+					<TimeControlV2 featureOn={false} />
 					{renderSpinner()}
 				</div>
 			</div>
-			{captionTrack && features.includes("captionTrack") && (
+			{/* {captionTrack && (
 				<CaptionEditor
 					onClose={() => {
 						useTezignPlayerStore.setState({
@@ -303,7 +285,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 					open={showCaptionEditor}
 					captionTrack={captionTrack as CaptionTrack}
 				/>
-			)}
+			)} */}
 		</>
 	);
 };

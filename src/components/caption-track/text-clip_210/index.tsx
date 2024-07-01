@@ -92,6 +92,10 @@ const TextClip = (props: TextClip210Props) => {
 					}}
 				>
 					<div
+						style={{
+							display: "flex",
+							justifyContent: "center",
+						}}
 						// biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
 						dangerouslySetInnerHTML={{
 							__html: unsafeModifiedHtml,

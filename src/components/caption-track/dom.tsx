@@ -151,12 +151,12 @@ function TextClipComponent({
 						backgroundColor: $customStyle.style.backgroundColor,
 						borderRadius: "6px",
 						padding: "6px 8px",
+						textAlign: "center",
 					}}
 				>
 					<span
 						style={{
 							...($customStyle.strokeStyle ?? {}),
-							textAlign: "center",
 						}}
 					>
 						{clip.textClip.textContent}

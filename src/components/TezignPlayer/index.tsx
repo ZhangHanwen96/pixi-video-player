@@ -169,6 +169,7 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 	);
 
 	const seekLoading = useTezignPlayerStore.use.seekLoading();
+	const hasError = useTezignPlayerStore.use.hasError();
 
 	// improve UX, normally seekLoading wouldn't last longer than 250ms
 	// const isLoading = useDelayLoading({
@@ -270,9 +271,13 @@ export const TezignPlayer: FC<TezignPlayerProps> = ({
 							resolveFontFamily={resolveFontFamily}
 						/>
 					)}
-					{renderPoster()}
-					<TimeControlV2 featureOn={false} />
-					{renderSpinner()}
+					{hasError ? <div className="absolute z-[9999] flex items-center justify-center inset-0 text-[#fff]">视频加载异常</div> : (
+						<>
+							{renderPoster()}
+							<TimeControlV2 featureOn={false} />
+							{renderSpinner()}
+						</>
+					)}
 				</div>
 			</div>
 			{/* {captionTrack && (

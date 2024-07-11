@@ -1,6 +1,6 @@
 {
 	"name": "@tezign/vmml-player",
-	"version": "0.0.1-beta.12",
+	"version": "0.0.1-beta.14",
 	"type": "module",
 	"publishConfig": {
 		"access": "restricted"
@@ -46,10 +46,7 @@
 		"dayjs": "^1.11.10",
 		"rc-util": "^5.39.1"
 	},
-	"files": [
-		"dist",
-		"package.json"
-	],
+	"files": ["dist", "package.json"],
 	"types": "./dist/index.d.ts",
 	"main": "./dist/index.cjs",
 	"module": "./dist/index.mjs",
@@ -126,8 +123,6 @@
 		"zustand": "^4.4.7"
 	},
 	"eslintConfig": {
-		"extends": [
-			"plugin:storybook/recommended"
-		]
+		"extends": ["plugin:storybook/recommended"]
 	}
 }

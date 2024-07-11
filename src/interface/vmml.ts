@@ -1,4 +1,4 @@
-import type { Root } from "hast";
+// import type { Root } from "hast";
 import { TransitionParam } from "./animation";
 
 /**
@@ -163,5 +163,5 @@ export interface TextClip210 {
 	/**
 	 * @type {import("hast").Root}
 	 */
-	hastRoot: Root;
+	hastRoot: any;
 }

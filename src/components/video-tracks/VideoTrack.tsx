@@ -36,6 +36,7 @@ import {
 import { flushSync } from "react-dom";
 import { hooks } from "../Controller/hooks";
 import { seekVideo } from "./utils";
+import { useTezignPlayerStore } from "@/store/tezignPlayer";
 
 const graphics = new PIXI.Graphics();
 graphics.beginFill(0xffffff);
@@ -200,8 +201,12 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 
 				videoCache.set(cacheId, video);
 				// ! wait before setting currentTime
-				await waitForLoadedMetadata2(video, videoClip.sourceUrl);
-
+				try {
+					await waitForLoadedMetadata2(video, videoClip.sourceUrl);
+				} catch (error) {
+					useTezignPlayerStore.getState().setHasError()
+				}
+				
 				console.log("%cloadedmetadata", "color: green;");
 
 				video.currentTime = clip.start / 1_000_000;
@@ -1102,21 +1107,21 @@ const MainVideoTrack = forwardRef<PIXI.Container, Props>((props, ref) => {
 				// 	...radialBlurParams,
 				// }}
 			>
-				<Sprite
-					key={spriteKey}
-					height={
-						isNumber(rectMeta.height)
-							? rectMeta.height
-							: video?.videoHeight ?? 0
-					}
-					width={
-						isNumber(rectMeta.width)
-							? rectMeta.width
-							: video?.videoWidth ?? 0
-					}
-					ref={cSpriteRef}
-					video={video}
-				/>
+					<Sprite
+						key={spriteKey}
+						height={
+							isNumber(rectMeta.height)
+								? rectMeta.height
+								: video?.videoHeight ?? 0
+						}
+						width={
+							isNumber(rectMeta.width)
+								? rectMeta.width
+								: video?.videoWidth ?? 0
+						}
+						ref={cSpriteRef}
+						video={video}
+					/>
 			</Filters>
 		);
 	}

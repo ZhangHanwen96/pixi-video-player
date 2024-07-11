@@ -12,6 +12,8 @@ interface State {
 	};
 	loading: boolean;
 	seekLoading: boolean;
+	/** 视频是否加载出错 */
+	hasError: boolean;
 	showCaptionEditor: boolean;
 }
 
@@ -25,6 +27,7 @@ interface Actions {
 	finishPreloading: () => void;
 	startPreloading: () => void;
 	startSeekLoading: () => void;
+	setHasError: () => void;
 	finishSeekLoading: () => void;
 	reset: () => void;
 }
@@ -34,6 +37,7 @@ const defaultState: State = {
 	showCaptionEditor: false,
 	loading: false,
 	seekLoading: false,
+	hasError: false,
 	containerRect: {
 		width: 800,
 		height: 450,
@@ -56,6 +60,10 @@ export const tezignPlayerStore = create(
 			},
 			finishSeekLoading: () => {
 				set(() => ({ seekLoading: false }));
+			},
+
+			setHasError: () => {
+				set(() => ({ hasError: true }));
 			},
 
 			setRect(width, height) {
